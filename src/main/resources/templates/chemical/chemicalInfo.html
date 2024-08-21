@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="layout/root :: head">
+<meta charset="UTF-8">
+<title>Danh sách thông tin hóa chất</title>
+</head>
+<body>
+	<div th:insert="layout/root :: header"></div>
+	<main>
+		<div th:insert="layout/root :: nav"></div>
+		<div class="right-content" th:switch="${chemicals}">
+			<h2 th:case="null">No chemicals yet!</h2>
+			<div th:case="*">
+				<h2>Chemicals</h2>
+				<div>
+					<h3>Search Chemicals</h3>
+					<form th:action="@{/chemical/list}" th:object="${searchDto}"
+						method="post">
+						<div>
+							<label for="code">Code:</label> <input type="text" id="code"
+								th:field="*{code}" />
+						</div>
+						<div>
+							<label for="chemicalType">Phân loại:</label> <select id="chemicalType"
+								th:field="*{chemicalType}">
+								<option value="">-- Select --</option>
+								<option value="Category1">Category1</option>
+								<option value="Category2">Category2</option>
+							</select>
+						</div>
+						<div>
+							<label for="impExpType">Trạng thái nhập xuất:</label> <select
+								id="impExpType" th:field="*{impExpType}">
+								<option value="">-- Select --</option>
+								<option value="Nhập">Nhập</option>
+								<option value="Xuất">Xuất</option>
+							</select>
+						</div>
+						<div>
+							<label for="registerUser">Người nhập:</label> <input type="text"
+								id="registerUser" th:field="*{registerUser}" />
+						</div>
+						<div>
+							<button type="submit">Tìm kiếm</button>
+						</div>
+					</form>
+
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th>Tên hóa chất</th>
+							<th>Hãng sản xuất</th>
+							<th>Dạng hóa chất</th>
+							<th>Khối lượng</th>
+							<th>Mô tả lọ đựng</th>
+							<th>Hóa chất SHPT</th>
+							<th>Thông tin người nhập</th>
+							<th>Vị trí</th>
+							<th>Trạng thái nhập xuất</th>
+							<th>Tình trạng hóa chất</th>
+							<th>Nguồn</th>
+							<th>Khác</th>
+							<th>Cập nhật</th>
+							<th>Xóa</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="chemical : ${chemicals}">
+							<td th:text="${chemical.name}"></td>
+							<td th:text="${chemical.brand}"></td>
+							<td th:text="${chemical.chemicalType}"></td>
+							<td th:text="${chemical.quantity}"></td>
+							<td th:text="${chemical.chemicalTypeInfo}"></td>
+							<td th:text="${chemical.chemicalShpt}"></td>
+							<td th:text="${chemical.registerUser}"></td>
+							<td th:text="${chemical.position}"></td>
+							<td th:text="${chemical.impExpInfo}"></td>
+							<td th:text="${chemical.chemicalStatus}"></td>
+							<td th:text="${chemical.purchaseSrc}"></td>
+							<td th:text="${chemical.otherInfo}"></td>
+							<td><a th:href="@{/chemical/edit/{id}(id=${chemical.id})}">Edit</a></td>
+							<td><a th:href="@{/chemical/delete/{id}(id=${chemical.id})}">Delete</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<p>
+				<a href="/chemical/register">Add a new chemical</a>
+			</p>
+		</div>
+	</main>
+	<div th:insert="layout/root :: footer"></div>
+
+</body>
+</html>

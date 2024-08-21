@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Trang Web Mẫu</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+header, footer {
+	background-color: #007bff;
+	color: white;
+	text-align: center;
+	padding: 10px 0;
+}
+
+main {
+	display: flex;
+	flex: 1;
+}
+
+nav {
+	width: 20%;
+	background-color: #343a40;
+	float: left;
+}
+
+/* nav {
+	width: 200px;
+	background-color: #343a40;
+	color: white;
+	padding: 20px;
+}
+
+nav ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+nav ul li {
+	margin: 10px 0;
+}
+
+nav ul li a {
+	color: white;
+	text-decoration: none;
+} */
+.content {
+	flex: 1;
+	padding: 20px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px solid #ddd;
+}
+
+th, td {
+	padding: 8px;
+	text-align: left;
+}
+
+th {
+	background-color: #f2f2f2;
+}
+
+.error {
+	color: red;
+}
+
+.right-content {
+	width: 80%;
+	float: left;
+}
+.list-group-item
+{
+	border:none;
+}
+</style>
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/bootstrap.min.css}">
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.css}">
+<script type="text/javascript" th:src="@{/js/jquery-3.7.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+	<header>
+		<h1 th:text="#{app.name}"></h1>
+		<div><span th:text="#{welcome.text}+','+${#authentication.getPrincipal().getUsername()}+','+${#authentication.getPrincipal().getUserId()}"></span></div>
+	</header>
+
+	<main>
+	
+		<nav>
+			<ul class="list-group">
+				<!-- Collapsible Item 1 -->
+				<li class="list-group-item"><a data-toggle="collapse"
+					href="#item1" aria-expanded="false" aria-controls="item1"
+					th:text="#{menu.chemical.management}"> </a>
+					<ul class="collapse" id="item1">
+						<li class="list-group-item"><a
+							th:href="@{/chemical/register}"
+							th:text="#{menu.chemical.register}"></a></li>
+						<li class="list-group-item"><a th:href="@{/chemical/list}"
+							th:text="#{menu.chemical.list}"></a></li>
+					</ul></li>
+
+				<!-- Collapsible Item 2 -->
+				<li class="list-group-item"><a data-toggle="collapse"
+					href="#item2" aria-expanded="false" aria-controls="item2"
+					th:text="#{menu.tool.list}"> </a>
+					<ul class="collapse" id="item2">
+						<li class="list-group-item">Subitem 2.1</li>
+						<li class="list-group-item">Subitem 2.2</li>
+						<li class="list-group-item">Subitem 2.3</li>
+					</ul></li>
+
+				<!-- Collapsible Item 3 -->
+				<li class="list-group-item"><a data-toggle="collapse"
+					href="#item3" aria-expanded="false" aria-controls="item3"
+					th:text="#{menu.device.management}"> Item 3 </a>
+					<ul class="collapse" id="item3">
+						<li class="list-group-item">Subitem 3.1</li>
+						<li class="list-group-item">Subitem 3.2</li>
+						<li class="list-group-item">Subitem 3.3</li>
+					</ul></li>
+				<!-- Collapsible Item 4 -->
+				<li class="list-group-item"><a data-toggle="collapse"
+					href="#item4" aria-expanded="false" aria-controls="item4"
+					th:text="#{menu.checkin.management}"> </a>
+					<ul class="collapse" id="item4">
+						<li class="list-group-item">Subitem 3.1</li>
+						<li class="list-group-item">Subitem 3.2</li>
+						<li class="list-group-item">Subitem 3.3</li>
+					</ul></li>
+			</ul>
+		</nav>
+	</main>
+
+	<footer>
+		<p>&copy; Test demo</p>
+	</footer>
+
+
+</body>
+</html>

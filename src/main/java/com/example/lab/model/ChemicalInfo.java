@@ -106,6 +106,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 //	@JoinColumn(name = "chemical_using_user_id")
 //	private UserInfo chemicalUsingUser;
 	
+	
 	@Column(name = "code")
 	private String code;
 	@Column(name = "expired_date")

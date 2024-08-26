@@ -42,6 +42,7 @@ public class ChemicalInfoDto {
 	}
 
 	public ChemicalInfoDto(ChemicalInfo chemicalInfo) {
+		this.id = chemicalInfo.getId();
 		this.name = chemicalInfo.getName();
 		this.brand = chemicalInfo.getBrand().getName();
 		this.chemicalType = chemicalInfo.getChemicalType();

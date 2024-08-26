@@ -77,8 +77,8 @@
 							<td th:text="${chemical.chemicalStatus}"></td>
 							<td th:text="${chemical.purchaseSrc}"></td>
 							<td th:text="${chemical.otherInfo}"></td>
-							<td sec:authorize="hasAuthority('USER')" ><a th:href="@{/chemical/edit/{id}(id=${chemical.id})}">Đăng kí sử dụng</a></td>
-							<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/chemical/delete/{id}(id=${chemical.id})}">Xóa </a></td>
+							<td sec:authorize="hasAuthority('USER')" ><a th:href="@{/chemical/usingRegister/{code}(code=${chemical.code})}">Đăng kí sử dụng</a></td>
+							<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/chemical/delete/{code}(code=${chemical.code})}">Xóa </a></td>
 						</tr>
 					</tbody>
 				</table>

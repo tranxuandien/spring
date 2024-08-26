@@ -13,10 +13,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.lab.common.report.BarCodePDFExporter;
 import com.example.lab.dto.ChemicalInfoDto;
+import com.example.lab.dto.ChemicalUsingDto;
 import com.example.lab.dto.SearchChemicalDto;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.security.CustomUser;
@@ -88,7 +90,6 @@ public class ChemicalInfoController {
 		chemicalInfoService.addChemical(chemical);
 //		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(null).stream()
 //				.map(item -> new ChemicalInfoDto(item)).toList();
-
 //		model.addAttribute("chemicals", dto);
 		return "chemical/chemicalInfo";
 	}
@@ -104,11 +105,36 @@ public class ChemicalInfoController {
 		String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
 		response.setHeader(headerKey, headerValue);
 
-		List<ChemicalInfo> listChemical = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
+//		List<ChemicalInfo> listChemical = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
 
-		BarCodePDFExporter exporter = new BarCodePDFExporter(listChemical);
-		exporter.export(response);
+//		BarCodePDFExporter exporter = new BarCodePDFExporter(listChemical);
+//		exporter.export(response);
 
+	}
+
+	@GetMapping("/chemical/usingRegister/{code}")
+	public String usingChemical(@PathVariable(value = "code") String code, Model model) {
+		ChemicalInfoDto dto = chemicalInfoService.getByCode(code);
+
+		model.addAttribute("chemical", dto);
+
+		return "chemical/chemicalUsingRegister";
+	}
+
+	@PostMapping("/chemical/use")
+	public String usingChemical(@ModelAttribute("chemical") @Valid ChemicalUsingDto updateDto, BindingResult result,
+			Model model) {
+		
+		ChemicalInfoDto info = chemicalInfoService.getByCode(updateDto.getCode());
+
+		if(info==null)
+			result.failOnError(null);
+		else
+			chemicalInfoService.usingChemical(info,updateDto);
+			
+		model.addAttribute("chemical", info);
+
+		return "chemical/chemicalInfo";
 	}
 
 	private Model getMasterData(Model model) {

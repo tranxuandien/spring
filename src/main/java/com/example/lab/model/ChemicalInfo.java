@@ -59,16 +59,9 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "name")
 	private String name;
-//	@Basic(optional = false)
-//	@Column(name = "brand_id")
-//	private Integer brandId;
-
 	@Basic(optional = false)
 	@Column(name = "chemical_type")
 	private String chemicalType;
-//	@Basic(optional = false)
-//	@Column(name = "weight")
-//	private Integer quantity;
 	@Basic(optional = false)
 	@Column(name = "chemical_type_info")
 	private String chemicalTypeInfo;
@@ -78,20 +71,11 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	private String chemicalShpt;
 	@Column(name = "other_info")
 	private String otherInfo;
-//	@Basic(optional = false)
-//	@Column(name = "chemical_import_user_id")
-//	private Integer chemicalImportUserId;
-//	@Basic(optional = false)
-//	@Column(name = "imp_exp_info")
-//	private String impExpInfo;
 	@Basic(optional = false)
 	@Column(name = "chemical_status")
 	private String chemicalStatus;
 	@Column(name = "purchase_src")
 	private String purchaseSrc;
-
-//	@OneToOne(optional = false, fetch = FetchType.LAZY)
-//	@JoinColumn(name = "chemical_id")
 	@Transient
 	private String registerUser;
 	
@@ -101,12 +85,9 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
-	
 //	@OneToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "chemical_using_user_id")
 //	private UserInfo chemicalUsingUser;
-	
-	
 	@Column(name = "code")
 	private String code;
 	@Column(name = "expired_date")

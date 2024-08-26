@@ -1,7 +1,5 @@
 package com.example.lab.service.securityServices;
 
-import java.util.ArrayList;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +16,7 @@ public class LabUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder BCryptPasswordEncoder;
 
@@ -29,8 +27,7 @@ public class LabUserDetailsService implements UserDetailsService {
 		if (user == null) {
 			throw new UsernameNotFoundException("User not found");
 		}
-		return new CustomUser(user.getUserName(), user.getPassword(),
-				new ArrayList<>(),user.getId());
+		return new CustomUser(user.getUserName(), user.getPassword(), user.getAuthorities(), user.getId());
 	}
 
 }

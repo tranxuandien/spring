@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:insert="layout/root :: head">
+<meta charset="UTF-8">
+<title>Danh sách thông tin hóa chất</title>
+</head>
+<body>
+	<div th:insert="layout/root :: header"></div>
+	<main>
+		<div th:insert="layout/root :: nav"></div>
+		<div class="right-content" >
+			<a th:href="@{/chemicals/codeprint}">In tem hóa chất</a>
+		</div>
+	</main>
+	<div th:insert="layout/root :: footer"></div>
+
+</body>
+</html>

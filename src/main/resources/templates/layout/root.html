@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
 <meta charset="UTF-8">
-<title>Trang Web Mẫu</title>
+<title>Quản lý phòng thí nghiệm</title>
 <style>
 body {
 	font-family: Arial, sans-serif;
@@ -14,7 +15,7 @@ body {
 }
 
 header, footer {
-	background-color: #007bff;
+	background-color: rgb(255, 128, 64);
 	color: white;
 	text-align: center;
 	padding: 10px 0;
@@ -82,9 +83,13 @@ th {
 	width: 80%;
 	float: left;
 }
-.list-group-item
-{
-	border:none;
+
+.list-group-item {
+	border: none !important;
+}
+
+.none-border-item {
+	border: hidden;
 }
 </style>
 <link rel="stylesheet" type="text/css"
@@ -96,29 +101,52 @@ th {
 <body>
 	<header>
 		<h1 th:text="#{app.name}"></h1>
-		<div><span th:text="#{welcome.text}+','+${#authentication.getPrincipal().getUsername()}+','+${#authentication.getPrincipal().getUserId()}"></span></div>
+		<div sec:authorize="isAuthenticated()">
+			<span
+				th:text="#{welcome.text}+','+${#authentication.getPrincipal().getUsername()}+','+${#authentication.getPrincipal().getUserId()}"></span>
+
+			<div style="float: right;">
+				<form th:action="@{/logout}" method="post">
+					<button type="submit" value="Sign Out" th:text="#{welcom.signout}"></button>
+				</form>
+			</div>
+		</div>
+		<div sec:authorize="isAnonymous()" style="float: right;">
+			<form th:action="@{/login}" method="post">
+				<button type="submit" value="Sign In" th:text="#{welcom.signin}"></button>
+			</form>
+		</div>
 	</header>
 
 	<main>
-	
+
 		<nav>
 			<ul class="list-group">
+				<li class="list-group-item"><a th:href="@{/index}"
+					th:text="#{menu.index}"> </a></li>
+
 				<!-- Collapsible Item 1 -->
-				<li class="list-group-item"><a data-toggle="collapse"
-					href="#item1" aria-expanded="false" aria-controls="item1"
-					th:text="#{menu.chemical.management}"> </a>
+				<li sec:authorize="isAuthenticated()" class="list-group-item"><a
+					data-toggle="collapse" href="#item1" aria-expanded="false"
+					aria-controls="item1" th:text="#{menu.chemical.management}"> </a>
 					<ul class="collapse" id="item1">
 						<li class="list-group-item"><a
 							th:href="@{/chemical/register}"
 							th:text="#{menu.chemical.register}"></a></li>
+						<li class="list-group-item"><a
+							th:href="@{/chemical/usingRegister}"
+							th:text="#{menu.chemical.using.register}"></a></li>
 						<li class="list-group-item"><a th:href="@{/chemical/list}"
 							th:text="#{menu.chemical.list}"></a></li>
+						<li class="list-group-item"><a
+							th:href="@{/chemicals/codeprint}"
+							th:text="#{menu.chemical.printcode}"></a></li>
 					</ul></li>
 
 				<!-- Collapsible Item 2 -->
-				<li class="list-group-item"><a data-toggle="collapse"
-					href="#item2" aria-expanded="false" aria-controls="item2"
-					th:text="#{menu.tool.list}"> </a>
+				<li sec:authorize="isAuthenticated()" class="list-group-item"><a
+					data-toggle="collapse" href="#item2" aria-expanded="false"
+					aria-controls="item2" th:text="#{menu.tool.list}"> </a>
 					<ul class="collapse" id="item2">
 						<li class="list-group-item">Subitem 2.1</li>
 						<li class="list-group-item">Subitem 2.2</li>
@@ -126,19 +154,29 @@ th {
 					</ul></li>
 
 				<!-- Collapsible Item 3 -->
-				<li class="list-group-item"><a data-toggle="collapse"
-					href="#item3" aria-expanded="false" aria-controls="item3"
-					th:text="#{menu.device.management}"> Item 3 </a>
+				<li sec:authorize="isAuthenticated()" class="list-group-item"><a
+					data-toggle="collapse" href="#item3" aria-expanded="false"
+					aria-controls="item3" th:text="#{menu.device.management}"> Item
+						3 </a>
 					<ul class="collapse" id="item3">
 						<li class="list-group-item">Subitem 3.1</li>
 						<li class="list-group-item">Subitem 3.2</li>
 						<li class="list-group-item">Subitem 3.3</li>
 					</ul></li>
 				<!-- Collapsible Item 4 -->
-				<li class="list-group-item"><a data-toggle="collapse"
-					href="#item4" aria-expanded="false" aria-controls="item4"
-					th:text="#{menu.checkin.management}"> </a>
+				<li sec:authorize="isAuthenticated()" class="list-group-item"><a
+					data-toggle="collapse" href="#item4" aria-expanded="false"
+					aria-controls="item4" th:text="#{menu.checkin.management}"> </a>
 					<ul class="collapse" id="item4">
+						<li class="list-group-item">Subitem 3.1</li>
+						<li class="list-group-item">Subitem 3.2</li>
+						<li class="list-group-item">Subitem 3.3</li>
+					</ul></li>
+
+				<li class="list-group-item"><a data-toggle="collapse"
+					href="#item5" aria-expanded="false" aria-controls="item5"
+					th:text="#{menu.contact}"> </a>
+					<ul class="collapse" id="item5">
 						<li class="list-group-item">Subitem 3.1</li>
 						<li class="list-group-item">Subitem 3.2</li>
 						<li class="list-group-item">Subitem 3.3</li>

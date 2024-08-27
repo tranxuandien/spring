@@ -69,7 +69,7 @@
 						<tr>
 							<td><label for="quantity">Khối lượng:</label></td>
 							<td><input type="number" th:field="*{quantity}"
-								id="quantity"> (gam/ml) <span
+								id="quantity" th:max=${chemical.remain}> (gam/ml) <span
 								th:if="${#fields.hasErrors('quantity')}" class="error"
 								th:errors="*{quantity}"></span></td>
 							<td></td>
@@ -141,7 +141,7 @@
 					</table>
 				</div>
 				<div style="margin-left: 40%; margin-top: 20px;">
-					<button type="submit" value="Đăng kí hóa chất">Đăng kí sử
+					<button type="submit" class ="btn btn-info" value="Đăng kí hóa chất">Đăng kí sử
 						dụng hóa chất</button>
 				</div>
 			</form>

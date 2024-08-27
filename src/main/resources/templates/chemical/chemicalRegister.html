@@ -5,166 +5,199 @@
 <title>Đăng kí thông tin hóa chất</title>
 </head>
 <body>
-	<div th:insert="layout/root :: header"></div>
-	<main>
-		<div th:insert="layout/root :: nav"></div>
-		<div class="right-content">
-			<form action="#" th:action="@{/chemical/add}" th:object="${chemical}"
-				method="post">
-				<div class="table-content">
-					<table>
-						<tr>
-							<td><label for="name">Tên hóa chất:</label></td>
-							<td><input type="text" th:field="*{name}" id="name">
-								<span th:if="${#fields.hasErrors('name')}" class="error"
-								th:errors="*{name}"></span> <input type="text" hidden="true"
-								th:field="*{registerUser}" id="registerUser"></td>
-							<td><label for="chemicalStatus">Tình trạng:</label></td>
-							<td><select th:field="*{chemicalStatus}">
-									<option th:value="'Đăng kí cũ'">Đăng kí cũ</option>
-									<option th:value="'Đăng kí mới'">Đăng kí mới</option>
-							</select><span th:if="${#fields.hasErrors('chemicalStatus')}"
-								class="error" th:errors="*{chemicalStatus}"></span></td>
-						</tr>
-						<tr>
-							<td><label for="brand">Hãng sản xuất:</label></td>
-							<td><select id="brand" name="brand" th:field="*{brand}">
-									<option th:each="brand : ${brands}" th:value="${brand.id}"
-										th:text="${brand.name}"></option>
-							</select> <span th:if="${#fields.hasErrors('brand')}" class="error"
-								th:errors="*{brand}"></span></td>
+    <div th:insert="layout/root :: header"></div>
+    <main>
+        <div th:insert="layout/root :: nav"></div>
+        <div class="container mt-5">
+            <form action="#" th:action="@{/chemical/add}" th:object="${chemical}" method="post">
+                <div class="table-responsive">
+                    <table class="table none-border-item">
+                        <tbody>
+                            <tr>
+                                <td class="none-border-item"><label for="name">Tên hóa chất:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{name}" id="name">
+                                    <span th:if="${#fields.hasErrors('name')}" class="text-danger"
+                                    th:errors="*{name}"></span>
+                                    <input type="hidden" th:field="*{registerUser}" id="registerUser"></td>
+                                <td class="none-border-item"><label for="chemicalStatus">Tình trạng:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" th:field="*{chemicalStatus}">
+                                        <option th:value="'Đăng kí cũ'">Đăng kí cũ</option>
+                                        <option th:value="'Đăng kí mới'">Đăng kí mới</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('chemicalStatus')}" class="text-danger"
+                                    th:errors="*{chemicalStatus}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="brand">Hãng sản xuất:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" id="brand" name="brand" th:field="*{brand}">
+                                        <option th:each="brand : ${brands}" th:value="${brand.id}"
+                                            th:text="${brand.name}"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('brand')}" class="text-danger"
+                                    th:errors="*{brand}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="purchaseSrc">Nguồn:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{purchaseSrc}"
+                                    id="purchaseSrc">
+                                    <span th:if="${#fields.hasErrors('purchaseSrc')}" class="text-danger"
+                                    th:errors="*{purchaseSrc}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="code">Mã code:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{code}" id="code">
+                                    <span th:if="${#fields.hasErrors('code')}" class="text-danger"
+                                    th:errors="*{code}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="otherInfo">Mô tả khác:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{otherInfo}"
+                                    id="otherInfo">
+                                    <span th:if="${#fields.hasErrors('otherInfo')}" class="text-danger"
+                                    th:errors="*{otherInfo}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="chemicalType">Dạng hóa chất:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" th:field="*{chemicalType}">
+                                        <option th:value="'Dung dịch'">Dung dịch</option>
+                                        <option th:value="'Bột'">Bột</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('chemicalType')}" class="text-danger"
+                                    th:errors="*{chemicalType}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="chemicalShpt">Hóa chất SHPT:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{chemicalShpt}"
+                                    id="chemicalShpt">
+                                    <span th:if="${#fields.hasErrors('chemicalShpt')}" class="text-danger"
+                                    th:errors="*{chemicalShpt}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="chemicalTypeInfo">Mô tả dạng hóa chất:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{chemicalTypeInfo}"
+                                    id="chemicalTypeInfo">
+                                    <span th:if="${#fields.hasErrors('chemicalTypeInfo')}" class="text-danger"
+                                    th:errors="*{chemicalTypeInfo}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="impExpInfo">Nhập/Xuất:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" th:field="*{impExpInfo}">
+                                        <option th:value="'Nhập'">Nhập</option>
+                                        <option th:value="'Xuất'">Xuất</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('impExpInfo')}" class="text-danger"
+                                    th:errors="*{impExpInfo}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="quantity">Khối lượng:</label></td>
+                                <td class="none-border-item"><input type="number" th:min=1 class="form-control" th:field="*{quantity}"
+                                    id="quantity"> (gam/ml)
+                                    <span th:if="${#fields.hasErrors('quantity')}" class="text-danger"
+                                    th:errors="*{quantity}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="type1">Phân loại:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" th:field="*{type1}">
+                                        <option th:value="'Sinh học phân tử'">Sinh học phân tử</option>
+                                        <option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
+                                        <option th:value="'Dung môi'">Dung môi</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('type1')}" class="text-danger"
+                                    th:errors="*{type1}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="position">Vị trí lưu trữ:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" id="position" name="position"
+                                        th:field="*{position}">
+                                        <option th:each="position : ${positions}"
+                                            th:value="${position.id}" th:text="${position.positionInfo}"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('position')}" class="text-danger"
+                                    th:errors="*{position}"></span>
+                                </td>
+                                <td class="none-border-item"><label for="chemicalUsingUser">Người dùng:</label></td>
+                                <td class="none-border-item">
+                                    <select class="form-control" id="chemicalUsingUser" name="chemicalUsingUser"
+                                        th:field="*{chemicalUsingUser}">
+                                        <option th:each="user : ${users}" th:value="${user.id}"
+                                            th:text="${user.name}"></option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('chemicalUsingUser')}" class="text-danger"
+                                    th:errors="*{chemicalUsingUser}"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="description">Mô tả lọ đựng:</label></td>
+                                <td class="none-border-item"><input type="text" class="form-control" th:field="*{description}"
+                                    id="description">
+                                    <span th:if="${#fields.hasErrors('description')}" class="text-danger"
+                                    th:errors="*{description}"></span>
+                                </td>
+                                <td class="none-border-item"></td>
+                                <td class="none-border-item"></td>
+                            </tr>
+                            <tr>
+                                <td class="none-border-item"><label for="expiredDate">Hạn sử dụng:</label></td>
+                                <td class="none-border-item"><input type="datetime-local" class="form-control" th:field="*{expiredDate}"
+                                    id="expiredDate">
+                                    <span th:if="${#fields.hasErrors('expiredDate')}" class="text-danger"
+                                    th:errors="*{expiredDate}"></span>
+                                </td>
+                                <td class="none-border-item"></td>
+                                <td class="none-border-item"></td>
+                            </tr>
+                            <tr>
+                                
+                                <td class="none-border-item">
+                                    <select th:if="${type1 == 'Sinh học phân tử'}" class="form-control"
+                                        th:field="*{type2}">
+                                        <option th:value="'kit'">kit</option>
+                                        <option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
+                                        <option th:value="'Dung môi'">Dung môi</option>
+                                    </select>
+                                    <select th:if="${type1 == 'Hóa chất vi sinh'}" class="form-control"
+                                        th:field="*{type2}">
+                                        <option th:value="'kit'">kit</option>
+                                        <option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
+                                        <option th:value="'Dung môi'">Dung môi</option>
+                                    </select>
+                                    <select th:if="${type1 == 'Dung môi'}" class="form-control"
+                                        th:field="*{type2}">
+                                        <option th:value="'kit'">kit</option>
+                                        <option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
+                                        <option th:value="'Dung môi'">Dung môi</option>
+                                    </select>
+                                    <span th:if="${#fields.hasErrors('type2')}" class="text-danger"
+                                    th:errors="*{type2}"></span>
+                                </td>
+                                <td class="none-border-item"></td>
+                            </tr>
+                            <tr>
+                                
+                                <td class="none-border-item"></td>
+                                <td class="none-border-item"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary">Đăng kí hóa chất</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <div th:insert="layout/root :: footer"></div>
 
-							<td><label for="purchaseSrc">Nguồn:</label></td>
-							<td><input type="text" th:field="*{purchaseSrc}"
-								id="purchaseSrc"> <span
-								th:if="${#fields.hasErrors('purchaseSrc')}" class="error"
-								th:errors="*{purchaseSrc}"></span></td>
-						</tr>
-						<tr>
-							<td><label for="name">Mã code:</label></td>
-							<td><input type="text" th:field="*{code}" id="code">
-								<span th:if="${#fields.hasErrors('code')}" class="error"
-								th:errors="*{code}"></span></td>
-							<td></td>
-							<td></td>
-						</tr>
-
-						<tr>
-							<td><label for="chemicalType">Dạng hóa chất:</label></td>
-							<td><select th:field="*{chemicalType}">
-									<option th:value="'Dung dịch'">Dung dịch</option>
-									<option th:value="'Bột'">Bột</option>
-							</select> <span th:if="${#fields.hasErrors('chemicalType')}" class="error"
-								th:errors="*{chemicalType}"></span></td>
-							<td><label for="chemicalShpt">Hóa chất SHPT:</label></td>
-							<td><input type="text" th:field="*{chemicalShpt}"
-								id="chemicalShpt"> <span
-								th:if="${#fields.hasErrors('chemicalShpt')}" class="error"
-								th:errors="*{chemicalShpt}"></span></td>
-						</tr>
-						<tr>
-							<td><label for="chemicalTypeInfo">Mô tả dạng hóa
-									chất:</label></td>
-							<td><input type="text" th:field="*{chemicalTypeInfo}"
-								id="chemicalTypeInfo"> <span
-								th:if="${#fields.hasErrors('chemicalTypeInfo')}" class="error"
-								th:errors="*{chemicalTypeInfo}"></span></td>
-							<td><label for="impExpInfo">Nhập/Xuất:</label></td>
-							<td><select th:field="*{impExpInfo}">
-									<option th:value="'Nhập'">Nhập</option>
-									<option th:value="'Xuất'">Xuất</option>
-							</select> <span th:if="${#fields.hasErrors('impExpInfo')}" class="error"
-								th:esrrors="*{impExpInfo}"></span></td>
-						</tr>
-						<tr>
-							<td><label for="quantity">Khối lượng:</label></td>
-							<td><input type="number" th:field="*{quantity}"
-								id="quantity"> (gam/ml) <span
-								th:if="${#fields.hasErrors('quantity')}" class="error"
-								th:errors="*{quantity}"></span></td>
-							<td></td>
-							<td><label for="brand">Thông tin xuất:</label>
-						</tr>
-						<tr>
-							<td><label for="position">Vị trí lưu trữ:</label></td>
-							<td><select id="position" name="position"
-								th:field="*{position}">
-									<option th:each="position : ${positions}"
-										th:value="${position.id}" th:text="${position.positionInfo}"></option>
-							</select> <span th:if="${#fields.hasErrors('position')}" class="error"
-								th:errors="*{position}"></span></td>
-							<td><label for="chemicalUsingUser">Người dùng:</label></td>
-							<td><select id="chemicalUsingUser" name="chemicalUsingUser"
-								th:field="*{chemicalUsingUser}">
-									<option th:each="user : ${users}" th:value="${user.id}"
-										th:text="${user.name}"></option>
-							</select> <span th:if="${#fields.hasErrors('chemicalUsingUser')}"
-								class="error" th:errors="*{chemicalUsingUser}"></span></td>
-						</tr>
-						<tr>
-							<td><label for="description">Mô tả lọ đựng:</label></td>
-							<td><input type="text" th:field="*{description}"
-								id="description"> <span
-								th:if="${#fields.hasErrors('description')}" class="error"
-								th:errors="*{description}"></span></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><label for="expiredDate">Hạn sử dụng:</label></td>
-							<td><input type="datetime" th:field="*{expiredDate}"
-								id="expiredDate"> <span
-								th:if="${#fields.hasErrors('expiredDate')}" class="error"
-								th:errors="*{expiredDate}"> </span></td>
-							<td></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><label for="type1">Phân loại:</label></td>
-							<td><select th:field="*{type1}">
-									<option th:value="'Sinh học phân tử'">Sinh học phân tử</option>
-									<option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
-									<option th:value="'Dung môi'">Dung môi</option>
-							</select> <span th:if="${#fields.hasErrors('type1')}" class="error"
-								th:errors="*{type1}"></span></td>
-							<td><select th:if="${type1 == 'Sinh học phân tử'}"
-								th:field="*{type2}">
-									<option th:value="'kit'">kit</option>
-									<option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh
-									</option>
-									<option th:value="'Dung môi'">Dung môi</option>
-							</select> <select th:if="${type1 == 'Hóa chất vi sinh'}"
-								th:field="*{type2}">
-									<option th:value="'kit'">kit</option>
-									<option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
-									<option th:value="'Dung môi'">Dung môi</option>
-							</select> <select th:if="${type1 == 'Dung môi'}" th:field="*{type2}">
-									<option th:value="'kit'">kit</option>
-									<option th:value="'Hóa chất vi sinh'">Hóa chất vi sinh</option>
-									<option th:value="'Dung môi'">Dung môi</option>
-							</select> <span th:if="${#fields.hasErrors('type2')}" class="error"
-								th:errors="*{type2}"></span></td>
-							<td></td>
-						</tr>
-						<tr>
-							<td><label for="otherInfo">Mô tả khác:</label></td>
-							<td><input type="text" th:field="*{otherInfo}"
-								id="otherInfo"> <span
-								th:if="${#fields.hasErrors('otherInfo')}" class="error"
-								th:errors="*{otherInfo}"></span></td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-				</div>
-				<div style="margin-left: 40%; margin-top: 20px;">
-					<button type="submit" value="Đăng kí hóa chất">Đăng kí hóa
-						chất</button>
-				</div>
-			</form>
-		</div>
-	</main>
-	<div th:insert="layout/root :: footer"></div>
-
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

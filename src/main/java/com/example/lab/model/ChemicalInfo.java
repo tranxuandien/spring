@@ -96,7 +96,10 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	private String type1;
 	@Column(name = "type2")
 	private String type2;
-
+	@Basic(optional = false)
+	@Column(name="is_delete")
+	private String isDelete;
+	
 	@Embedded
 	private EmbeddedChemicalImpExp chemicalImpExp;
 
@@ -134,6 +137,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalShpt = dto.chemicalShpt;
 		this.chemicalTypeInfo = dto.chemicalTypeInfo;
 		this.chemicalStatus = dto.chemicalStatus;
+		this.isDelete = "0";//init
 	}
 
 	public Integer getId() {
@@ -299,4 +303,17 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalImpExp = chemicalImpExp;
 	}
 
+	public EmbeddedChemicalInventory getChemicalInventory() {
+		return chemicalInventory;
+	}
+
+	public String getIsDelete() {
+		return isDelete;
+	}
+
+	public void setIsDelete(String isDelete) {
+		this.isDelete = isDelete;
+	}
+	
+	
 }

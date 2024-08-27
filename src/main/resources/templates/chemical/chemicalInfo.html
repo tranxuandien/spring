@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:insert="layout/root :: head">
 <meta charset="UTF-8">
 <title>Danh sách thông tin hóa chất</title>
@@ -19,23 +20,28 @@
 							<table class="none-border-item">
 								<tr>
 									<td class="none-border-item"><label for="code">Code:</label></td>
-									<td class="none-border-item"><input type="text" id="code" th:field="*{code}" /></td>
-									<td class="none-border-item"><label for="chemicalType">Phân loại:</label></td>
-									<td class="none-border-item"><select id="chemicalType" th:field="*{chemicalType}">
+									<td class="none-border-item"><input type="text" id="code"
+										th:field="*{code}" /></td>
+									<td class="none-border-item"><label for="chemicalType">Phân
+											loại:</label></td>
+									<td class="none-border-item"><select id="chemicalType"
+										th:field="*{chemicalType}">
 											<option value="">-- Select --</option>
 											<option value="Category1">Category1</option>
 											<option value="Category2">Category2</option>
 									</select></td>
-									<td class="none-border-item"><label for="impExpType">Trạng thái nhập xuất:</label>
-									</td>
-									<td class="none-border-item"><select id="impExpType" th:field="*{impExpType}">
+									<td class="none-border-item"><label for="impExpType">Trạng
+											thái nhập xuất:</label></td>
+									<td class="none-border-item"><select id="impExpType"
+										th:field="*{impExpType}">
 											<option value="">-- Select --</option>
 											<option value="Nhập">Nhập</option>
 											<option value="Xuất">Xuất</option>
 									</select></td>
-									<td class="none-border-item"><label for="registerUser">Người nhập:</label></td>
-									<td class="none-border-item"><input type="text" id="registerUser"
-										th:field="*{registerUser}" /></td>
+									<td class="none-border-item"><label for="registerUser">Người
+											nhập:</label></td>
+									<td class="none-border-item"><input type="text"
+										id="registerUser" th:field="*{registerUser}" /></td>
 								</tr>
 							</table>
 						</div>
@@ -50,7 +56,8 @@
 							<th>Tên hóa chất</th>
 							<th>Hãng sản xuất</th>
 							<th>Dạng hóa chất</th>
-							<th>Khối lượng</th>
+							<th>Khối lượng đăng kí</th>
+							<th>Khối lượng còn lại</th>
 							<th>Mô tả lọ đựng</th>
 							<th>Hóa chất SHPT</th>
 							<th>Thông tin người nhập</th>
@@ -69,23 +76,37 @@
 							<td th:text="${chemical.brand}"></td>
 							<td th:text="${chemical.chemicalType}"></td>
 							<td th:text="${chemical.quantity}"></td>
+							<td th:text="${chemical.remain}"></td>
 							<td th:text="${chemical.chemicalTypeInfo}"></td>
 							<td th:text="${chemical.chemicalShpt}"></td>
 							<td th:text="${chemical.registerUser}"></td>
 							<td th:text="${chemical.position}"></td>
-							<td th:text="${chemical.impExpInfo}"></td>
+							<td th:if="${chemical.impExpInfo=='Hết'}"
+								th:class="chemical-alert" th:text="${chemical.impExpInfo}"></td>
+							<td th:if="${chemical.impExpInfo=='Sắp hết'}"
+								th:class="chemical-warning" th:text="${chemical.impExpInfo}"></td>
+							<td
+								th:if="${chemical.impExpInfo!='Hết' && chemical.impExpInfo!='Sắp hết'}"
+								th:text="${chemical.impExpInfo}"></td>
 							<td th:text="${chemical.chemicalStatus}"></td>
 							<td th:text="${chemical.purchaseSrc}"></td>
 							<td th:text="${chemical.otherInfo}"></td>
-							<td sec:authorize="hasAuthority('USER')" ><a th:href="@{/chemical/usingRegister/{code}(code=${chemical.code})}">Đăng kí sử dụng</a></td>
-							<td sec:authorize="hasAuthority('ADMIN')"><a th:href="@{/chemical/delete/{code}(code=${chemical.code})}">Xóa </a></td>
+							<td sec:authorize="hasAuthority('USER')"
+								th:if="${chemical.impExpInfo!='Hết'}"><a
+								th:href="@{/chemical/usingRegister/{code}(code=${chemical.code})}" class="btn btn-info">Đăng
+									kí sử dụng</a></td>
+							<td sec:authorize="hasAuthority('ADMIN')"><a
+								th:href="@{/chemical/delete/{code}(code=${chemical.code})}"class="btn btn-danger btn-sm py-1 "
+								th:data-confirm-delete="|Bạn muốn xóa hóa chất ${chemical.name}?|"
+								onclick="if (!confirm(this.getAttribute('data-confirm-delete'))) return false">
+									Xóa </a></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
-			<p>
-				<a href="/chemical/register">Add a new chemical</a>
-			</p>
+			<div>
+				<a th:href="@{/chemical/register}" class="btn btn-primary">Thêm hóa chất</a>
+			</div>
 		</div>
 	</main>
 	<div th:insert="layout/root :: footer"></div>

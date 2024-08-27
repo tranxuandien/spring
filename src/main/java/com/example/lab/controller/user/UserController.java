@@ -30,10 +30,14 @@ public class UserController {
 //        return "user/login";  
 //    }
 
+	@GetMapping("/login")
+	String login() {
+		return "user/login";
+	}
+
 	@GetMapping("/index")
 	public String home(Model model) {
 		return "user/index";
 	}
 
-	
 }

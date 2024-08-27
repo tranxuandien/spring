@@ -5,12 +5,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,9 +52,10 @@ public class ChemicalInfoController {
 
 	@GetMapping("/chemical/list")
 	public String getListChemical(Model model) {
-		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto()).stream()
-				.map(item -> new ChemicalInfoDto(item)).toList();
-
+		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
+		for (ChemicalInfoDto chemicalInfoDto : dto) {
+			chemicalInfoDto.updateImpExpInfo();
+		}
 		model.addAttribute("searchDto", new SearchChemicalDto());
 		model.addAttribute("chemicals", dto);
 		return "chemical/chemicalInfo";
@@ -61,10 +64,10 @@ public class ChemicalInfoController {
 	@PostMapping("/chemical/list")
 	public String getListChemical(@ModelAttribute("searchDto") SearchChemicalDto searchChemicalDto, Model model) {
 
-		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto).stream()
-				.map(item -> new ChemicalInfoDto(item)).toList();
-
-//		model.addAttribute("searchDto", new SearchChemicalDto());
+		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
+		for (ChemicalInfoDto chemicalInfoDto : dto) {
+			chemicalInfoDto.updateImpExpInfo();
+		}
 		model.addAttribute("chemicals", dto);
 		return "chemical/chemicalInfo";
 	}
@@ -83,15 +86,15 @@ public class ChemicalInfoController {
 	@PostMapping("/chemical/add")
 	public String addChemical(@ModelAttribute("chemical") @Valid ChemicalInfoDto chemical, BindingResult result,
 			Model model) {
+		if (chemicalInfoService.checkDuplicate(chemical.getCode()))
+			result.addError(new FieldError("chemical", "code", "Code đã được đăng ký!"));
+		
 		if (result.hasErrors()) {
 			getMasterData(model);
 			return "chemical/chemicalRegister";
 		}
 		chemicalInfoService.addChemical(chemical);
-//		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(null).stream()
-//				.map(item -> new ChemicalInfoDto(item)).toList();
-//		model.addAttribute("chemicals", dto);
-		return "chemical/chemicalInfo";
+		return this.getListChemical(model);
 	}
 
 	@GetMapping("/chemicals/codeprint")
@@ -115,26 +118,26 @@ public class ChemicalInfoController {
 	@GetMapping("/chemical/usingRegister/{code}")
 	public String usingChemical(@PathVariable(value = "code") String code, Model model) {
 		ChemicalInfoDto dto = chemicalInfoService.getByCode(code);
-
 		model.addAttribute("chemical", dto);
-
 		return "chemical/chemicalUsingRegister";
 	}
 
 	@PostMapping("/chemical/use")
 	public String usingChemical(@ModelAttribute("chemical") @Valid ChemicalUsingDto updateDto, BindingResult result,
-			Model model) {
-		
+			Model model) throws Throwable {
 		ChemicalInfoDto info = chemicalInfoService.getByCode(updateDto.getCode());
-
-		if(info==null)
+		if (info == null)
 			result.failOnError(null);
 		else
-			chemicalInfoService.usingChemical(info,updateDto);
-			
-		model.addAttribute("chemical", info);
+			chemicalInfoService.usingChemical(info, updateDto);
+		return this.getListChemical(model);
+	}
 
-		return "chemical/chemicalInfo";
+	@GetMapping("/chemical/delete/{code}")
+	public String deleteChemical(@PathVariable(value = "code") String code, Model model) {
+		chemicalInfoService.deleteByCode(code);
+//		model.addAttribute("chemical", dto);
+		return this.getListChemical(model);
 	}
 
 	private Model getMasterData(Model model) {

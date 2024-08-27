@@ -1,5 +1,6 @@
 package com.example.lab.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +53,7 @@ public class ChemicalInfoService {
 //		return chemicalInfoRepository.findAll(chemicalInfoParam);
 //	}
 //	
-	public List<ChemicalInfo> getListChemicalInfo(SearchChemicalDto searchDto) {
+	public List<ChemicalInfoDto> getListChemicalInfo(SearchChemicalDto searchDto) {
 		return chemicalInfoRepository.findAll(searchDto.getCode(), searchDto.getChemicalType(),
 				searchDto.getImpExpType(), searchDto.getRegisterUser());
 	}
@@ -87,8 +88,10 @@ public class ChemicalInfoService {
 		return new ChemicalInfoDto(chemicalInfoRepository.findByCode(code));
 	}
 
-	public void usingChemical(ChemicalInfoDto info, ChemicalUsingDto updateDto) {
+	public void usingChemical(ChemicalInfoDto info, ChemicalUsingDto updateDto) throws Throwable {
 		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId());
+		if (inventory.getQuantity().subtract(updateDto.getQuantity()).compareTo(BigDecimal.ZERO) < 0)
+			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
 		inventory.setQuantity(inventory.getQuantity().subtract(updateDto.getQuantity()));
 		chemicalInventoryRepository.save(inventory);
 		// add imp info
@@ -96,6 +99,18 @@ public class ChemicalInfoService {
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
 				null, user.getUserId());
 		chemicalImpExpRepository.save(impexp);
+	}
+
+	public void deleteByCode(String code) {
+		ChemicalInfo chemical = chemicalInfoRepository.findByCodeWithoutInventory(code);
+		if (chemical != null)
+			chemical.setIsDelete("1");
+		chemicalInfoRepository.save(chemical);
+		return;
+	}
+
+	public boolean checkDuplicate(String code) {
+		return chemicalInfoRepository.findByCodeWithoutInventory(code)!=null;
 	}
 
 }

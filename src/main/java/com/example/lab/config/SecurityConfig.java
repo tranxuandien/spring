@@ -45,7 +45,9 @@ public class SecurityConfig extends WebSecurityConfiguration {
 	      http.authorizeHttpRequests((requests) -> requests
 					.requestMatchers("/","/index","/css/**", "/js/**").permitAll()
 					.anyRequest().authenticated()
-				).formLogin(form->form.defaultSuccessUrl("/index").permitAll())
+				).formLogin(form->form
+						.loginPage("/login")
+						.defaultSuccessUrl("/index").permitAll())
 	      .logout(logout-> logout.permitAll());
 //	      .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

@@ -3,6 +3,7 @@ package com.example.lab.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.lab.enums.ChemicalInventoryStatus;
 import com.example.lab.model.ChemicalInfo;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -12,17 +13,22 @@ import lombok.Data;
 @Data
 public class ChemicalInfoDto {
 
+	private static final BigDecimal LIMIT_ALERT= BigDecimal.ZERO;
+	private static final BigDecimal LIMIT_WARNING = BigDecimal.valueOf(100);
+
 	public Integer id;
-	@NotEmpty(message="Nhập thông tin tên hóa chất")
+	@NotEmpty(message = "Nhập thông tin tên hóa chất")
 	public String name;
 	public String brand;
-	@NotEmpty(message="Nhập thông tin code")
+	@NotEmpty(message = "Nhập thông tin code")
 	public String code;
 	public String chemicalType;
 	@NotNull(message = "Nhập khối lượng nhập/xuất")
 	public BigDecimal quantity;
 	public String chemicalTypeInfo;
 	public String description;
+	@NotNull(message = "Nhập hạn sử dụng")
+	@NotEmpty(message = "Nhập hạn sử dụng")
 	public String expiredDate;
 	public String type1;
 	public String type2;
@@ -36,21 +42,53 @@ public class ChemicalInfoDto {
 	public String purchaseSrc;
 	public LocalDate createAt;
 	public LocalDate updateAt;
+	public BigDecimal remain;
 
 	public ChemicalInfoDto() {
 		super();
+	}
+
+	public ChemicalInfoDto(Integer id, String name, String brand, String code, String chemicalType, BigDecimal quantity,
+			String chemicalTypeInfo, String description, String expiredDate, String type1, String type2,
+			String chemicalShpt, String otherInfo, String registerUser, String position, String impExpInfo,
+			String chemicalUsingUser, String chemicalStatus, String purchaseSrc, LocalDate createAt, LocalDate updateAt,
+			BigDecimal remain) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.brand = brand;
+		this.code = code;
+		this.chemicalType = chemicalType;
+		this.quantity = quantity;
+		this.chemicalTypeInfo = chemicalTypeInfo;
+		this.description = description;
+		this.expiredDate = expiredDate;
+		this.type1 = type1;
+		this.type2 = type2;
+		this.chemicalShpt = chemicalShpt;
+		this.otherInfo = otherInfo;
+		this.registerUser = registerUser;
+		this.position = position;
+		this.impExpInfo = impExpInfo;
+		this.chemicalUsingUser = chemicalUsingUser;
+		this.chemicalStatus = chemicalStatus;
+		this.purchaseSrc = purchaseSrc;
+		this.createAt = createAt;
+		this.updateAt = updateAt;
+		this.remain = remain;
 	}
 
 	public ChemicalInfoDto(ChemicalInfo chemicalInfo) {
 		this.id = chemicalInfo.getId();
 		this.name = chemicalInfo.getName();
 		this.brand = chemicalInfo.getBrand().getName();
+		this.code = chemicalInfo.getCode();
 		this.chemicalType = chemicalInfo.getChemicalType();
 		this.chemicalTypeInfo = chemicalInfo.getChemicalTypeInfo();
 		this.description = chemicalInfo.getDescription();
 		this.chemicalShpt = chemicalInfo.getChemicalShpt();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-		this.registerUser = chemicalInfo.getChemicalImpExp().getImpUser().getName();
+//		this.registerUser = chemicalInfo.getChemicalImpExp().getImpUser().getName();
 		this.position = chemicalInfo.getPosition();
 		this.impExpInfo = chemicalInfo.getChemicalImpExp().getType();
 		this.chemicalStatus = chemicalInfo.getChemicalStatus();
@@ -58,6 +96,7 @@ public class ChemicalInfoDto {
 		this.createAt = chemicalInfo.getCreateAt();
 		this.updateAt = chemicalInfo.getUpdateAt();
 		this.quantity = chemicalInfo.getChemicalImpExp().getQuantity();
+		this.remain = chemicalInfo.getChemicalInventory().getQuantity();
 	}
 
 	public Integer getId() {
@@ -91,7 +130,6 @@ public class ChemicalInfoDto {
 	public void setChemicalType(String chemicalType) {
 		this.chemicalType = chemicalType;
 	}
-
 
 	public BigDecimal getQuantity() {
 		return quantity;
@@ -228,7 +266,14 @@ public class ChemicalInfoDto {
 	public void setChemicalUsingUser(String chemicalUsingUser) {
 		this.chemicalUsingUser = chemicalUsingUser;
 	}
-	
-	
 
+	
+	public void updateImpExpInfo() {
+		if (this.remain.compareTo(LIMIT_WARNING) > 0)
+			this.impExpInfo = ChemicalInventoryStatus.New.getVal();
+		else if (this.remain.compareTo(LIMIT_ALERT) > 0)
+			this.impExpInfo = ChemicalInventoryStatus.Warning.getVal();
+		else
+			this.impExpInfo = ChemicalInventoryStatus.Old.getVal();
+	}
 }

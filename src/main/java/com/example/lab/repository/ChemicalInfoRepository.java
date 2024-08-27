@@ -1,5 +1,6 @@
 package com.example.lab.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,11 +21,12 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 			+ "left join PositionInfo t5 on t1.position.id = t5.id "
 			+ "left join ChemicalInventory t6 on t6.chemicalId = t1.id"
 			+ " where "
-			+ "(?1 IS NULL OR t1.code=?1) "
+			+ "(?1 IS NULL OR t1.code like %?1%) "
 			+ "and (?2 IS NULL OR t1.chemicalType=?2) "
-			+ "and (?3 IS NULL OR t2.type=?3) "
-			+ "and (?4 IS NULL OR t3.user.id=?4) AND t1.isDelete ='0' ")
-	List<ChemicalInfoDto> findAll(String code, String chemicalType, String impExpType, String registerUser);
+			+ "and (?4 IS NULL OR t6.quantity > ?4) "
+			+ "and (?5 IS NULL OR t6.quantity <= ?5) "
+			+ "and (?3 IS NULL OR t1.name like %?3%) AND t1.isDelete ='0' ")
+	List<ChemicalInfoDto> findAll(String code, String chemicalType, String name,BigDecimal range1,BigDecimal range2);
 	
 	@Query("SELECT t1  FROM ChemicalInfo t1 \r\n"
 			+ "left join ChemicalInventory t2 on t2.chemicalId = t1.id \r\n"

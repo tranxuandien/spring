@@ -54,8 +54,7 @@ public class ChemicalInfoService {
 //	}
 //	
 	public List<ChemicalInfoDto> getListChemicalInfo(SearchChemicalDto searchDto) {
-		return chemicalInfoRepository.findAll(searchDto.getCode(), searchDto.getChemicalType(),
-				searchDto.getImpExpType(), searchDto.getRegisterUser());
+		return chemicalInfoRepository.findAll(searchDto.getCode(), searchDto.getChemicalType(), searchDto.getName(),searchDto.getRange1(),searchDto.getRange2());
 	}
 
 	public ChemicalInfo addChemical(ChemicalInfoDto dto) {

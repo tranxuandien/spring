@@ -63,7 +63,7 @@ public class ChemicalInfoController {
 
 	@PostMapping("/chemical/list")
 	public String getListChemical(@ModelAttribute("searchDto") SearchChemicalDto searchChemicalDto, Model model) {
-
+		searchChemicalDto.setRangeSearch();
 		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
 		for (ChemicalInfoDto chemicalInfoDto : dto) {
 			chemicalInfoDto.updateImpExpInfo();

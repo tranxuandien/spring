@@ -5,9 +5,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +18,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.lab.common.report.BarCodePDFExporter;
 import com.example.lab.dto.ChemicalInfoDto;
 import com.example.lab.dto.ChemicalUsingDto;
 import com.example.lab.dto.SearchChemicalDto;
-import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.security.CustomUser;
 import com.example.lab.service.BrandService;
 import com.example.lab.service.ChemicalInfoService;
@@ -36,6 +39,8 @@ import net.sourceforge.barbecue.BarcodeException;
 import net.sourceforge.barbecue.output.OutputException;
 
 @Controller
+@RestController
+@RequestMapping("api/v1")
 public class ChemicalInfoController {
 
 	@Autowired
@@ -51,14 +56,15 @@ public class ChemicalInfoController {
 	private PositionInfoService positionInfoService;
 
 	@GetMapping("/chemical/list")
-	public String getListChemical(Model model) {
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> getListChemical(Model model) {
 		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
 		for (ChemicalInfoDto chemicalInfoDto : dto) {
 			chemicalInfoDto.updateImpExpInfo();
 		}
 		model.addAttribute("searchDto", new SearchChemicalDto());
 		model.addAttribute("chemicals", dto);
-		return "chemical/chemicalInfo";
+		return ResponseEntity.ok(dto);
 	}
 
 	@PostMapping("/chemical/list")

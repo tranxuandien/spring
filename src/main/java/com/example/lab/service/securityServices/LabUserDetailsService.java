@@ -1,33 +1,20 @@
 package com.example.lab.service.securityServices;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
+public class LabUserDetailsService  {
 
-import com.example.lab.model.User;
-import com.example.lab.model.security.CustomUser;
-import com.example.lab.repository.user.UserRepository;
-
-@Service
-public class LabUserDetailsService implements UserDetailsService {
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private BCryptPasswordEncoder BCryptPasswordEncoder;
-
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUserName(username);
-//		String password = BCryptPasswordEncoder.encode("123456");
-		if (user == null) {
-			throw new UsernameNotFoundException("User not found");
-		}
-		return new CustomUser(user.getUserName(), user.getPassword(), user.getAuthorities(), user.getId());
-	}
+//	@Autowired
+//	private UserRepository userRepository;
+//
+//	@Override
+//	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//		Optional<User> optUser = userRepository.findByUserName(username);
+////		user.getRole().split(",");
+////		String password = BCryptPasswordEncoder.encode("123456");
+//		if (optUser.isEmpty()) {
+//			throw new UsernameNotFoundException("User not found");
+//		}
+//		User user = optUser.get();
+//		return new CustomUser(user.getUserName(), user.getPassword(), user.getAuthorities(), user.getId());
+//	}
 
 }

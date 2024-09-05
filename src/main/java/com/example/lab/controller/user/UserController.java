@@ -1,34 +1,54 @@
 package com.example.lab.controller.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.lab.service.ChemicalInfoService;
+import com.example.lab.model.User;
+import com.example.lab.service.securityServices.UserService;
 
-@Controller
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
-
+	
 	@Autowired
-	private ChemicalInfoService chemicalInfoService;
+    private UserService userService;
 
-//	@RequestMapping("/login")
-//    public String login(
-//            @RequestParam(value = "error", required = false) String error,
-//            @RequestParam(value = "logout", required = false) String logout,
-//            Model model) {
-//
-//        if (error != null) {
-//            model.addAttribute("errorMsg", "Tên đăng nhập hoặc mật khẩu không đúng.");
-//        }
-//
-//        if (logout != null) {
-//            model.addAttribute("logoutMsg", "Bạn đã đăng xuất thành công.");
-//        }
-//
-//        return "user/login";  
-//    }
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User createdUser = userService.createUser(user);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getUsers() {
+        List<User> users = userService.getUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<User> getUser(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User user) {
+        User updatedUser = userService.updateUser(userId, user);
+        return ResponseEntity.ok(updatedUser);
+    }
 
 	@GetMapping("/login")
 	String login() {

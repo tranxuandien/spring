@@ -1,6 +1,4 @@
-package com.example.lab.dto;
-
-import com.example.lab.model.User;
+package com.example.lab.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,13 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class UserRegisterRequest {
 	private String username;
 	private String password;
 	private String role;
-
-	public UserDto(User chemicalImportUser) {
-		// TODO Auto-generated constructor stub
-	}
-
+	
 }

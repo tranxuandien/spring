@@ -1,4 +1,4 @@
-package com.example.lab.service.securityServices;
+package com.example.lab.config;
 
 import java.io.IOException;
 
@@ -10,17 +10,21 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.lab.service.securityServices.JwtService;
+
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
+@RequiredArgsConstructor
 public class AuthenticationFilter extends OncePerRequestFilter {
 	
-	private final JwtService jwtService;
-	private final UserDetailsService userDetailsService;
+	private  final JwtService jwtService;
+	private  final UserDetailsService userDetailsService;
 
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -44,11 +48,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	public AuthenticationFilter( UserDetailsService userDetailsService) {
-		super();
-		this.jwtService = new JwtService();
-		this.userDetailsService = userDetailsService;
-	}
-	
+//	public AuthenticationFilter( UserDetailsService userDetailsService) {
+//		super();
+//		this.jwtService = new JwtService();
+////		this.jwtService = new JwtService();
+//		this.userDetailsService = userDetailsService;
+//	}
+//	
 	
 }

@@ -13,6 +13,8 @@ import com.example.lab.dto.request.UserRegisterRequest;
 import com.example.lab.dto.response.AuthenticationResponse;
 import com.example.lab.service.securityServices.AuthenticationService;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("/api/auth")
@@ -30,8 +32,11 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+	public ResponseEntity<?> login(@RequestBody AuthenticationRequest request, HttpServletResponse res) {
 		AuthenticationResponse response = authenticationService.login(request);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		Cookie cookie = new Cookie("token", response.getToken());
+		cookie.setHttpOnly(true);
+		res.addCookie(cookie);
+		return ResponseEntity.ok(response);
 	}
 }

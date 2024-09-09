@@ -1,6 +1,5 @@
 package com.example.lab.service.securityServices;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,16 +20,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthenticationService {
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private TokenRepository tokenRepository;
-	@Autowired
-	private JwtService jwtService;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	private AuthenticationManager authenticationManager;
+	private final UserRepository userRepository;
+	private final TokenRepository tokenRepository;
+	private final JwtService jwtService;
+	private final PasswordEncoder passwordEncoder;
+	private final AuthenticationManager authenticationManager;
 	
 	public AuthenticationResponse register(UserRegisterRequest request) {
 		User newUser = new User();

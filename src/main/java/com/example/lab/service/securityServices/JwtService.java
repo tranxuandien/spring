@@ -4,7 +4,6 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.example.lab.model.User;
@@ -17,12 +16,11 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-	@Value("${jwt.secret.key}")
-	private String SECRET_KEY;
+	private static final String SECRET_KEY="LFO302h++zFOWfdcJWuCS+kpLVv4QS7D/AjAj5f4apo=";
 
 	public String generateToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 60000 ))
+				.setExpiration(new Date(System.currentTimeMillis() + 600000 ))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 

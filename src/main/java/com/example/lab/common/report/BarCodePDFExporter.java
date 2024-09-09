@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.lab.model.ChemicalInfo;
+import com.example.lab.dto.ChemicalInfoDto;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -29,15 +29,15 @@ public class BarCodePDFExporter {
 	@Autowired
 	BarcodeFactory factory;
 
-	private List<ChemicalInfo> listChemical;
+	private List<ChemicalInfoDto> listChemical;
 
-	public BarCodePDFExporter(List<ChemicalInfo> listChemical) {
-		this.listChemical = listChemical;
+	public BarCodePDFExporter(List<ChemicalInfoDto> listChemical2) {
+		this.listChemical = listChemical2;
 	}
 
 	private void writeTableData(PdfPTable table)
 			throws OutputException, BadElementException, IOException, BarcodeException {
-		for (ChemicalInfo chemical : listChemical) {
+		for (ChemicalInfoDto chemical : listChemical) {
 			PdfPCell cell1 = new PdfPCell();
 			Barcode bc = BarcodeFactory.createCode128(chemical.getCode());
 			bc.setBarHeight(60);

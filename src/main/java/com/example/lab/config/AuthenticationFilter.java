@@ -47,13 +47,4 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
 		filterChain.doFilter(request, response);
 	}
-
-//	public AuthenticationFilter( UserDetailsService userDetailsService) {
-//		super();
-//		this.jwtService = new JwtService();
-////		this.jwtService = new JwtService();
-//		this.userDetailsService = userDetailsService;
-//	}
-//	
-	
 }

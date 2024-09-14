@@ -1,11 +1,9 @@
 package com.example.lab.common.report;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.lab.dto.ChemicalInfoDto;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -26,37 +24,48 @@ import net.sourceforge.barbecue.output.OutputException;
 
 public class BarCodePDFExporter {
 
+	public static final Integer CHEMICAL_CODE_LENGTH = 4;
+	public static final Integer CHEMICAL_LOT_LENGTH = 6;
+	
 	@Autowired
 	BarcodeFactory factory;
 
-	private List<ChemicalInfoDto> listChemical;
+	private Integer chemicalId;
 
-	public BarCodePDFExporter(List<ChemicalInfoDto> listChemical2) {
-		this.listChemical = listChemical2;
+	private Integer number;
+	
+	private String[] printLst;
+	
+	private String chemicalName;
+
+	public BarCodePDFExporter(Integer chemicalId, Integer number, String[] printLst, String chemicalName) {
+		super();
+		this.chemicalId = chemicalId;
+		this.number = number;
+		this.printLst = printLst;
+		this.chemicalName = chemicalName;
 	}
 
 	private void writeTableData(PdfPTable table)
 			throws OutputException, BadElementException, IOException, BarcodeException {
-		for (ChemicalInfoDto chemical : listChemical) {
+		for (int i = 0; i < this.number+(5-this.number%5); i++) {
 			PdfPCell cell1 = new PdfPCell();
-			Barcode bc = BarcodeFactory.createCode128(chemical.getCode());
-			bc.setBarHeight(60);
-//			bc.setBarWidth(2);
 			cell1.setBorder(Rectangle.NO_BORDER);
 			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			cell1.addElement(new Paragraph(chemical.getName()));
-
+			if (i >= this.number) {
+				table.addCell(cell1);
+				continue;
+			}
+			String chemicalCode = "0".repeat(CHEMICAL_CODE_LENGTH - chemicalId.toString().length())+chemicalId.toString();
+			String chemicalLot = "0".repeat(CHEMICAL_LOT_LENGTH - printLst[i].length())+printLst[i];
+			Barcode bc = BarcodeFactory.createCode128(chemicalCode+chemicalLot);
+			bc.setBarHeight(60);
+			cell1.addElement(new Paragraph(chemicalName));
 			cell1.addElement(new Paragraph("      "));
 			cell1.addElement(com.lowagie.text.Image.getInstance(BarcodeImageHandler.getImage(bc), null));
-			Paragraph code = new Paragraph(chemical.getCode());
+			Paragraph code = new Paragraph(chemicalCode+chemicalLot);
 			code.setAlignment(Element.ALIGN_CENTER);
 			cell1.addElement(code);
-			table.addCell(cell1);
-			table.addCell(cell1);
-			table.addCell(cell1);
-			table.addCell(cell1);
-			table.addCell(cell1);
-			table.addCell(cell1);
 			table.addCell(cell1);
 		}
 	}

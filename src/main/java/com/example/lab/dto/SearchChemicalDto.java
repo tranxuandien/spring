@@ -8,7 +8,7 @@ import com.example.lab.enums.ChemicalInventoryStatus;
 
 public class SearchChemicalDto {
 
-	private String code;
+	private Long id;
 	private String chemicalType;
 	private String impExpType;
 	private String name;
@@ -16,12 +16,12 @@ public class SearchChemicalDto {
 	private BigDecimal range1;
 	private BigDecimal range2;
 
-	public String getCode() {
-		return StringUtils.hasLength(code) ? code : null;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getChemicalType() {
@@ -48,7 +48,6 @@ public class SearchChemicalDto {
 		this.name = name;
 	}
 
-	
 	public BigDecimal getRange1() {
 		return range1;
 	}

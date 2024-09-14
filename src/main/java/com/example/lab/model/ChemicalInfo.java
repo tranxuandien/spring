@@ -1,6 +1,7 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import com.example.lab.dto.ChemicalInfoDto;
 import com.example.lab.model.chemical.EmbeddedChemicalImpExp;
@@ -20,7 +21,6 @@ import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.SecondaryTable;
 import jakarta.persistence.SecondaryTables;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 /**
  *
@@ -28,26 +28,9 @@ import jakarta.persistence.Transient;
  */
 @Entity
 @Table(name = "chemical_info")
-//@NamedQueries({ @NamedQuery(name = "ChemicalInfo.findAll", query = "SELECT c FROM ChemicalInfo c") })
-////		@NamedQuery(name = "ChemicalInfo.findById", query = "SELECT c FROM ChemicalInfo c WHERE c.id = :id"),
-//		@NamedQuery(name = "ChemicalInfo.findByName", query = "SELECT c FROM ChemicalInfo c WHERE c.name = :name"),
-////		@NamedQuery(name = "ChemicalInfo.findByBrandId", query = "SELECT c FROM ChemicalInfo c WHERE c.brandId = :brandId"),
-//		@NamedQuery(name = "ChemicalInfo.findByChemicalType", query = "SELECT c FROM ChemicalInfo c WHERE c.chemicalType = :chemicalType"),
-//		@NamedQuery(name = "ChemicalInfo.findByChemicalTypeInfo", query = "SELECT c FROM ChemicalInfo c WHERE c.chemicalTypeInfo = :chemicalTypeInfo"),
-//		@NamedQuery(name = "ChemicalInfo.findByDescription", query = "SELECT c FROM ChemicalInfo c WHERE c.description = :description"),
-//		@NamedQuery(name = "ChemicalInfo.findByChemicalShpt", query = "SELECT c FROM ChemicalInfo c WHERE c.chemicalShpt = :chemicalShpt"),
-//		@NamedQuery(name = "ChemicalInfo.findByOtherInfo", query = "SELECT c FROM ChemicalInfo c WHERE c.otherInfo = :otherInfo"),
-////		@NamedQuery(name = "ChemicalInfo.findByChemicalImportUser", query = "SELECT c FROM ChemicalInfo c WHERE c.chemicalImportUser = :chemicalImportUserId"),
-//		@NamedQuery(name = "ChemicalInfo.findByPositionId", query = "SELECT c FROM ChemicalInfo c WHERE c.positionId = :positionId"),
-//		@NamedQuery(name = "ChemicalInfo.findByImpExpInfo", query = "SELECT c FROM ChemicalInfo c WHERE c.impExpInfo = :impExpInfo"),
-//		@NamedQuery(name = "ChemicalInfo.findByChemicalStatus", query = "SELECT c FROM ChemicalInfo c WHERE c.chemicalStatus = :chemicalStatus"),
-//		@NamedQuery(name = "ChemicalInfo.findByPurchaseSrc", query = "SELECT c FROM ChemicalInfo c WHERE c.purchaseSrc = :purchaseSrc"),
-//		@NamedQuery(name = "ChemicalInfo.findByCreateAt", query = "SELECT c FROM ChemicalInfo c WHERE c.createAt = :createAt"),
-//		@NamedQuery(name = "ChemicalInfo.findByUpdateAt", query = "SELECT c FROM ChemicalInfo c WHERE c.updateAt = :updateAt") })
 @SecondaryTables({
 		@SecondaryTable(name = "chemical_imp_exp", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")),
-		@SecondaryTable(name = "chemical_inventory", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")),
-})
+		@SecondaryTable(name = "chemical_inventory", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")), })
 public class ChemicalInfo extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,7 +38,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private Long id;
 	@Basic(optional = false)
 	@Column(name = "name")
 	private String name;
@@ -65,10 +48,12 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "chemical_type_info")
 	private String chemicalTypeInfo;
-	@Column(name = "description")
-	private String description;
-	@Column(name = "chemical_shpt")
-	private String chemicalShpt;
+	@Column(name = "manufactory_quantity")
+	private BigDecimal manufactoryQuantity;
+	@Column(name = "chemical_class")
+	private String chemicalClass;
+	@Column(name = "chemical_class_info")
+	private String chemicalClassInfo;
 	@Column(name = "other_info")
 	private String otherInfo;
 	@Basic(optional = false)
@@ -76,45 +61,37 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	private String chemicalStatus;
 	@Column(name = "purchase_src")
 	private String purchaseSrc;
-	@Transient
-	private String registerUser;
-	
+	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "register_user")
+	private UserInfo registerUser;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "position_id")
 	private PositionInfo position;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
-//	@OneToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "chemical_using_user_id")
-//	private UserInfo chemicalUsingUser;
-	@Column(name = "code")
-	private String code;
 	@Column(name = "expired_date")
 	private String expiredDate;
-	@Column(name = "type1")
-	private String type1;
-	@Column(name = "type2")
-	private String type2;
 	@Basic(optional = false)
-	@Column(name="is_delete")
+	@Column(name = "is_delete")
 	private String isDelete;
-	
+
 	@Embedded
 	private EmbeddedChemicalImpExp chemicalImpExp;
 
 	@Embedded
 	private EmbeddedChemicalInventory chemicalInventory;
-	
+
 	public ChemicalInfo() {
 		super();
 	}
 
-	public ChemicalInfo(Integer id) {
+	public ChemicalInfo(Long id) {
 		this.id = id;
 	}
 
-	public ChemicalInfo(Integer id, String name, Brand brand, String chemicalType, String chemicalTypeInfo, String chemicalStatus) {
+	public ChemicalInfo(Long id, String name, Brand brand, String chemicalType, String chemicalTypeInfo,
+			String chemicalStatus) {
 		this.id = id;
 		this.name = name;
 		this.brand = brand;
@@ -126,25 +103,23 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	public ChemicalInfo(ChemicalInfoDto dto) {
 		super();
 		this.name = dto.name;
-		this.code = dto.code;
-		this.description = dto.description;
+		this.manufactoryQuantity = dto.manufactoryQuantity;
 		this.expiredDate = dto.expiredDate;
-		this.type1 = dto.type1;
-		this.type2 = dto.type2;
 		this.otherInfo = dto.otherInfo;
 		this.purchaseSrc = dto.purchaseSrc;
 		this.chemicalType = dto.chemicalType;
-		this.chemicalShpt = dto.chemicalShpt;
+		this.chemicalClass = dto.chemicalClass;
+		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.chemicalTypeInfo = dto.chemicalTypeInfo;
 		this.chemicalStatus = dto.chemicalStatus;
-		this.isDelete = "0";//init
+		this.isDelete = "0";// init
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -180,20 +155,28 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalTypeInfo = chemicalTypeInfo;
 	}
 
-	public String getDescription() {
-		return description;
+	public BigDecimal getManufactoryQuantity() {
+		return manufactoryQuantity;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setManufactoryQuantity(BigDecimal manufactoryQuantity) {
+		this.manufactoryQuantity = manufactoryQuantity;
 	}
 
-	public String getChemicalShpt() {
-		return chemicalShpt;
+	public String getChemicalClass() {
+		return chemicalClass;
 	}
 
-	public void setChemicalShpt(String chemicalShpt) {
-		this.chemicalShpt = chemicalShpt;
+	public void setChemicalClass(String chemicalClass) {
+		this.chemicalClass = chemicalClass;
+	}
+
+	public String getChemicalClassInfo() {
+		return chemicalClassInfo;
+	}
+
+	public void setChemicalClassInfo(String chemicalClassInfo) {
+		this.chemicalClassInfo = chemicalClassInfo;
 	}
 
 	public String getOtherInfo() {
@@ -228,37 +211,12 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.purchaseSrc = purchaseSrc;
 	}
 
-	
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
 	public String getExpiredDate() {
 		return expiredDate;
 	}
 
 	public void setExpiredDate(String expiredDate) {
 		this.expiredDate = expiredDate;
-	}
-
-	public String getType1() {
-		return type1;
-	}
-
-	public void setType1(String type1) {
-		this.type1 = type1;
-	}
-
-	public String getType2() {
-		return type2;
-	}
-
-	public void setType2(String type2) {
-		this.type2 = type2;
 	}
 
 	@Override
@@ -286,14 +244,13 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		return "com.mycompany.mavenproject1.ChemicalInfo[ id=" + id + " ]";
 	}
 
-	public String getRegisterUser() {
+	public UserInfo getRegisterUser() {
 		return registerUser;
 	}
 
-	public void setRegisterUser(String registerUser) {
+	public void setRegisterUser(UserInfo registerUser) {
 		this.registerUser = registerUser;
 	}
-
 
 	public EmbeddedChemicalImpExp getChemicalImpExp() {
 		return chemicalImpExp;
@@ -314,6 +271,5 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	public void setIsDelete(String isDelete) {
 		this.isDelete = isDelete;
 	}
-	
-	
+
 }

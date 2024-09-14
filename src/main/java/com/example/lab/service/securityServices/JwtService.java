@@ -20,7 +20,7 @@ public class JwtService {
 
 	public String generateToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 600000 ))
+				.setExpiration(new Date(System.currentTimeMillis() + 60000000 ))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 

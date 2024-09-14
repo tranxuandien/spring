@@ -1,6 +1,5 @@
 package com.example.lab.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import jakarta.persistence.Basic;
@@ -14,24 +13,24 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Builder;
 
 /**
  *
  * @author Admin
  */
 @Entity
-@Table(name = "lot_info")
+@Table(name = "chemical_lot_info")
 @NamedQueries({
-    @NamedQuery(name = "LotInfo.findAll", query = "SELECT l FROM LotInfo l"),
-    @NamedQuery(name = "LotInfo.findById", query = "SELECT l FROM LotInfo l WHERE l.id = :id"),
-    @NamedQuery(name = "LotInfo.findByChemicalId", query = "SELECT l FROM LotInfo l WHERE l.chemicalId = :chemicalId"),
-    @NamedQuery(name = "LotInfo.findByLotNo", query = "SELECT l FROM LotInfo l WHERE l.lotNo = :lotNo"),
-    @NamedQuery(name = "LotInfo.findByIsImport", query = "SELECT l FROM LotInfo l WHERE l.isImport = :isImport"),
-    @NamedQuery(name = "LotInfo.findByCreateAt", query = "SELECT l FROM LotInfo l WHERE l.createAt = :createAt"),
-    @NamedQuery(name = "LotInfo.findByUpdateAt", query = "SELECT l FROM LotInfo l WHERE l.updateAt = :updateAt")})
-public class LotInfo implements Serializable {
+    @NamedQuery(name = "ChemicalLotInfo.findAll", query = "SELECT l FROM ChemicalLotInfo l"),
+    @NamedQuery(name = "ChemicalLotInfo.findById", query = "SELECT l FROM ChemicalLotInfo l WHERE l.id = :id"),
+    @NamedQuery(name = "ChemicalLotInfo.findByChemicalId", query = "SELECT l FROM ChemicalLotInfo l WHERE l.chemicalId = :chemicalId"),
+    @NamedQuery(name = "ChemicalLotInfo.findByLotNo", query = "SELECT l FROM ChemicalLotInfo l WHERE l.lotNo = :lotNo"),
+    @NamedQuery(name = "ChemicalLotInfo.findByIsImport", query = "SELECT l FROM ChemicalLotInfo l WHERE l.isImport = :isImport"),
+    @NamedQuery(name = "ChemicalLotInfo.findByCreateAt", query = "SELECT l FROM ChemicalLotInfo l WHERE l.createAt = :createAt"),
+    @NamedQuery(name = "ChemicalLotInfo.findByUpdateAt", query = "SELECT l FROM ChemicalLotInfo l WHERE l.updateAt = :updateAt")})
+public class ChemicalLotInfo extends BaseEntity {
 
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -45,7 +44,7 @@ public class LotInfo implements Serializable {
     private String lotNo;
     @Basic(optional = false)
     @Column(name = "is_import")
-    private short isImport;
+    private boolean isImport;
     @Column(name = "create_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createAt;
@@ -53,14 +52,14 @@ public class LotInfo implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
-    public LotInfo() {
+    public ChemicalLotInfo() {
     }
 
-    public LotInfo(Integer id) {
+    public ChemicalLotInfo(Integer id) {
         this.id = id;
     }
 
-    public LotInfo(Integer id, int chemicalId, String lotNo, short isImport) {
+    public ChemicalLotInfo(Integer id, int chemicalId, String lotNo, boolean isImport) {
         this.id = id;
         this.chemicalId = chemicalId;
         this.lotNo = lotNo;
@@ -91,28 +90,12 @@ public class LotInfo implements Serializable {
         this.lotNo = lotNo;
     }
 
-    public short getIsImport() {
+    public boolean getIsImport() {
         return isImport;
     }
 
-    public void setIsImport(short isImport) {
+    public void setIsImport(boolean isImport) {
         this.isImport = isImport;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 
     @Override
@@ -125,10 +108,10 @@ public class LotInfo implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof LotInfo)) {
+        if (!(object instanceof ChemicalLotInfo)) {
             return false;
         }
-        LotInfo other = (LotInfo) object;
+        ChemicalLotInfo other = (ChemicalLotInfo) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }

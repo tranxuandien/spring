@@ -11,6 +11,6 @@ public interface ChemicalInventoryRepository extends JpaRepository<ChemicalInven
 			+ "where "
 			+ "(?1 IS NULL OR t1.chemicalId=?1)"
 			+ " ")
-	ChemicalInventory findByChemicalId(Integer id);
+	ChemicalInventory findByChemicalId(Long id);
 
 }

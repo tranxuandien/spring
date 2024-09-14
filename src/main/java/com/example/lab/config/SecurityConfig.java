@@ -26,15 +26,6 @@ public class SecurityConfig extends WebSecurityConfiguration {
 	
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//	    http
-//	    .csrf(AbstractHttpConfigurer::disable)
-//	      .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-//	              authorizationManagerRequestMatcherRegistry.requestMatchers(HttpMethod.DELETE).hasRole("ADMIN")
-//	                      .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-//	                      .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
-//	                      .requestMatchers("/login/**").permitAll()
-//	                      .anyRequest().authenticated())
-//	      .httpBasic(Customizer.withDefaults())
 	      http
           .cors(AbstractHttpConfigurer::disable)
 	      .csrf(AbstractHttpConfigurer::disable)
@@ -58,9 +49,4 @@ public class SecurityConfig extends WebSecurityConfiguration {
 //	    return web -> web.ignoring().requestMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
 	    return web -> web.ignoring().requestMatchers("/img/**", "/lib/**", "/favicon.ico","/css/**", "/js/**");
 	}
-	
-//	@Bean
-//	public BCryptPasswordEncoder initBCryptPasswordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
 }

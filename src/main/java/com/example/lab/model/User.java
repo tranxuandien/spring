@@ -62,6 +62,13 @@ public class User extends BaseEntity implements UserDetails  {
 	@Setter
 	private String email;
 
+	@Column(name = "is_active")
+	@Basic(optional = false)
+	@Getter
+	@Setter
+	private Boolean isActive;
+	
+
 	public User() {
 	}
 

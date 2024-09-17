@@ -24,6 +24,12 @@ public class JwtService {
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 
+	public String generateActiveToken(User user) {
+		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
+				.setExpiration(new Date(System.currentTimeMillis() + 86400000 ))
+				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
+	}
+
 	public String extractUsername(String token) {
 		Claims claims = extractClaims(token);
 		if (claims != null) {

@@ -17,7 +17,9 @@ import com.example.lab.model.UserInfo;
 import com.example.lab.repository.UserInfoRepository;
 import com.example.lab.repository.user.TokenRepository;
 import com.example.lab.repository.user.UserRepository;
+import com.example.lab.service.mail.EmailServiceImpl;
 
+import jakarta.mail.SendFailedException;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -30,8 +32,9 @@ public class AuthenticationService {
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
+	private final EmailServiceImpl emailServiceImpl ;
 	
-	public AuthenticationResponse register(UserRegisterRequest request) {
+	public AuthenticationResponse register(UserRegisterRequest request, String uri) throws SendFailedException {
 		//check duplicate
 		Optional<User> user1 = userRepository.findByEmail(request.getEmail());
 		if(!user1.isEmpty())
@@ -45,6 +48,7 @@ public class AuthenticationService {
 		newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 		newUser.setRole(request.getRole());
 		newUser.setEmail(request.getEmail());
+		newUser.setIsActive(false);
 		User createdUser = userRepository.save(newUser);
 		//save info
 		UserInfo userInfo = new UserInfo();
@@ -54,10 +58,13 @@ public class AuthenticationService {
 		userInfo.setUser(createdUser);
 		userInfoRepository.save(userInfo);
 		
-		String jwtToken = jwtService.generateToken(createdUser);
+		String jwtToken = jwtService.generateActiveToken(createdUser);
 		Token token = new Token(jwtToken, "Bearer", false, false, createdUser.getId());
 		tokenRepository.save(token);
-		return AuthenticationResponse.builder().token(jwtToken)
+		
+		emailServiceImpl.sendSimpleMessage(request.getEmail(), request.getUsername(),jwtToken,uri);
+		
+		return AuthenticationResponse.builder().token(null)
 				.userDto(UserDto.builder().username(createdUser.getUsername()).role(createdUser.getRole()).build())
 				.build();
 	}
@@ -71,6 +78,9 @@ public class AuthenticationService {
 	    );
 	    User user = userRepository.findByUserName(request.getUsername())
 	            .orElseThrow();
+		if (!user.getIsActive()) {
+			return AuthenticationResponse.builder().build();
+		}
 	    var jwtToken = jwtService.generateToken(user);
 	    Token token = Token.builder()
 	            .userId(user.getId())
@@ -88,5 +98,20 @@ public class AuthenticationService {
 	            .userDto(userDto)
 	            .token(jwtToken)
 	            .build();
+	}
+
+	public boolean verifyConfirm(String token) {
+		if (token.isEmpty())
+			return false;
+		String username = jwtService.extractUsername(token);
+		Optional<User> user = userRepository.findNotActiveUser(username, token);
+
+		if (!user.isEmpty()) {
+			User activeUser = user.get();
+			activeUser.setIsActive(true);
+			userRepository.save(activeUser);
+			return true;
+		}
+		return false;
 	}
 }

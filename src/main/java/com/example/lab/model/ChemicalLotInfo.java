@@ -13,7 +13,6 @@ import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import lombok.Builder;
 
 /**
  *
@@ -35,7 +34,7 @@ public class ChemicalLotInfo extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Basic(optional = false)
     @Column(name = "chemical_id")
     private int chemicalId;
@@ -55,22 +54,22 @@ public class ChemicalLotInfo extends BaseEntity {
     public ChemicalLotInfo() {
     }
 
-    public ChemicalLotInfo(Integer id) {
+    public ChemicalLotInfo(Long id) {
         this.id = id;
     }
 
-    public ChemicalLotInfo(Integer id, int chemicalId, String lotNo, boolean isImport) {
+    public ChemicalLotInfo(Long id, int chemicalId, String lotNo, boolean isImport) {
         this.id = id;
         this.chemicalId = chemicalId;
         this.lotNo = lotNo;
         this.isImport = isImport;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

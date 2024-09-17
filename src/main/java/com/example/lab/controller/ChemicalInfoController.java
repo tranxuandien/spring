@@ -7,18 +7,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import javax.swing.text.Utilities;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,17 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.common.report.BarCodePDFExporter;
 import com.example.lab.dto.ChemicalInfoDto;
 import com.example.lab.dto.ChemicalUsingDto;
 import com.example.lab.dto.SearchChemicalDto;
 import com.example.lab.dto.masterdata.ChemicalMasterDataDto;
+import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.model.ChemicalInfo;
-import com.example.lab.model.security.CustomUser;
-import com.example.lab.service.BrandService;
 import com.example.lab.service.ChemicalInfoService;
-import com.example.lab.service.PositionInfoService;
-import com.example.lab.service.UserInfoService;
 import com.lowagie.text.DocumentException;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,14 +45,14 @@ public class ChemicalInfoController {
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
 
-	@Autowired
-	private BrandService brandService;
-
-	@Autowired
-	private UserInfoService userInfoService;
-
-	@Autowired
-	private PositionInfoService positionInfoService;
+//	@Autowired
+//	private BrandService brandService;
+//
+//	@Autowired
+//	private UserInfoService userInfoService;
+//
+//	@Autowired
+//	private PositionInfoService positionInfoService;
 
 	@GetMapping("/chemical/list")
 	@ResponseStatus(code = HttpStatus.OK)
@@ -81,14 +72,13 @@ public class ChemicalInfoController {
 	}
 	
 	@PostMapping("/chemical/list")
-	public String getListChemical(@ModelAttribute("searchDto") SearchChemicalDto searchChemicalDto, Model model) {
+	public CommonResponseEntity getListChemical(@RequestBody SearchChemicalDto searchChemicalDto) {
 		searchChemicalDto.setRangeSearch();
 		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
 		for (ChemicalInfoDto chemicalInfoDto : dto) {
 			chemicalInfoDto.updateImpExpInfo();
 		}
-		model.addAttribute("chemicals", dto);
-		return "chemical/chemicalInfo";
+		return CommonResponseEntity.builder().data(dto).build();
 	}
 	//use
 	@GetMapping("/chemical/register")
@@ -109,32 +99,32 @@ public class ChemicalInfoController {
 //		return "chemical/chemicalRegister";
 	}
 
-	//TODO
+	//import chemical
 	@GetMapping("/chemical/import")
-	public ResponseEntity<?> importChemical(@PathParam("barcode") String barcode) {
+	public CommonResponseEntity importChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
-			return ResponseEntity.noContent().build();
+			return CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build();
 		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
 		if (opt.isEmpty()) {
-			return ResponseEntity.noContent().build();
+			return CommonResponseEntity.builder().errorMessage(ErrorMessage.IMPORTED_CHEMICAL_MESSAGE).build();
 		}
-//		chemicalInfoService.importChemical(barcode);
-		return ResponseEntity.ok(new ChemicalInfoDto(opt.get()));
+		chemicalInfoService.registerChemical(barcode);
+		return CommonResponseEntity.builder().data(new ChemicalInfoDto(opt.get())).build();
 	}
 	
 	@PostMapping("/chemical/add")
-	public BodyBuilder addChemical(@RequestBody ChemicalInfoDto chemical, BindingResult result,
-			Model model) {
-		
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public CommonResponseEntity addChemical(@RequestBody ChemicalInfoDto chemical) {
+
 //		if (chemicalInfoService.checkDuplicate(chemical.getCode()))
 //			result.addError(new FieldError("chemical", "code", "Code đã được đăng ký!"));
-		
+
 //		if (result.hasErrors()) {
 //			return ResponseEntity.ok();
 //		}
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
-		ResponseEntity.ok(addChemical);
-		return ResponseEntity.status(HttpStatus.CREATED);
+		return CommonResponseEntity.builder().data(addChemical).build();
+//		return ResponseEntity.status(HttpStatus.CREATED);
 	}
 
 	@GetMapping("/chemical/codeprint")
@@ -153,35 +143,35 @@ public class ChemicalInfoController {
 		exporter.export(response);
 	}
 
-	@GetMapping("/chemical/usingRegister/{code}")
-	public String usingChemical(@PathVariable(value = "id") Long id, Model model) {
-		ChemicalInfoDto dto = chemicalInfoService.getById(id);
-		model.addAttribute("chemical", dto);
-		return "chemical/chemicalUsingRegister";
+	@GetMapping("/chemical/use")
+	public ResponseEntity<?> usingChemical(@PathParam("barcode") String barcode) {
+//		if (barcode.isEmpty())
+//			return ResponseEntity.noContent().build();
+//		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
+//		if (opt.isEmpty()) {
+//			return ResponseEntity.noContent().build();
+//		}
+//		chemicalInfoService.registerChemical(barcode);
+		return ResponseEntity.ok(null);
 	}
 
 	@PostMapping("/chemical/use")
 	public String usingChemical(@ModelAttribute("chemical") @Valid ChemicalUsingDto updateDto, BindingResult result,
 			Model model) throws Throwable {
-		ChemicalInfoDto info = chemicalInfoService.getById(updateDto.getId());
-		if (info == null)
-			result.failOnError(null);
-		else
-			chemicalInfoService.usingChemical(info, updateDto);
-		return this.getListChemical(model);
+//		ChemicalInfoDto info = chemicalInfoService.getById(updateDto.getId());
+//		if (info == null)
+//			result.failOnError(null);
+//		else
+//			chemicalInfoService.usingChemical(info, updateDto);
+//		return this.getListChemical(model);
+		return null;
 	}
 
 	@GetMapping("/chemical/delete/{code}")
 	public String deleteChemical(@PathVariable(value = "code") String code, Model model) {
 		chemicalInfoService.deleteByCode(code);
 //		model.addAttribute("chemical", dto);
-		return this.getListChemical(model);
+//		return this.getListChemical(model);
+		return null;
 	}
-
-//	private Model getMasterData(Model model) {
-//		model.addAttribute("users", userInfoService.getAllMasterData());
-//		model.addAttribute("brands", brandService.getAllMasterData());
-//		model.addAttribute("positions", positionInfoService.getAllMasterData());
-//		return model;
-//	}
 }

@@ -17,10 +17,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
-import jakarta.persistence.SecondaryTable;
-import jakarta.persistence.SecondaryTables;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
  *
@@ -28,9 +26,10 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "chemical_info")
-@SecondaryTables({
-		@SecondaryTable(name = "chemical_imp_exp", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")),
-		@SecondaryTable(name = "chemical_inventory", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")), })
+//@SecondaryTables({
+//		@SecondaryTable(name = "chemical_imp_exp", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")),
+//		@SecondaryTable(name = "chemical_inventory", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")), })
+@Data
 public class ChemicalInfo extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -76,11 +75,11 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Column(name = "is_delete")
 	private String isDelete;
 
-	@Embedded
-	private EmbeddedChemicalImpExp chemicalImpExp;
-
-	@Embedded
-	private EmbeddedChemicalInventory chemicalInventory;
+//	@Embedded
+//	private EmbeddedChemicalImpExp chemicalImpExp;
+//
+//	@Embedded
+//	private EmbeddedChemicalInventory chemicalInventory;
 
 	public ChemicalInfo() {
 		super();
@@ -115,110 +114,6 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.isDelete = "0";// init
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Brand getBrand() {
-		return brand;
-	}
-
-	public void setBrand(Brand brand) {
-		this.brand = brand;
-	}
-
-	public String getChemicalType() {
-		return chemicalType;
-	}
-
-	public void setChemicalType(String chemicalType) {
-		this.chemicalType = chemicalType;
-	}
-
-	public String getChemicalTypeInfo() {
-		return chemicalTypeInfo;
-	}
-
-	public void setChemicalTypeInfo(String chemicalTypeInfo) {
-		this.chemicalTypeInfo = chemicalTypeInfo;
-	}
-
-	public BigDecimal getManufactoryQuantity() {
-		return manufactoryQuantity;
-	}
-
-	public void setManufactoryQuantity(BigDecimal manufactoryQuantity) {
-		this.manufactoryQuantity = manufactoryQuantity;
-	}
-
-	public String getChemicalClass() {
-		return chemicalClass;
-	}
-
-	public void setChemicalClass(String chemicalClass) {
-		this.chemicalClass = chemicalClass;
-	}
-
-	public String getChemicalClassInfo() {
-		return chemicalClassInfo;
-	}
-
-	public void setChemicalClassInfo(String chemicalClassInfo) {
-		this.chemicalClassInfo = chemicalClassInfo;
-	}
-
-	public String getOtherInfo() {
-		return otherInfo;
-	}
-
-	public void setOtherInfo(String otherInfo) {
-		this.otherInfo = otherInfo;
-	}
-
-	public String getPosition() {
-		return position.getPositionInfo();
-	}
-
-	public void setPosition(PositionInfo position) {
-		this.position = position;
-	}
-
-	public String getChemicalStatus() {
-		return chemicalStatus;
-	}
-
-	public void setChemicalStatus(String chemicalStatus) {
-		this.chemicalStatus = chemicalStatus;
-	}
-
-	public String getPurchaseSrc() {
-		return purchaseSrc;
-	}
-
-	public void setPurchaseSrc(String purchaseSrc) {
-		this.purchaseSrc = purchaseSrc;
-	}
-
-	public String getExpiredDate() {
-		return expiredDate;
-	}
-
-	public void setExpiredDate(String expiredDate) {
-		this.expiredDate = expiredDate;
-	}
-
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -242,34 +137,6 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Override
 	public String toString() {
 		return "com.mycompany.mavenproject1.ChemicalInfo[ id=" + id + " ]";
-	}
-
-	public UserInfo getRegisterUser() {
-		return registerUser;
-	}
-
-	public void setRegisterUser(UserInfo registerUser) {
-		this.registerUser = registerUser;
-	}
-
-	public EmbeddedChemicalImpExp getChemicalImpExp() {
-		return chemicalImpExp;
-	}
-
-	public void setChemicalImpExp(EmbeddedChemicalImpExp chemicalImpExp) {
-		this.chemicalImpExp = chemicalImpExp;
-	}
-
-	public EmbeddedChemicalInventory getChemicalInventory() {
-		return chemicalInventory;
-	}
-
-	public String getIsDelete() {
-		return isDelete;
-	}
-
-	public void setIsDelete(String isDelete) {
-		this.isDelete = isDelete;
 	}
 
 }

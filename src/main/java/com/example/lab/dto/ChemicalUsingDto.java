@@ -24,6 +24,6 @@ public class ChemicalUsingDto {
 	public ChemicalUsingDto(ChemicalInfo chemicalInfo) {
 		this.name = chemicalInfo.getName();
 		this.id = chemicalInfo.getId();
-		this.quantity = chemicalInfo.getChemicalImpExp().getQuantity();
+//		this.quantity = chemicalInfo.getChemicalImpExp().getQuantity();
 	}
 }

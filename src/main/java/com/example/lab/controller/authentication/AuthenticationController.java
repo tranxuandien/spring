@@ -28,7 +28,7 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRegisterRequest registerRequest) {
 		AuthenticationResponse response = authenticationService.register(registerRequest);
-		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+		return ResponseEntity.status(response.getErrorMessage()==null?HttpStatus.CREATED:HttpStatus.CONFLICT).body(response);
 	}
 
 	@PostMapping("/login")

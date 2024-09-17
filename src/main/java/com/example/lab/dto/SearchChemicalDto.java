@@ -6,23 +6,25 @@ import org.springframework.util.StringUtils;
 
 import com.example.lab.enums.ChemicalInventoryStatus;
 
+import lombok.Data;
+
+@Data
 public class SearchChemicalDto {
 
-	private Long id;
+//	private Long id;
+//	private String name;
+	private ChemicalDto chemical;
+	private String brand;
 	private String chemicalType;
+	private String chemicalClass;
+	private String position;
 	private String impExpType;
-	private String name;
 
 	private BigDecimal range1;
 	private BigDecimal range2;
 
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+	
 
 	public String getChemicalType() {
 		return StringUtils.hasLength(chemicalType) ? chemicalType : null;
@@ -38,14 +40,6 @@ public class SearchChemicalDto {
 
 	public void setImpExpType(String impExpType) {
 		this.impExpType = impExpType;
-	}
-
-	public String getName() {
-		return StringUtils.hasLength(name) ? name : null;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public BigDecimal getRange1() {
@@ -65,6 +59,7 @@ public class SearchChemicalDto {
 	}
 
 	public void setRangeSearch() {
+		if (this.impExpType == null) return;
 		if (this.impExpType.equals(ChemicalInventoryStatus.New.getVal())) {
 			this.range1 = BigDecimal.valueOf(100);
 		} else if (this.impExpType.equals(ChemicalInventoryStatus.Warning.getVal())) {

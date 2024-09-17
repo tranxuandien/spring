@@ -15,7 +15,7 @@ public class UserInfoService {
 	private UserInfoRepository userInfoRepository;
 
 	public List<UserInfoDto> getAllMasterData() {
-		return userInfoRepository.findAll().stream().map(item -> new UserInfoDto(item.getId(), item.getName()))
+		return userInfoRepository.findAll().stream().map(item -> new UserInfoDto(item.getId(), item.getLastName()))
 				.toList();
 	}
 

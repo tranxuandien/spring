@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
  *
@@ -25,6 +26,7 @@ import jakarta.persistence.Table;
 		@NamedQuery(name = "ChemicalInventory.findByQuantity", query = "SELECT c FROM ChemicalInventory c WHERE c.quantity = :quantity"),
 		@NamedQuery(name = "ChemicalInventory.findByCreateAt", query = "SELECT c FROM ChemicalInventory c WHERE c.createAt = :createAt"),
 		@NamedQuery(name = "ChemicalInventory.findByUpdateAt", query = "SELECT c FROM ChemicalInventory c WHERE c.updateAt = :updateAt") })
+@Data
 public class ChemicalInventory extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -32,49 +34,30 @@ public class ChemicalInventory extends BaseEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 	@Basic(optional = false)
 	@Column(name = "chemical_id")
-	private Integer chemicalId;
+	private Long chemicalId;
 	@Basic(optional = false)
 	@Column(name = "quantity")
 	private BigDecimal quantity;
+	@Basic(optional = false)
+	@Column(name = "lot_id")
+	private Long lotId;
+	
 
 	public ChemicalInventory() {
 	}
 
-	public ChemicalInventory(Integer id) {
+	public ChemicalInventory(Long id) {
 		this.id = id;
 	}
 
-	public ChemicalInventory(Integer id, Integer chemicalId, BigDecimal quantity) {
+	public ChemicalInventory(Long id, Long chemicalId, BigDecimal quantity,Long lotId) {
 		this.id = id;
 		this.chemicalId = chemicalId;
 		this.quantity = quantity;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getChemicalId() {
-		return chemicalId;
-	}
-
-	public void setChemicalId(Integer chemicalId) {
-		this.chemicalId = chemicalId;
-	}
-
-	public BigDecimal getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(BigDecimal quantity) {
-		this.quantity = quantity;
+		this.lotId = lotId;
 	}
 
 	@Override
@@ -101,5 +84,4 @@ public class ChemicalInventory extends BaseEntity implements Serializable {
 	public String toString() {
 		return "com.mycompany.mavenproject1.ChemicalInventory[ id=" + id + " ]";
 	}
-
 }

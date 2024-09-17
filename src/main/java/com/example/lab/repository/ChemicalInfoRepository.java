@@ -15,7 +15,7 @@ import com.example.lab.model.ChemicalInfo;
 public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long > {
 
 	@Query("SELECT new com.example.lab.dto.ChemicalInfoDto(t1.id,t1.name,t4.name,t1.chemicalType,t1.chemicalTypeInfo,t1.manufactoryQuantity,"
-			+ "t1.expiredDate,t1.chemicalClass,t1.chemicalClassInfo,t1.otherInfo,t3.name,t5.positionInfo,t2.type,null,t1.chemicalStatus,t1.purchaseSrc,t1.createAt,t1.updateAt,t6.quantity)  FROM ChemicalInfo t1 \r\n"
+			+ "t1.expiredDate,t1.chemicalClass,t1.chemicalClassInfo,t1.otherInfo,t3.lastName,t5.positionInfo,t2.type,null,t1.chemicalStatus,t1.purchaseSrc,t1.createAt,t1.updateAt,t6.quantity)  FROM ChemicalInfo t1 \r\n"
 			+ "inner join ChemicalImpExp t2 on t2.chemicalId = t1.id \r\n"
 			+ "inner join UserInfo t3 on t2.impUser = t3.user.id "
 			+ "left join Brand t4 on t1.brand.id=t4.id "
@@ -26,8 +26,13 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 			+ "and (?2 IS NULL OR t1.chemicalType=?2) "
 			+ "and (?4 IS NULL OR t6.quantity > ?4) "
 			+ "and (?5 IS NULL OR t6.quantity <= ?5) "
-			+ "and (?3 IS NULL OR t1.name like %?3%) AND t1.isDelete ='0' ")
-	List<ChemicalInfoDto> findAll(Long id, String chemicalType, String name,BigDecimal range1,BigDecimal range2);
+			+ "and (?3 IS NULL OR t1.name like %?3%) "
+			
+			+ "and (?6 IS NULL OR t4.id = ?6) "
+			+ "and (?7 IS NULL OR t1.chemicalClass like %?7%) "
+			+ "and (?8 IS NULL OR t5.id = ?8) "
+			+ "and t1.isDelete ='0' ")
+	List<ChemicalInfoDto> findAll(Long id, String chemicalType, String name,BigDecimal range1,BigDecimal range2, String brand, String chemicalClass, String position);
 	
 	@Query("SELECT t1  FROM ChemicalInfo t1 \r\n"
 			+ "left join ChemicalInventory t2 on t2.chemicalId = t1.id \r\n"

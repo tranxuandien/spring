@@ -1,5 +1,7 @@
 package com.example.lab.service.securityServices;
 
+import java.util.Optional;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +13,8 @@ import com.example.lab.dto.request.UserRegisterRequest;
 import com.example.lab.dto.response.AuthenticationResponse;
 import com.example.lab.model.Token;
 import com.example.lab.model.User;
+import com.example.lab.model.UserInfo;
+import com.example.lab.repository.UserInfoRepository;
 import com.example.lab.repository.user.TokenRepository;
 import com.example.lab.repository.user.UserRepository;
 
@@ -21,18 +25,35 @@ import lombok.RequiredArgsConstructor;
 public class AuthenticationService {
 
 	private final UserRepository userRepository;
+	private final UserInfoRepository userInfoRepository;
 	private final TokenRepository tokenRepository;
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 	private final AuthenticationManager authenticationManager;
 	
 	public AuthenticationResponse register(UserRegisterRequest request) {
+		//check duplicate
+		Optional<User> user1 = userRepository.findByEmail(request.getEmail());
+		if(!user1.isEmpty())
+		return AuthenticationResponse.builder().errorMessage("duplicate email!").build();
+		Optional<User> user2 = userRepository.findByUserName(request.getUsername());
+		if(!user2.isEmpty())
+		return AuthenticationResponse.builder().errorMessage("duplidate username").build();
+		//save user
 		User newUser = new User();
 		newUser.setUserName(request.getUsername());
 		newUser.setPassword(passwordEncoder.encode(request.getPassword()));
 		newUser.setRole(request.getRole());
-		//check duplicate
+		newUser.setEmail(request.getEmail());
 		User createdUser = userRepository.save(newUser);
+		//save info
+		UserInfo userInfo = new UserInfo();
+		userInfo.setAddress(request.getAddress());
+		userInfo.setFirstName(request.getFirstName());
+		userInfo.setLastName(request.getLastName());
+		userInfo.setUser(createdUser);
+		userInfoRepository.save(userInfo);
+		
 		String jwtToken = jwtService.generateToken(createdUser);
 		Token token = new Token(jwtToken, "Bearer", false, false, createdUser.getId());
 		tokenRepository.save(token);

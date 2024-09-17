@@ -1,7 +1,6 @@
 package com.example.lab.model;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.NamedQueries;
@@ -13,13 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -34,32 +32,35 @@ import jakarta.persistence.Table;
 		@NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role"),
 		@NamedQuery(name = "User.findByCreateAt", query = "SELECT u FROM User u WHERE u.createAt = :createAt"),
 		@NamedQuery(name = "User.findByUpdateAt", query = "SELECT u FROM User u WHERE u.updateAt = :updateAt") })
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails  {
 
 	private static final long serialVersionUID = 1L;
 	@Id
 	@Basic(optional = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
+	@Setter
 	@Column(name = "id")
 	private Long id;
 	@Basic(optional = false)
+	@Setter
 	@Column(name = "username")
 	private String userName;
 	@Basic(optional = false)
+	@Getter
+	@Setter
 	@Column(name = "password")
 	private String password;
 	@Column(name = "role")
+	@Getter
+	@Setter
 	private String role;
-	@Basic(optional = false)
-	@Column(name = "create_at")
-	private Date createAt;
-	@Basic(optional = false)
-	@Column(name = "update_at")
-	private Date updateAt;
 
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id")
-	private UserInfo userInfo;
+	@Column(name = "email")
+	@Basic(optional = false)
+	@Getter
+	@Setter
+	private String email;
 
 	public User() {
 	}
@@ -68,69 +69,10 @@ public class User implements UserDetails {
 		this.id = id;
 	}
 
-	public User(Long id, String userName, String password, Date createAt, Date updateAt) {
+	public User(Long id, String userName, String password) {
 		this.id = id;
 		this.userName = userName;
 		this.password = password;
-		this.createAt = createAt;
-		this.updateAt = updateAt;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-
-	public UserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-
-	public Date getCreateAt() {
-		return createAt;
-	}
-
-	public void setCreateAt(Date createAt) {
-		this.createAt = createAt;
-	}
-
-	public Date getUpdateAt() {
-		return updateAt;
-	}
-
-	public void setUpdateAt(Date updateAt) {
-		this.updateAt = updateAt;
 	}
 
 	@Override
@@ -167,5 +109,4 @@ public class User implements UserDetails {
 	public String getUsername() {
 		return userName;
 	}
-
 }

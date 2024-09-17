@@ -24,7 +24,7 @@ public class ChemicalImpExp extends BaseEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 	@Basic(optional = false)
 	@Column(name = "type")
 	private String type;
@@ -38,22 +38,25 @@ public class ChemicalImpExp extends BaseEntity implements Serializable {
 	private Long impUser;
 	@Column(name = "exp_user")
 	private Long expUser;
-	
+	@Basic(optional = false)
+	@Column(name = "lot_id")
+	private Long lotId;
 	
 	public ChemicalImpExp() {
 	}
 
-	public ChemicalImpExp(Integer id) {
+	public ChemicalImpExp(Long id) {
 		this.id = id;
 	}
 
-	public ChemicalImpExp(Integer id, String type, BigDecimal quantity, Long chemicalId,Long impUser,Long expUser) {
+	public ChemicalImpExp(Long id, String type, BigDecimal quantity, Long chemicalId,Long impUser,Long expUser,Long lotId) {
 		this.id = id;
 		this.type = type;
 		this.quantity = quantity;
 		this.chemicalId = chemicalId;
 		this.impUser = impUser;
 		this.expUser = expUser;
+		this.lotId = lotId;
 	}
 
 	@Override

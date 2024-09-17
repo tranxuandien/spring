@@ -83,12 +83,13 @@ public class ChemicalInfoDto {
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
 //		this.registerUser = chemicalInfo.getChemicalImpExp().getImpUser().getName();
-		this.position = chemicalInfo.getPosition();
+		this.position = chemicalInfo.getPosition().getPositionInfo();
 		this.chemicalStatus = chemicalInfo.getChemicalStatus();
 		this.purchaseSrc = chemicalInfo.getPurchaseSrc();
 		this.createAt = chemicalInfo.getCreateAt();
 		this.updateAt = chemicalInfo.getUpdateAt();
-		this.remain = chemicalInfo.getChemicalInventory().getQuantity();
+		//TODO
+//		this.remain = chemicalInfo.get;
 	}
 
 	public void updateImpExpInfo() {

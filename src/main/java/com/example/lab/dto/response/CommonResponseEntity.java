@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Builder
 @Data
-public class CommonResponseEntity {
+public class CommonResponseEntity{
 	private Object data;
 	private String errorMessage;
 	private String errorCode;
-	
+	private String message;
 }

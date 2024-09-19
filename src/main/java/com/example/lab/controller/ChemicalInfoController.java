@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.common.report.BarCodePDFExporter;
 import com.example.lab.dto.ChemicalInfoDto;
@@ -63,14 +65,14 @@ public class ChemicalInfoController {
 		}
 		return ResponseEntity.ok(dto);
 	}
-	
+
 	@GetMapping("/chemical/list/master")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> getListChemical() {
 		List<ChemicalMasterDataDto> dto = chemicalInfoService.getLstMaster();
 		return ResponseEntity.ok(dto);
 	}
-	
+
 	@PostMapping("/chemical/list")
 	public CommonResponseEntity getListChemical(@RequestBody SearchChemicalDto searchChemicalDto) {
 		searchChemicalDto.setRangeSearch();
@@ -80,7 +82,8 @@ public class ChemicalInfoController {
 		}
 		return CommonResponseEntity.builder().data(dto).build();
 	}
-	//use
+
+	// use
 	@GetMapping("/chemical/register")
 	public ResponseEntity<?> addChemical(Model model, @PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
@@ -99,7 +102,7 @@ public class ChemicalInfoController {
 //		return "chemical/chemicalRegister";
 	}
 
-	//import chemical
+	// import chemical
 	@GetMapping("/chemical/import")
 	public CommonResponseEntity importChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
@@ -111,26 +114,23 @@ public class ChemicalInfoController {
 		chemicalInfoService.registerChemical(barcode);
 		return CommonResponseEntity.builder().data(new ChemicalInfoDto(opt.get())).build();
 	}
-	
+
 	@PostMapping("/chemical/add")
-	@ResponseStatus(code = HttpStatus.CREATED)
-	public CommonResponseEntity addChemical(@RequestBody ChemicalInfoDto chemical) {
-
-//		if (chemicalInfoService.checkDuplicate(chemical.getCode()))
-//			result.addError(new FieldError("chemical", "code", "Code đã được đăng ký!"));
-
-//		if (result.hasErrors()) {
-//			return ResponseEntity.ok();
-//		}
+	public ResponseEntity<?> addChemical(@RequestBody ChemicalInfoDto chemical) {
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
-		return CommonResponseEntity.builder().data(addChemical).build();
-//		return ResponseEntity.status(HttpStatus.CREATED);
+		if (addChemical.equals(null))
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_ADD_CHEMICAL).build());
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(CommonResponseEntity.builder().message(CommonMessage.REGISTED_CHEMICAL_MESSAGE).build());
 	}
 
 	@GetMapping("/chemical/codeprint")
-	public void exportToPDF(@PathParam("chemicalId") Integer chemicalId,@PathParam("chemicalName") String chemicalName, @PathParam("number") Integer number,
-			HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
-		if(number>1000) return;
+	public void exportToPDF(@PathParam("chemicalId") Integer chemicalId, @PathParam("chemicalName") String chemicalName,
+			@PathParam("number") Integer number, HttpServletResponse response)
+			throws DocumentException, IOException, OutputException, BarcodeException {
+		if (number > 1000)
+			return;
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 		String currentDateTime = dateFormatter.format(new Date());
@@ -138,8 +138,8 @@ public class ChemicalInfoController {
 		String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
 		response.setHeader(headerKey, headerValue);
 
-		String[] printLst = chemicalInfoService.addPrintedChemicalLots(chemicalId,number);
-		BarCodePDFExporter exporter = new BarCodePDFExporter(chemicalId,number,printLst,chemicalName);
+		String[] printLst = chemicalInfoService.addPrintedChemicalLots(chemicalId, number);
+		BarCodePDFExporter exporter = new BarCodePDFExporter(chemicalId, number, printLst, chemicalName);
 		exporter.export(response);
 	}
 

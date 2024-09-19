@@ -33,9 +33,6 @@ public class SecurityConfig extends WebSecurityConfiguration {
 					.requestMatchers("/index","/api/auth/**").permitAll()
 					.anyRequest().authenticated()
 				)
-	      .formLogin(form->form
-						.loginPage("/login")
-						.defaultSuccessUrl("/index").permitAll())
 	      .logout(logout-> logout.permitAll())
 	      .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	      .authenticationProvider(authenticationProvider)

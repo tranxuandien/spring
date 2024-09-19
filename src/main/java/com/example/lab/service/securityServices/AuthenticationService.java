@@ -108,6 +108,7 @@ public class AuthenticationService {
 	    return AuthenticationResponse.builder()
 	            .userDto(userDto)
 	            .token(jwtToken)
+	            .timeAlive(JwtService.TIME_ALIVE)
 	            .build();
 	}
 

@@ -17,16 +17,18 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 	private static final String SECRET_KEY="LFO302h++zFOWfdcJWuCS+kpLVv4QS7D/AjAj5f4apo=";
-
+	public static final Long TIME_ALIVE = (long) 3600000;//1h
+	public static final Long ACTIVE_TIME_ALIVE = (long) 86400000;//1d
+	
 	public String generateToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 60000000 ))
+				.setExpiration(new Date(System.currentTimeMillis() + TIME_ALIVE ))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 
 	public String generateActiveToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 86400000 ))
+				.setExpiration(new Date(System.currentTimeMillis() + ACTIVE_TIME_ALIVE ))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 

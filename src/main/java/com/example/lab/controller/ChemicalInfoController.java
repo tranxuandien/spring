@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -84,7 +83,7 @@ public class ChemicalInfoController {
 	}
 
 	// use
-	@GetMapping("/chemical/register")
+	@GetMapping("/admin/chemical/register")
 	public ResponseEntity<?> addChemical(Model model, @PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
 			return ResponseEntity.noContent().build();
@@ -103,7 +102,7 @@ public class ChemicalInfoController {
 	}
 
 	// import chemical
-	@GetMapping("/chemical/import")
+	@GetMapping("/admin/chemical/import")
 	public CommonResponseEntity importChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
 			return CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build();
@@ -115,7 +114,7 @@ public class ChemicalInfoController {
 		return CommonResponseEntity.builder().data(new ChemicalInfoDto(opt.get())).build();
 	}
 
-	@PostMapping("/chemical/add")
+	@PostMapping("/admin/chemical/add")
 	public ResponseEntity<?> addChemical(@RequestBody ChemicalInfoDto chemical) {
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
 		if (addChemical.equals(null))
@@ -125,12 +124,13 @@ public class ChemicalInfoController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.REGISTED_CHEMICAL_MESSAGE).build());
 	}
 
-	@GetMapping("/chemical/codeprint")
-	public void exportToPDF(@PathParam("chemicalId") Integer chemicalId, @PathParam("chemicalName") String chemicalName,
+	@GetMapping("/admin/chemical/codeprint")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId, @PathParam("chemicalName") String chemicalName,
 			@PathParam("number") Integer number, HttpServletResponse response)
 			throws DocumentException, IOException, OutputException, BarcodeException {
 		if (number > 1000)
-			return;
+			return ResponseEntity.noContent().build();
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
 		String currentDateTime = dateFormatter.format(new Date());
@@ -141,6 +141,8 @@ public class ChemicalInfoController {
 		String[] printLst = chemicalInfoService.addPrintedChemicalLots(chemicalId, number);
 		BarCodePDFExporter exporter = new BarCodePDFExporter(chemicalId, number, printLst, chemicalName);
 		exporter.export(response);
+		response.setStatus(HttpStatus.NO_CONTENT.value());
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/chemical/use")

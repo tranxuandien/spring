@@ -1,5 +1,7 @@
 package com.example.lab.service.securityServices;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -90,6 +92,15 @@ public class AuthenticationService {
 	    
 		if (!user.getIsActive()) {
 			return AuthenticationResponse.builder().build();
+		}
+		
+		List<Token> loginTokens= tokenRepository.getAllByUserId(user.getId());
+		if(!loginTokens.equals(null))
+		{
+			for (Token token : loginTokens) {
+				token.setExpired(true);
+			}
+			tokenRepository.saveAll(loginTokens);
 		}
 		
 	    var jwtToken = jwtService.generateToken(user);

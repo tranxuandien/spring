@@ -15,6 +15,7 @@ import com.example.lab.dto.request.AuthenticationRequest;
 import com.example.lab.dto.request.UserRegisterRequest;
 import com.example.lab.dto.response.AuthenticationResponse;
 import com.example.lab.dto.response.CommonResponseEntity;
+import com.example.lab.service.TokenService;
 import com.example.lab.service.securityServices.AuthenticationService;
 
 import jakarta.mail.SendFailedException;
@@ -30,6 +31,8 @@ public class AuthenticationController {
 
 	@Autowired
 	private AuthenticationService authenticationService;
+	@Autowired
+	private TokenService tokenService;
 
 	@PostMapping("/register")
 	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRegisterRequest registerRequest,
@@ -62,5 +65,11 @@ public class AuthenticationController {
 //		cookie.setHttpOnly(true);
 //		res.addCookie(cookie);
 		return ResponseEntity.ok(CommonResponseEntity.builder().data(response).build());
+	}
+	
+	@GetMapping("/logout")
+	public ResponseEntity<?> logout(@PathParam("token") String token) {
+		tokenService.setExpired(token);
+		return ResponseEntity.ok(token);
 	}
 }

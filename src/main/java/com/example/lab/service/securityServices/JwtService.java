@@ -4,9 +4,12 @@ import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.model.Token;
 import com.example.lab.model.User;
+import com.example.lab.service.TokenService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -16,9 +19,13 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
+	//config
 	private static final String SECRET_KEY="LFO302h++zFOWfdcJWuCS+kpLVv4QS7D/AjAj5f4apo=";
 	public static final Long TIME_ALIVE = (long) 3600000;//1h
 	public static final Long ACTIVE_TIME_ALIVE = (long) 86400000;//1d
+	
+	@Autowired
+	private TokenService tokenService;
 	
 	public String generateToken(User user) {
 		return Jwts.builder().setSubject(user.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
@@ -33,14 +40,19 @@ public class JwtService {
 	}
 
 	public String extractUsername(String token) {
+		Token t = tokenService.findByToken(token);
+		if(t.equals(null))
+			return null;
 		Claims claims = extractClaims(token);
 		if (claims != null) {
 			Date expirationTime = claims.getExpiration();
 			boolean isExpired = expirationTime.before(Date.from(Instant.now()));
 			if (!isExpired) {
 				return claims.getSubject();
-			} else
+			} else {
+				tokenService.setExpired(token);
 				return null;
+			}
 		}
 		return null;
 	}

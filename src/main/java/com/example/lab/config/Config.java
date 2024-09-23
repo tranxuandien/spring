@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.lab.repository.user.UserRepository;
@@ -20,7 +21,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Config implements WebMvcConfigurer {
 
-
+	//config
+	private static final String CORS_DOMAIN="https://lab-repo.vercel.app/";
 	private final UserRepository userRepository;
 //	@Bean(name = "messageSource")
 //	public MessageSource getMessageResource() {
@@ -54,6 +56,10 @@ public class Config implements WebMvcConfigurer {
 		return new BCryptPasswordEncoder();
 	}
 	
+	@Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins(CORS_DOMAIN);
+    }
 	
 	
 }

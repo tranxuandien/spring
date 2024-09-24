@@ -41,6 +41,8 @@ import net.sourceforge.barbecue.output.OutputException;
 @RequestMapping("api/v1")
 public class ChemicalInfoController {
 
+	public static final Integer PRINT_LIMIT_NUMBER = 10;
+	
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
 
@@ -111,7 +113,7 @@ public class ChemicalInfoController {
 	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId, @PathParam("chemicalName") String chemicalName,
 			@PathParam("number") Integer number, HttpServletResponse response)
 			throws DocumentException, IOException, OutputException, BarcodeException {
-		if (number > 1000)
+		if (number > PRINT_LIMIT_NUMBER)
 			return ResponseEntity.noContent().build();
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");

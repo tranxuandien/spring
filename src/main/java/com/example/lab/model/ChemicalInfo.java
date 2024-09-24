@@ -4,12 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import com.example.lab.dto.ChemicalInfoDto;
-import com.example.lab.model.chemical.EmbeddedChemicalImpExp;
-import com.example.lab.model.chemical.EmbeddedChemicalInventory;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,9 +23,6 @@ import lombok.Data;
  */
 @Entity
 @Table(name = "chemical_info")
-//@SecondaryTables({
-//		@SecondaryTable(name = "chemical_imp_exp", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")),
-//		@SecondaryTable(name = "chemical_inventory", pkJoinColumns = @PrimaryKeyJoinColumn(name = "chemical_id")), })
 @Data
 public class ChemicalInfo extends BaseEntity implements Serializable {
 
@@ -55,7 +49,6 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	private String chemicalClassInfo;
 	@Column(name = "other_info")
 	private String otherInfo;
-	@Basic(optional = false)
 	@Column(name = "chemical_status")
 	private String chemicalStatus;
 	@Column(name = "purchase_src")
@@ -69,17 +62,12 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
+	@Basic(optional = false)
 	@Column(name = "expired_date")
 	private String expiredDate;
 	@Basic(optional = false)
 	@Column(name = "is_delete")
 	private String isDelete;
-
-//	@Embedded
-//	private EmbeddedChemicalImpExp chemicalImpExp;
-//
-//	@Embedded
-//	private EmbeddedChemicalInventory chemicalInventory;
 
 	public ChemicalInfo() {
 		super();

@@ -9,8 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -20,12 +18,6 @@ import lombok.Data;
  */
 @Entity
 @Table(name = "chemical_inventory")
-@NamedQueries({ @NamedQuery(name = "ChemicalInventory.findAll", query = "SELECT c FROM ChemicalInventory c"),
-		@NamedQuery(name = "ChemicalInventory.findById", query = "SELECT c FROM ChemicalInventory c WHERE c.id = :id"),
-		@NamedQuery(name = "ChemicalInventory.findByChemicalId", query = "SELECT c FROM ChemicalInventory c WHERE c.chemicalId = :chemicalId"),
-		@NamedQuery(name = "ChemicalInventory.findByQuantity", query = "SELECT c FROM ChemicalInventory c WHERE c.quantity = :quantity"),
-		@NamedQuery(name = "ChemicalInventory.findByCreateAt", query = "SELECT c FROM ChemicalInventory c WHERE c.createAt = :createAt"),
-		@NamedQuery(name = "ChemicalInventory.findByUpdateAt", query = "SELECT c FROM ChemicalInventory c WHERE c.updateAt = :updateAt") })
 @Data
 public class ChemicalInventory extends BaseEntity implements Serializable {
 

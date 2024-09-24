@@ -1,10 +1,6 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -18,13 +14,7 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "role")
-@NamedQueries({
-    @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r"),
-    @NamedQuery(name = "Role.findById", query = "SELECT r FROM Role r WHERE r.id = :id"),
-    @NamedQuery(name = "Role.findByRoleName", query = "SELECT r FROM Role r WHERE r.roleName = :roleName"),
-    @NamedQuery(name = "Role.findByCreateAt", query = "SELECT r FROM Role r WHERE r.createAt = :createAt"),
-    @NamedQuery(name = "Role.findByUpdateAt", query = "SELECT r FROM Role r WHERE r.updateAt = :updateAt")})
-public class Role implements Serializable {
+public class Role extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -34,12 +24,6 @@ public class Role implements Serializable {
     @Basic(optional = false)
     @Column(name = "role_name")
     private String roleName;
-    @Basic(optional = false)
-    @Column(name = "create_at")
-    private Date createAt;
-    @Basic(optional = false)
-    @Column(name = "update_at")
-    private Date updateAt;
 
     public Role() {
     }
@@ -48,43 +32,9 @@ public class Role implements Serializable {
         this.id = id;
     }
 
-    public Role(Integer id, String roleName, Date createAt, Date updateAt) {
+    public Role(Integer id, String roleName) {
         this.id = id;
         this.roleName = roleName;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 
     @Override

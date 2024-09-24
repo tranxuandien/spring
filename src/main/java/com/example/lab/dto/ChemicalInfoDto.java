@@ -17,12 +17,20 @@ public class ChemicalInfoDto {
 	private static final BigDecimal LIMIT_WARNING = BigDecimal.valueOf(100);
 
 	public Long id;
-	@NotEmpty(message = "Nhập thông tin tên hóa chất")
+	@NotNull(message = "Nhập tên hóa chất")
+	@NotEmpty(message = "Nhập tên hóa chất")
 	public String name;
+	@NotNull(message = "Chọn nơi sản xuất")
+	@NotEmpty(message = "Chọn nơi sản xuất")
 	public String brand;
+	@NotNull(message = "Chọn loại hóa chất")
+	@NotEmpty(message = "Chọn loại hóa chất")
 	public String chemicalType;
+	@NotNull(message = "Chọn cách đóng gói")
+	@NotEmpty(message = "Chọn cách đóng gói")
 	public String chemicalTypeInfo;
-	@NotNull
+	@NotNull(message = "Nhập khối lượng hóa chất")
+	@NotEmpty(message = "Nhập khối lượng hóa chất")
 	public BigDecimal manufactoryQuantity;
 	@NotNull(message = "Nhập hạn sử dụng")
 	@NotEmpty(message = "Nhập hạn sử dụng")
@@ -30,9 +38,11 @@ public class ChemicalInfoDto {
 	public String chemicalClass;
 	public String chemicalClassInfo;
 	public String otherInfo;
-	@NotNull
+	@NotNull(message = "Nhập thông tin người đăng ký hóa chất")
+	@NotEmpty(message = "Nhập thông tin người đăng ký hóa chất")
 	public String registerUser;
-	@NotNull
+	@NotNull(message = "Chọn vị trí đặt hóa chất")
+	@NotEmpty(message = "Chọn vị trí đặt hóa chất")
 	public String position;
 	public String chemicalUsingUser;
 	public String chemicalStatus;

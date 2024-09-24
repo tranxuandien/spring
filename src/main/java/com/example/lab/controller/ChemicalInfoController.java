@@ -46,15 +46,6 @@ public class ChemicalInfoController {
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
 
-//	@Autowired
-//	private BrandService brandService;
-//
-//	@Autowired
-//	private UserInfoService userInfoService;
-//
-//	@Autowired
-//	private PositionInfoService positionInfoService;
-
 	@GetMapping("/chemical/list")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> getListChemicalRest() {
@@ -92,13 +83,6 @@ public class ChemicalInfoController {
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok(new ChemicalInfoDto(opt.get()));
-//		getMasterData(model);
-//		CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		ChemicalInfoDto form = new ChemicalInfoDto();
-//		form.setRegisterUser(user.getUserId().toString());
-//		model.addAttribute("chemical", form);
-//
-//		return "chemical/chemicalRegister";
 	}
 
 	// import chemical

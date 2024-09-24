@@ -1,5 +1,7 @@
 package com.example.lab.model;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "tokens")
-public class Token {
+public class Token extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	public Integer id;
@@ -42,5 +44,24 @@ public class Token {
 		this.expired = expired;
 		this.userId = userId;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Token other = (Token) obj;
+		return Objects.equals(id, other.id) && Objects.equals(token, other.token)
+				&& Objects.equals(userId, other.userId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, token, userId);
+	}
+	
 }
 	

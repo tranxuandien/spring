@@ -1,16 +1,13 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 
 /**
  *
@@ -18,16 +15,8 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "position_info")
-@NamedQueries({
-    @NamedQuery(name = "PositionInfo.findAll", query = "SELECT p FROM PositionInfo p"),
-    @NamedQuery(name = "PositionInfo.findById", query = "SELECT p FROM PositionInfo p WHERE p.id = :id"),
-    @NamedQuery(name = "PositionInfo.findByPositionInfo", query = "SELECT p FROM PositionInfo p WHERE p.positionInfo = :positionInfo"),
-    @NamedQuery(name = "PositionInfo.findByLabId", query = "SELECT p FROM PositionInfo p WHERE p.labId = :labId"),
-    @NamedQuery(name = "PositionInfo.findByRoomId", query = "SELECT p FROM PositionInfo p WHERE p.roomId = :roomId"),
-    @NamedQuery(name = "PositionInfo.findByRayId", query = "SELECT p FROM PositionInfo p WHERE p.rayId = :rayId"),
-    @NamedQuery(name = "PositionInfo.findByCreateAt", query = "SELECT p FROM PositionInfo p WHERE p.createAt = :createAt"),
-    @NamedQuery(name = "PositionInfo.findByUpdateAt", query = "SELECT p FROM PositionInfo p WHERE p.updateAt = :updateAt")})
-public class PositionInfo implements Serializable {
+@Data
+public class PositionInfo extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,72 +31,12 @@ public class PositionInfo implements Serializable {
     private Integer roomId;
     @Column(name = "ray_id")
     private Integer rayId;
-    @Column(name = "create_at")
-    private Date createAt;
-    @Column(name = "update_at")
-    private Date updateAt;
 
     public PositionInfo() {
     }
 
     public PositionInfo(Integer id) {
         this.id = id;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPositionInfo() {
-        return positionInfo;
-    }
-
-    public void setPositionInfo(String positionInfo) {
-        this.positionInfo = positionInfo;
-    }
-
-    public Integer getLabId() {
-        return labId;
-    }
-
-    public void setLabId(Integer labId) {
-        this.labId = labId;
-    }
-
-    public Integer getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Integer roomId) {
-        this.roomId = roomId;
-    }
-
-    public Integer getRayId() {
-        return rayId;
-    }
-
-    public void setRayId(Integer rayId) {
-        this.rayId = rayId;
-    }
-
-    public Date getCreateAt() {
-        return createAt;
-    }
-
-    public void setCreateAt(Date createAt) {
-        this.createAt = createAt;
-    }
-
-    public Date getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(Date updateAt) {
-        this.updateAt = updateAt;
     }
 
     @Override

@@ -73,7 +73,7 @@ public class ChemicalInfoService {
 		ChemicalInfo chemicalInfo = new ChemicalInfo(dto);
 
 		Optional<Brand> brand = brandRepository.findById(Long.valueOf(dto.getBrand()));
-		Optional<UserInfo> user = userInfoRepository.findById(Long.valueOf(dto.getRegisterUser()));
+		Optional<UserInfo> user = userInfoRepository.findByUsername(dto.getRegisterUser());
 		Optional<PositionInfo> pos = positionInfoRepository.findById(Long.valueOf(dto.getPosition()));
 
 		if (brand.isEmpty() || user.isEmpty() || pos.isEmpty()) {
@@ -156,7 +156,7 @@ public class ChemicalInfoService {
 		}
 		
 		//save chemical lot
-		lot.setIsImport(true);
+		lot.setImport(true);
 		lot.setUpdateAt(LocalDate.now());
 		chemicalLotInfoRepository.save(lot);
 		

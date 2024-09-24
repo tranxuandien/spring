@@ -3,8 +3,6 @@ package com.example.lab.model;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,13 +24,7 @@ import lombok.Setter;
  */
 @Entity
 @Table(name = "user")
-@NamedQueries({ @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
-		@NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
-		@NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :username"),
-		@NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password"),
-		@NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role"),
-		@NamedQuery(name = "User.findByCreateAt", query = "SELECT u FROM User u WHERE u.createAt = :createAt"),
-		@NamedQuery(name = "User.findByUpdateAt", query = "SELECT u FROM User u WHERE u.updateAt = :updateAt") })
+@Data
 public class User extends BaseEntity implements UserDetails  {
 
 	private static final long serialVersionUID = 1L;

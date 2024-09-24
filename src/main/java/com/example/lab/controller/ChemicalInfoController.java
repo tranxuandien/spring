@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -129,28 +127,26 @@ public class ChemicalInfoController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/chemical/use")
-	public ResponseEntity<?> usingChemical(@PathParam("barcode") String barcode) {
-//		if (barcode.isEmpty())
-//			return ResponseEntity.noContent().build();
-//		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
-//		if (opt.isEmpty()) {
-//			return ResponseEntity.noContent().build();
-//		}
-//		chemicalInfoService.registerChemical(barcode);
-		return ResponseEntity.ok(null);
+	@GetMapping("/chemical/using/get")
+	public ResponseEntity<?> getUsingChemical(@PathParam("barcode") String barcode) {
+		if (barcode.isEmpty())
+			return ResponseEntity.noContent().build();
+		Optional<ChemicalInfo> opt = chemicalInfoService.getUsingChemicalFromBarcode(barcode);
+		if (opt.isEmpty()) {
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(new ChemicalInfoDto(opt.get()));
 	}
 
-	@PostMapping("/chemical/use")
-	public String usingChemical(@ModelAttribute("chemical") @Valid ChemicalUsingDto updateDto, BindingResult result,
-			Model model) throws Throwable {
-//		ChemicalInfoDto info = chemicalInfoService.getById(updateDto.getId());
-//		if (info == null)
-//			result.failOnError(null);
-//		else
-//			chemicalInfoService.usingChemical(info, updateDto);
-//		return this.getListChemical(model);
-		return null;
+	@PostMapping("/chemical/using")
+	public ResponseEntity<?> usingChemical(@RequestBody @Valid ChemicalUsingDto updateDto) throws Throwable {
+		ChemicalInfoDto info = chemicalInfoService
+				.getById(Long.valueOf(updateDto.getBarcode().substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH)));
+		if (info == null)
+			ResponseEntity.noContent();
+		else
+			chemicalInfoService.usingChemical(info, updateDto);
+		return ResponseEntity.ok(null);
 	}
 
 	@GetMapping("/chemical/delete/{code}")

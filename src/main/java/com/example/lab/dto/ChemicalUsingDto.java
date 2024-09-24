@@ -10,10 +10,9 @@ import lombok.Data;
 
 @Data
 public class ChemicalUsingDto {
-
 	public String name;
 	@NotEmpty(message = "Nhập thông tin code")
-	public Long id;
+	public String barcode;
 	@NotNull(message = "Nhập khối lượng sử dụng")
 	public BigDecimal quantity;
 
@@ -23,7 +22,6 @@ public class ChemicalUsingDto {
 
 	public ChemicalUsingDto(ChemicalInfo chemicalInfo) {
 		this.name = chemicalInfo.getName();
-		this.id = chemicalInfo.getId();
-//		this.quantity = chemicalInfo.getChemicalImpExp().getQuantity();
+//		this.barcode = chemicalInfo.getId();
 	}
 }

@@ -1,11 +1,13 @@
 package com.example.lab.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.lab.common.report.BarCodePDFExporter;
@@ -21,6 +23,7 @@ import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.ChemicalInventory;
 import com.example.lab.model.ChemicalLotInfo;
 import com.example.lab.model.PositionInfo;
+import com.example.lab.model.User;
 import com.example.lab.model.UserInfo;
 import com.example.lab.repository.BrandRepository;
 import com.example.lab.repository.ChemicalImpExpRepository;
@@ -90,19 +93,6 @@ public class ChemicalInfoService {
 		return new ChemicalInfoDto(chemicalInfoRepository.getById(id));
 	}
 
-	public void usingChemical(ChemicalInfoDto info, ChemicalUsingDto updateDto) throws Throwable {
-//		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId());
-//		if (inventory.getQuantity().subtract(updateDto.getQuantity()).compareTo(BigDecimal.ZERO) < 0)
-//			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
-//		inventory.setQuantity(inventory.getQuantity().subtract(updateDto.getQuantity()));
-//		chemicalInventoryRepository.save(inventory);
-//		// add imp info
-//		CustomUser user = (CustomUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
-//				null, user.getUserId());
-//		chemicalImpExpRepository.save(impexp);
-	}
-
 	public void deleteByCode(String code) {
 		ChemicalInfo chemical = chemicalInfoRepository.findByCodeWithoutInventory(code);
 		if (chemical != null)
@@ -168,6 +158,33 @@ public class ChemicalInfoService {
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Import.getVal(),
 				chemical.get().getManufactoryQuantity(), chemical.get().getId(),
 				chemical.get().getRegisterUser().getId(), null,lot.getId());
+		chemicalImpExpRepository.save(impexp);
+	}
+
+	public Optional<ChemicalInfo> getUsingChemicalFromBarcode(String barcode) {
+		Long chemicalId = Long.valueOf(barcode.substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH));
+		String lotCode = barcode.substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
+				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
+		ChemicalLotInfo lot = chemicalLotInfoRepository.getUsingChemicalLot(chemicalId, lotCode);
+		if (lot == null) {
+			return Optional.empty();
+		}
+		return chemicalInfoRepository.findById(chemicalId);
+	}
+	
+	public void usingChemical(ChemicalInfoDto info, ChemicalUsingDto updateDto) throws Throwable {
+		String lotCode = updateDto.getBarcode().substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
+				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
+		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId(),lotCode);
+		if (inventory.getQuantity().subtract(updateDto.getQuantity()).compareTo(BigDecimal.ZERO) < 0)
+			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
+		inventory.setQuantity(inventory.getQuantity().subtract(updateDto.getQuantity()));
+		chemicalInventoryRepository.save(inventory);
+		// add imp info
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		CustomUser user= (CustomUser) obj;
+		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
+				null, user.getId(),inventory.getLotId());
 		chemicalImpExpRepository.save(impexp);
 	}
 }

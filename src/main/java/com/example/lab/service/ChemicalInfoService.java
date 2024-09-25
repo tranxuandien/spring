@@ -90,7 +90,8 @@ public class ChemicalInfoService {
 	}
 
 	public ChemicalInfoDto getById(Long id) {
-		return new ChemicalInfoDto(chemicalInfoRepository.getById(id));
+		ChemicalInfo info = chemicalInfoRepository.getById(id);
+		return info==null?null:new ChemicalInfoDto(info);
 	}
 
 	public void deleteByCode(String code) {
@@ -182,7 +183,6 @@ public class ChemicalInfoService {
 		chemicalInventoryRepository.save(inventory);
 		// add imp info
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		CustomUser user= (CustomUser) obj;
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
 				null, user.getId(),inventory.getLotId());
 		chemicalImpExpRepository.save(impexp);

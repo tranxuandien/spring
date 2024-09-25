@@ -42,7 +42,7 @@ import net.sourceforge.barbecue.output.OutputException;
 public class ChemicalInfoController {
 
 	public static final Integer PRINT_LIMIT_NUMBER = 10;
-	
+
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
 
@@ -99,7 +99,7 @@ public class ChemicalInfoController {
 	}
 
 	@PostMapping("/admin/chemical/add")
-	public ResponseEntity<?> addChemical(@RequestBody ChemicalInfoDto chemical) {
+	public ResponseEntity<?> addChemical(@RequestBody @Valid ChemicalInfoDto chemical) {
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
 		if (addChemical.equals(null))
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -110,9 +110,9 @@ public class ChemicalInfoController {
 
 	@GetMapping("/admin/chemical/codeprint")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId, @PathParam("chemicalName") String chemicalName,
-			@PathParam("number") Integer number, HttpServletResponse response)
-			throws DocumentException, IOException, OutputException, BarcodeException {
+	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId,
+			@PathParam("chemicalName") String chemicalName, @PathParam("number") Integer number,
+			HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
 		if (number > PRINT_LIMIT_NUMBER)
 			return ResponseEntity.noContent().build();
 		response.setContentType("application/pdf");
@@ -145,10 +145,18 @@ public class ChemicalInfoController {
 		ChemicalInfoDto info = chemicalInfoService
 				.getById(Long.valueOf(updateDto.getBarcode().substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH)));
 		if (info == null)
-			ResponseEntity.noContent();
-		else
-			chemicalInfoService.usingChemical(info, updateDto);
-		return ResponseEntity.ok(null);
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage("Không tìm thấy hóa chất hoặc hóa chất đã hết").build());
+		else {
+			try {
+				chemicalInfoService.usingChemical(info, updateDto);
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+						.body(CommonResponseEntity.builder().errorMessage(e.getMessage()).build());
+			}
+		}
+		return ResponseEntity.ok(CommonResponseEntity.builder()
+				.message("Đã đăng ký sử dụng " + updateDto.getQuantity() + "(g/ml) hóa chất" + info.getName()).build());
 	}
 
 	@GetMapping("/chemical/delete/{code}")

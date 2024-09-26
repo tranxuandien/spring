@@ -12,10 +12,12 @@ import org.springframework.stereotype.Service;
 
 import com.example.lab.common.report.BarCodePDFExporter;
 import com.example.lab.dto.ChemicalDto;
-import com.example.lab.dto.ChemicalInfoDto;
 import com.example.lab.dto.ChemicalUsingDto;
-import com.example.lab.dto.SearchChemicalDto;
 import com.example.lab.dto.masterdata.ChemicalMasterDataDto;
+import com.example.lab.dto.request.ChemicalImportRequestDto;
+import com.example.lab.dto.request.ChemicalInfoRequestDto;
+import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
+import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.enums.ImpExp;
 import com.example.lab.model.Brand;
 import com.example.lab.model.ChemicalImpExp;
@@ -55,43 +57,50 @@ public class ChemicalInfoService {
 
 	@Autowired
 	private ChemicalInventoryRepository chemicalInventoryRepository;
-	
+
 	@Autowired
 	private ChemicalLotInfoRepository chemicalLotInfoRepository;
 
 	public List<ChemicalMasterDataDto> getLstMaster() {
 		return chemicalInfoRepository.getLstMaster();
 	}
-	
-	public List<ChemicalInfoDto> getListChemicalInfo(SearchChemicalDto searchDto) {
+
+//	public List<ChemicalInfoDto> getListChemicalInfo(SearchChemicalDto searchDto) {
+//		if (searchDto.getChemical() == null) {
+//			searchDto.setChemical(new ChemicalDto());
+//		}
+//		return chemicalInfoRepository.findAll(searchDto.getChemical().getId(), searchDto.getChemicalType(),
+//				searchDto.getChemical().getChemicalName(), searchDto.getRange1(), searchDto.getRange2(),searchDto.getBrand(),searchDto.getChemicalClass(),searchDto.getPosition());
+//	}
+//	
+	public List<ChemicalInfoResponseDto> getListChemicalInfo(SearchChemicalInfoRequestDto searchDto) {
 		if (searchDto.getChemical() == null) {
 			searchDto.setChemical(new ChemicalDto());
 		}
-		return chemicalInfoRepository.findAll(searchDto.getChemical().getId(), searchDto.getChemicalType(),
-				searchDto.getChemical().getChemicalName(), searchDto.getRange1(), searchDto.getRange2(),searchDto.getBrand(),searchDto.getChemicalClass(),searchDto.getPosition());
+		List<ChemicalInfo> lst = chemicalInfoRepository.findAll(searchDto.getChemical().getChemicalName(),
+				searchDto.getChemicalType(), searchDto.getBrand(), searchDto.getChemicalClass());
+		List<ChemicalInfoResponseDto> result = lst.stream().map(item -> new ChemicalInfoResponseDto(item)).toList();
+		return result;
 	}
 
 	@Transactional
-	public ChemicalInfo addChemical(ChemicalInfoDto dto) {
+	public ChemicalInfo addChemical(ChemicalInfoRequestDto dto) {
 		ChemicalInfo chemicalInfo = new ChemicalInfo(dto);
 
 		Optional<Brand> brand = brandRepository.findById(Long.valueOf(dto.getBrand()));
 		Optional<UserInfo> user = userInfoRepository.findByUsername(dto.getRegisterUser());
-		Optional<PositionInfo> pos = positionInfoRepository.findById(Long.valueOf(dto.getPosition()));
-
-		if (brand.isEmpty() || user.isEmpty() || pos.isEmpty()) {
+		if (brand.isEmpty() || user.isEmpty()) {
 			return null;
 		}
-		chemicalInfo.setPosition(pos.get());
 		chemicalInfo.setBrand(brand.get());
 		chemicalInfo.setRegisterUser(user.get());
 		ChemicalInfo chemical = chemicalInfoRepository.save(chemicalInfo);// save info
 		return chemical;
 	}
 
-	public ChemicalInfoDto getById(Long id) {
+	public ChemicalInfoRequestDto getById(Long id) {
 		ChemicalInfo info = chemicalInfoRepository.getById(id);
-		return info==null?null:new ChemicalInfoDto(info);
+		return info == null ? null : new ChemicalInfoRequestDto(info);
 	}
 
 	public void deleteByCode(String code) {
@@ -103,11 +112,10 @@ public class ChemicalInfoService {
 	}
 
 	public boolean checkDuplicate(String code) {
-		return chemicalInfoRepository.findByCodeWithoutInventory(code)!=null;
+		return chemicalInfoRepository.findByCodeWithoutInventory(code) != null;
 	}
-	
-	public String[] addPrintedChemicalLots(Integer chemicalId, Integer number)
-	{
+
+	public String[] addPrintedChemicalLots(Integer chemicalId, Integer number) {
 		String[] result = new String[number];
 		List<ChemicalLotInfo> addLst = new ArrayList<ChemicalLotInfo>();
 		Integer maxLot = chemicalLotInfoRepository.getMaxLot().isEmpty() ? 0
@@ -136,29 +144,31 @@ public class ChemicalInfoService {
 	}
 
 	@Transactional
-	public void registerChemical(String barcode) {
-		Long chemicalId = Long.valueOf(barcode.substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH));
-		String lotCode = barcode.substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
+	public void registerChemical(ChemicalImportRequestDto requestDto) {
+		Long chemicalId = Long.valueOf(requestDto.getBarcode().substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH));
+		String lotCode = requestDto.getBarcode().substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
 				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
 		ChemicalLotInfo lot = chemicalLotInfoRepository.getChemicalLot(chemicalId, lotCode);
-		Optional<ChemicalInfo> chemical = chemicalInfoRepository.findById(chemicalId);
-		if (lot == null|| chemical.isEmpty()) {
-			return ;
+		Optional<PositionInfo> position = positionInfoRepository.findById(requestDto.getPosition());
+		if (lot == null || position.isEmpty()) {
+			return;
 		}
-		
-		//save chemical lot
+
+		// save chemical lot
 		lot.setImport(true);
 		lot.setUpdateAt(LocalDate.now());
 		chemicalLotInfoRepository.save(lot);
-		
+
 		// save inventory
-		ChemicalInventory inventory = new ChemicalInventory(null, chemicalId, chemical.get().getManufactoryQuantity(),lot.getId());
+		ChemicalInventory inventory = new ChemicalInventory(null, chemicalId, requestDto.getManufactoryQuantity(),
+				lot.getId(), requestDto.getChemicalStatus(), requestDto.getPurchaseSrc(), position.get(),
+				requestDto.getExpiredDate());
 		chemicalInventoryRepository.save(inventory);
 
 		// add imp info
-		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Import.getVal(),
-				chemical.get().getManufactoryQuantity(), chemical.get().getId(),
-				chemical.get().getRegisterUser().getId(), null,lot.getId());
+		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Import.getVal(), requestDto.getManufactoryQuantity(),
+				chemicalId, user.getId(), null, lot.getId());
 		chemicalImpExpRepository.save(impexp);
 	}
 
@@ -172,11 +182,12 @@ public class ChemicalInfoService {
 		}
 		return chemicalInfoRepository.findById(chemicalId);
 	}
-	
-	public void usingChemical(ChemicalInfoDto info, ChemicalUsingDto updateDto) throws Throwable {
+
+	@Transactional
+	public void usingChemical(ChemicalInfoRequestDto info, ChemicalUsingDto updateDto) throws Throwable {
 		String lotCode = updateDto.getBarcode().substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
 				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
-		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId(),lotCode);
+		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId(), lotCode);
 		if (inventory.getQuantity().subtract(updateDto.getQuantity()).compareTo(BigDecimal.ZERO) < 0)
 			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
 		inventory.setQuantity(inventory.getQuantity().subtract(updateDto.getQuantity()));
@@ -184,7 +195,20 @@ public class ChemicalInfoService {
 		// add imp info
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
-				null, user.getId(),inventory.getLotId());
+				null, user.getId(), inventory.getLotId());
 		chemicalImpExpRepository.save(impexp);
+	}
+
+	public List<ChemicalInfo> getExistChemicalInfo(SearchChemicalInfoRequestDto searchDto) {
+		if (searchDto.getChemical() == null) {
+			searchDto.setChemical(new ChemicalDto());
+		}
+		List<ChemicalInfo> lst = chemicalInfoRepository.findExist(searchDto.getChemical().getChemicalName(),
+				searchDto.getChemicalType(), searchDto.getBrand(), searchDto.getChemicalClass());
+		return lst;
+	}
+
+	public ChemicalInfo save(ChemicalInfo chemical) {
+		return chemicalInfoRepository.save(chemical);
 	}
 }

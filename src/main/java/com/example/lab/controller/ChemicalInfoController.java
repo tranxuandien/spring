@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,10 +23,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.common.report.BarCodePDFExporter;
-import com.example.lab.dto.ChemicalInfoDto;
+import com.example.lab.dto.ChemicalDto;
 import com.example.lab.dto.ChemicalUsingDto;
-import com.example.lab.dto.SearchChemicalDto;
 import com.example.lab.dto.masterdata.ChemicalMasterDataDto;
+import com.example.lab.dto.request.ChemicalImportRequestDto;
+import com.example.lab.dto.request.ChemicalInfoRequestDto;
+import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
+import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.service.ChemicalInfoService;
@@ -45,15 +49,32 @@ public class ChemicalInfoController {
 
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
-
+//old
+//	@GetMapping("/chemical/list")
+//	@ResponseStatus(code = HttpStatus.OK)
+//	public ResponseEntity<?> getListChemicalRest() {
+//		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
+//		for (ChemicalInfoDto chemicalInfoDto : dto) {
+//			chemicalInfoDto.updateImpExpInfo();
+//		}
+//		return ResponseEntity.ok(dto);
+//	}
+	//old
+//	@PostMapping("/chemical/list")
+//	public CommonResponseEntity getListChemical(@RequestBody SearchChemicalDto searchChemicalDto) {
+//		searchChemicalDto.setRangeSearch();
+//		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
+//		for (ChemicalInfoDto chemicalInfoDto : dto) {
+//			chemicalInfoDto.updateImpExpInfo();
+//		}
+//		return CommonResponseEntity.builder().data(dto).build();
+//	}
+	
 	@GetMapping("/chemical/list")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> getListChemicalRest() {
-		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(new SearchChemicalDto());
-		for (ChemicalInfoDto chemicalInfoDto : dto) {
-			chemicalInfoDto.updateImpExpInfo();
-		}
-		return ResponseEntity.ok(dto);
+		List<ChemicalInfoResponseDto> dtos = chemicalInfoService.getListChemicalInfo(new SearchChemicalInfoRequestDto());
+		return ResponseEntity.ok(dtos);
 	}
 
 	@GetMapping("/chemical/list/master")
@@ -62,44 +83,64 @@ public class ChemicalInfoController {
 		List<ChemicalMasterDataDto> dto = chemicalInfoService.getLstMaster();
 		return ResponseEntity.ok(dto);
 	}
-
+	
 	@PostMapping("/chemical/list")
-	public CommonResponseEntity getListChemical(@RequestBody SearchChemicalDto searchChemicalDto) {
-		searchChemicalDto.setRangeSearch();
-		List<ChemicalInfoDto> dto = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
-		for (ChemicalInfoDto chemicalInfoDto : dto) {
-			chemicalInfoDto.updateImpExpInfo();
-		}
-		return CommonResponseEntity.builder().data(dto).build();
+	public CommonResponseEntity getListChemical(@RequestBody SearchChemicalInfoRequestDto searchChemicalDto) {
+		List<ChemicalInfoResponseDto> dtos = chemicalInfoService.getListChemicalInfo(searchChemicalDto);
+		return CommonResponseEntity.builder().data(dtos).build();
 	}
 
-	// use
+	// get info scan barcode
 	@GetMapping("/admin/chemical/register")
-	public ResponseEntity<?> addChemical(Model model, @PathParam("barcode") String barcode) {
+	public ResponseEntity<?> getChemical(Model model, @PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
 		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
 		if (opt.isEmpty()) {
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
 		}
-		return ResponseEntity.ok(new ChemicalInfoDto(opt.get()));
+		return ResponseEntity.ok(new ChemicalInfoResponseDto(opt.get()));
 	}
 
-	// import chemical
-	@GetMapping("/admin/chemical/import")
-	public CommonResponseEntity importChemical(@PathParam("barcode") String barcode) {
-		if (barcode.isEmpty())
-			return CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build();
-		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
+	// do import chemical
+	@PostMapping("/admin/chemical/import")
+	public ResponseEntity<?> importChemical(@RequestBody @Valid ChemicalImportRequestDto requestDto) {
+		if (requestDto.getBarcode().isEmpty())
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
+		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(requestDto.getBarcode());
 		if (opt.isEmpty()) {
-			return CommonResponseEntity.builder().errorMessage(ErrorMessage.IMPORTED_CHEMICAL_MESSAGE).build();
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.IMPORTED_CHEMICAL_MESSAGE).build());
+		} 
+//		else// update chemical info
+//		{
+//			ChemicalInfo chemical = opt.get();
+//			chemical.setChemicalType(requestDto.getChemicalType());
+//			chemical.setChemicalTypeInfo(requestDto.getChemicalTypeInfo());
+//			chemicalInfoService.save(chemical);
+//		}
+		try {
+			chemicalInfoService.registerChemical(requestDto);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
+					CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_IMPORT_CHEMICAL_MESSAGE).build());
 		}
-		chemicalInfoService.registerChemical(barcode);
-		return CommonResponseEntity.builder().data(new ChemicalInfoDto(opt.get())).build();
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
 	}
 
 	@PostMapping("/admin/chemical/add")
-	public ResponseEntity<?> addChemical(@RequestBody @Valid ChemicalInfoDto chemical) {
+	public ResponseEntity<?> addChemical(@RequestBody @Valid ChemicalInfoRequestDto chemical) {
+		SearchChemicalInfoRequestDto searchDto = new SearchChemicalInfoRequestDto(
+				new ChemicalDto(null, chemical.getName()), chemical.getBrand(), chemical.getChemicalType(),
+				chemical.getChemicalClass());
+		List<ChemicalInfo> infos = chemicalInfoService.getExistChemicalInfo(searchDto);
+		if (!infos.isEmpty())
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_DUPLICATED).build());
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
 		if (addChemical.equals(null))
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
@@ -132,38 +173,38 @@ public class ChemicalInfoController {
 	@GetMapping("/chemical/using/get")
 	public ResponseEntity<?> getUsingChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
 		Optional<ChemicalInfo> opt = chemicalInfoService.getUsingChemicalFromBarcode(barcode);
 		if (opt.isEmpty()) {
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
 		}
-		return ResponseEntity.ok(new ChemicalInfoDto(opt.get()));
+		return ResponseEntity.ok(new ChemicalInfoRequestDto(opt.get()));
 	}
 
 	@PostMapping("/chemical/using")
 	public ResponseEntity<?> usingChemical(@RequestBody @Valid ChemicalUsingDto updateDto) throws Throwable {
-		ChemicalInfoDto info = chemicalInfoService
+		ChemicalInfoRequestDto info = chemicalInfoService
 				.getById(Long.valueOf(updateDto.getBarcode().substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH)));
 		if (info == null)
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage("Không tìm thấy hóa chất hoặc hóa chất đã hết").build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
 		else {
 			try {
 				chemicalInfoService.usingChemical(info, updateDto);
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-						.body(CommonResponseEntity.builder().errorMessage(e.getMessage()).build());
+						.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_USE_CHEMICAL).build());
 			}
 		}
 		return ResponseEntity.ok(CommonResponseEntity.builder()
 				.message("Đã đăng ký sử dụng " + updateDto.getQuantity() + "(g/ml) hóa chất" + info.getName()).build());
 	}
 
-	@GetMapping("/chemical/delete/{code}")
-	public String deleteChemical(@PathVariable(value = "code") String code, Model model) {
+	@DeleteMapping("/chemical/delete/{code}")
+	public ResponseEntity<?> deleteChemical(@PathVariable(value = "code") String code) {
 		chemicalInfoService.deleteByCode(code);
-//		model.addAttribute("chemical", dto);
-//		return this.getListChemical(model);
-		return null;
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponseEntity.builder().message("Đã xóa hóa chất").build());
 	}
 }

@@ -1,5 +1,7 @@
 package com.example.lab.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,7 +60,7 @@ public class Config implements WebMvcConfigurer {
 	
 	@Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins(CORS_DOMAIN);
+        registry.addMapping("/**").allowedOrigins(CORS_DOMAIN).allowedMethods("POST","GET","DELETE","PUT");
     }
 	
 	

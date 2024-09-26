@@ -6,11 +6,16 @@ import java.math.BigDecimal;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -19,6 +24,8 @@ import lombok.Data;
 @Entity
 @Table(name = "chemical_inventory")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ChemicalInventory extends BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,20 +43,19 @@ public class ChemicalInventory extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "lot_id")
 	private Long lotId;
-	
-
-	public ChemicalInventory() {
-	}
+	@Column(name = "chemical_status")
+	private String chemicalStatus;
+	@Column(name = "purchase_src")
+	private String purchaseSrc;
+	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "position_id")
+	private PositionInfo position;
+	@Basic(optional = false)
+	@Column(name = "expired_date")
+	private String expiredDate;
 
 	public ChemicalInventory(Long id) {
 		this.id = id;
-	}
-
-	public ChemicalInventory(Long id, Long chemicalId, BigDecimal quantity,Long lotId) {
-		this.id = id;
-		this.chemicalId = chemicalId;
-		this.quantity = quantity;
-		this.lotId = lotId;
 	}
 
 	@Override

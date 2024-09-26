@@ -71,4 +71,8 @@ public class UserInfo extends BaseEntity implements Serializable {
         return "com.mycompany.mavenproject1.UserInfo[ id=" + id + " ]";
     }
     
+	public String getName() {
+		return this.firstName + this.lastName;
+	}
+
 }

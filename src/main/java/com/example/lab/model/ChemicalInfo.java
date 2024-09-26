@@ -1,9 +1,8 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
-import com.example.lab.dto.ChemicalInfoDto;
+import com.example.lab.dto.request.ChemicalInfoRequestDto;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -41,30 +40,20 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "chemical_type_info")
 	private String chemicalTypeInfo;
-	@Column(name = "manufactory_quantity")
-	private BigDecimal manufactoryQuantity;
+//	@Column(name = "manufactory_quantity")
+//	private BigDecimal manufactoryQuantity;
 	@Column(name = "chemical_class")
 	private String chemicalClass;
 	@Column(name = "chemical_class_info")
 	private String chemicalClassInfo;
 	@Column(name = "other_info")
 	private String otherInfo;
-	@Column(name = "chemical_status")
-	private String chemicalStatus;
-	@Column(name = "purchase_src")
-	private String purchaseSrc;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "register_user")
 	private UserInfo registerUser;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "position_id")
-	private PositionInfo position;
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private Brand brand;
-	@Basic(optional = false)
-	@Column(name = "expired_date")
-	private String expiredDate;
 	@Basic(optional = false)
 	@Column(name = "is_delete")
 	private String isDelete;
@@ -84,21 +73,16 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.brand = brand;
 		this.chemicalType = chemicalType;
 		this.chemicalTypeInfo = chemicalTypeInfo;
-		this.chemicalStatus = chemicalStatus;
 	}
 
-	public ChemicalInfo(ChemicalInfoDto dto) {
+	public ChemicalInfo(ChemicalInfoRequestDto dto) {
 		super();
 		this.name = dto.name;
-		this.manufactoryQuantity = dto.manufactoryQuantity;
-		this.expiredDate = dto.expiredDate;
 		this.otherInfo = dto.otherInfo;
-		this.purchaseSrc = dto.purchaseSrc;
 		this.chemicalType = dto.chemicalType;
 		this.chemicalClass = dto.chemicalClass;
 		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.chemicalTypeInfo = dto.chemicalTypeInfo;
-		this.chemicalStatus = dto.chemicalStatus;
 		this.isDelete = "0";// init
 	}
 

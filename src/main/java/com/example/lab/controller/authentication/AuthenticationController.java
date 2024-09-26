@@ -56,8 +56,10 @@ public class AuthenticationController {
 	@GetMapping("/register/active")
 	public ResponseEntity<?> activeUser(@PathParam("token") String token) {
 		if (authenticationService.verifyConfirm(token))
-			return ResponseEntity.status(HttpStatus.OK).body(CommonResponseEntity.builder().data(AuthenticationResponse.builder().build()).build());
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(CommonResponseEntity.builder().build());
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(CommonResponseEntity.builder().message(CommonMessage.AUTH_ACTIVED_USER).build());
+		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+				.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.AUTH_NOT_ACTIVE_USER).build());
 	}
 
 	@PostMapping("/login")

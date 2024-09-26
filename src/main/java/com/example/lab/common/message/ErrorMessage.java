@@ -7,7 +7,7 @@ public class ErrorMessage {
 
 	public static final String AUTH_DUPLICATED_EMAIL_REGISTER = "Email đã được đăng ký trên hệ thống";
 	public static final String AUTH_DUPLICATED_USERNAME_REGISTER = "Username đã được sử dụng";
-	
+	public static final String AUTH_NOT_ACTIVE_USER = "Tài khoản chưa đăng ký hoạt dộng";
 	//==============Chemical=============================
 	public static final String CHEMICAL_IMPORTED_CHEMICAL_MESSAGE = "Hóa chất đã được nhập trước đó";
 	public static final String CHEMICAL_CANNOT_IMPORT_CHEMICAL_MESSAGE = "Hóa chất chưa được nhập";

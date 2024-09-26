@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.dto.UserDto;
 import com.example.lab.dto.request.AuthenticationRequest;
 import com.example.lab.dto.request.UserRegisterRequest;
@@ -21,7 +22,7 @@ import com.example.lab.repository.user.TokenRepository;
 import com.example.lab.repository.user.UserRepository;
 import com.example.lab.service.mail.EmailServiceImpl;
 
-import jakarta.mail.SendFailedException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -36,39 +37,39 @@ public class AuthenticationService {
 	private final AuthenticationManager authenticationManager;
 	private final EmailServiceImpl emailServiceImpl ;
 	
-	public AuthenticationResponse register(UserRegisterRequest request, String uri) throws SendFailedException {
-		//check duplicate
+	@Transactional(rollbackOn = {Exception.class, Throwable.class})
+	public void register(UserRegisterRequest request, String uri) throws Throwable {
+		// check duplicate
 		Optional<User> user1 = userRepository.findByEmail(request.getEmail());
-		if(!user1.isEmpty())
-		return AuthenticationResponse.builder().errorMessage("duplicate email!").build();
+		if (!user1.isEmpty())
+			throw new Exception(ErrorMessage.AUTH_DUPLICATED_EMAIL_REGISTER);
 		Optional<User> user2 = userRepository.findByUserName(request.getUsername());
-		if(!user2.isEmpty())
-		return AuthenticationResponse.builder().errorMessage("duplidate username").build();
-		//save user
-		User newUser = new User();
-		newUser.setUserName(request.getUsername());
-		newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-		newUser.setRole(request.getRole());
-		newUser.setEmail(request.getEmail());
-		newUser.setIsActive(false);
-		User createdUser = userRepository.save(newUser);
-		//save info
-		UserInfo userInfo = new UserInfo();
-		userInfo.setAddress(request.getAddress());
-		userInfo.setFirstName(request.getFirstName());
-		userInfo.setLastName(request.getLastName());
-		userInfo.setUser(createdUser);
-		userInfoRepository.save(userInfo);
-		
-		String jwtToken = jwtService.generateActiveToken(createdUser);
-		Token token = new Token(jwtToken, "Bearer", false, false, createdUser.getId());
-		tokenRepository.save(token);
-		
-		emailServiceImpl.sendSimpleMessage(request.getEmail(), request.getUsername(),jwtToken,uri);
-		
-		return AuthenticationResponse.builder().token(null)
-				.userDto(UserDto.builder().username(createdUser.getUsername()).role(createdUser.getRole()).build())
-				.build();
+		if (!user2.isEmpty())
+			throw new Exception(ErrorMessage.AUTH_DUPLICATED_USERNAME_REGISTER);
+		try {// save user
+			User newUser = new User();
+			newUser.setUserName(request.getUsername());
+			newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+			newUser.setRole("ROLE_USER");// default
+			newUser.setEmail(request.getEmail());
+			newUser.setIsActive(false);
+			User createdUser = userRepository.save(newUser);
+			// save info
+			UserInfo userInfo = new UserInfo();
+			userInfo.setAddress(request.getAddress());
+			userInfo.setFirstName(request.getFirstName());
+			userInfo.setLastName(request.getLastName());
+			userInfo.setUser(createdUser);
+			userInfoRepository.save(userInfo);
+
+			String jwtToken = jwtService.generateActiveToken(createdUser);
+			Token token = new Token(jwtToken, "Bearer", false, false, createdUser.getId());
+			tokenRepository.save(token);
+
+			emailServiceImpl.sendSimpleMessage(request.getEmail(), request.getUsername(), jwtToken, uri);
+		} catch (Exception e) {
+			throw new Exception(ErrorMessage.AUTH_INVALID_EMAIL_REGISTER);
+		}
 	}
 	
 	public AuthenticationResponse login(AuthenticationRequest request) {

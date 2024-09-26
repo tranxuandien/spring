@@ -3,6 +3,7 @@ package com.example.lab.controller.authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.dto.request.AuthenticationRequest;
 import com.example.lab.dto.request.UserRegisterRequest;
@@ -35,18 +37,20 @@ public class AuthenticationController {
 	private TokenService tokenService;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(@RequestBody UserRegisterRequest registerRequest,
-			HttpServletRequest request) {
+	public ResponseEntity<?> register(@RequestBody UserRegisterRequest registerRequest,
+			HttpServletRequest request) throws Throwable {
 		String uri = ServletUriComponentsBuilder.fromRequestUri(request).build().toUriString();
-		AuthenticationResponse response;
 		try {
-			response = authenticationService.register(registerRequest, uri);
-		} catch (SendFailedException e) {
+			 authenticationService.register(registerRequest, uri);
+		} catch (SendFailedException |MailAuthenticationException auth) {
 			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-					.body(AuthenticationResponse.builder().errorMessage("Error when create new user!").build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.AUTH_INVALID_EMAIL_REGISTER).build());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+					.body(CommonResponseEntity.builder().errorMessage(e.getMessage()).build());
 		}
-		return ResponseEntity.status(response.getErrorMessage() == null ? HttpStatus.CREATED : HttpStatus.CONFLICT)
-				.body(response);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(CommonResponseEntity.builder().message(CommonMessage.AUTH_REGISTED_USER).build());
 	}
 
 	@GetMapping("/register/active")
@@ -60,7 +64,7 @@ public class AuthenticationController {
 	public ResponseEntity<?> login(@RequestBody AuthenticationRequest request, HttpServletResponse res) {
 		AuthenticationResponse response = authenticationService.login(request);
 		if (response.getToken() == null)
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponseEntity.builder().errorMessage(ErrorMessage.INVALID_USERNAME_PASSWORD).build());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(CommonResponseEntity.builder().errorMessage(ErrorMessage.AUTH_INVALID_USERNAME_PASSWORD).build());
 //		Cookie cookie = new Cookie("token", response.getToken());
 //		cookie.setHttpOnly(true);
 //		res.addCookie(cookie);

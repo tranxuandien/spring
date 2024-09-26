@@ -95,11 +95,11 @@ public class ChemicalInfoController {
 	public ResponseEntity<?> getChemical(Model model, @PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
 		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
 		if (opt.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
 		}
 		return ResponseEntity.ok(new ChemicalInfoResponseDto(opt.get()));
 	}
@@ -109,11 +109,11 @@ public class ChemicalInfoController {
 	public ResponseEntity<?> importChemical(@RequestBody @Valid ChemicalImportRequestDto requestDto) {
 		if (requestDto.getBarcode().isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
 		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(requestDto.getBarcode());
 		if (opt.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.IMPORTED_CHEMICAL_MESSAGE).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_IMPORTED_CHEMICAL_MESSAGE).build());
 		} 
 //		else// update chemical info
 //		{
@@ -126,7 +126,7 @@ public class ChemicalInfoController {
 			chemicalInfoService.registerChemical(requestDto);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-					CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_IMPORT_CHEMICAL_MESSAGE).build());
+					CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_IMPORT_CHEMICAL_MESSAGE).build());
 		}
 		return ResponseEntity.status(HttpStatus.ACCEPTED)
 				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
@@ -140,11 +140,11 @@ public class ChemicalInfoController {
 		List<ChemicalInfo> infos = chemicalInfoService.getExistChemicalInfo(searchDto);
 		if (!infos.isEmpty())
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_DUPLICATED).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CHEMICAL_DUPLICATED).build());
 		ChemicalInfo addChemical = chemicalInfoService.addChemical(chemical);
 		if (addChemical.equals(null))
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_ADD_CHEMICAL).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_ADD_CHEMICAL).build());
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(CommonResponseEntity.builder().message(CommonMessage.REGISTED_CHEMICAL_MESSAGE).build());
 	}
@@ -174,11 +174,11 @@ public class ChemicalInfoController {
 	public ResponseEntity<?> getUsingChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.BARCODE_IS_EMPTY_MESSAGE).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
 		Optional<ChemicalInfo> opt = chemicalInfoService.getUsingChemicalFromBarcode(barcode);
 		if (opt.isEmpty()) {
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
 		}
 		return ResponseEntity.ok(new ChemicalInfoRequestDto(opt.get()));
 	}
@@ -189,13 +189,13 @@ public class ChemicalInfoController {
 				.getById(Long.valueOf(updateDto.getBarcode().substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH)));
 		if (info == null)
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_GET_CHEMICAL_INFO).build());
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
 		else {
 			try {
 				chemicalInfoService.usingChemical(info, updateDto);
 			} catch (Exception e) {
 				return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-						.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CANNOT_USE_CHEMICAL).build());
+						.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_USE_CHEMICAL).build());
 			}
 		}
 		return ResponseEntity.ok(CommonResponseEntity.builder()

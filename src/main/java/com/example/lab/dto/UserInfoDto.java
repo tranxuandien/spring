@@ -1,6 +1,6 @@
 package com.example.lab.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.lab.model.UserInfo;
 
@@ -10,8 +10,8 @@ public class UserInfoDto {
 	public String name;
 	public String address;
 	public String email;
-	public LocalDate createAt;
-	public LocalDate updateAt;
+	public LocalDateTime createAt;
+	public LocalDateTime updateAt;
 
 	public UserInfoDto(UserInfo userInfo) {
 		this.name = userInfo.getLastName();

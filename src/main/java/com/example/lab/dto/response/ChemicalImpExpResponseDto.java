@@ -1,7 +1,8 @@
 package com.example.lab.dto.response;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.example.lab.common.report.BarCodePDFExporter;
 
@@ -14,7 +15,7 @@ public class ChemicalImpExpResponseDto {
 	public String name;
 	public String brand;
 	public BigDecimal quantity;
-	public LocalDate usingDate;
+	public String usingDate;
 	public String impExpUser;
 	public String barcode;
 	public String chemicalType;
@@ -25,7 +26,7 @@ public class ChemicalImpExpResponseDto {
 	public String impExpType;
 	
 	
-	public ChemicalImpExpResponseDto(String name, String brand, BigDecimal quantity, LocalDate usingDate,
+	public ChemicalImpExpResponseDto(String name, String brand, BigDecimal quantity, LocalDateTime usingDate,
 			String chemicalType, String chemicalTypeInfo, String chemicalClass, String chemicalClassInfo,
 			String position, String impExpType, String firstName, String lastName, Long chemicalId, String lotNo) {
 		if (chemicalId != null && lotNo != null) {
@@ -36,7 +37,8 @@ public class ChemicalImpExpResponseDto {
 		this.name = name;
 		this.brand = brand;
 		this.quantity = quantity;
-		this.usingDate = usingDate;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		this.usingDate = usingDate.format(formatter);
 		this.impExpUser = firstName + " " + lastName;
 		this.chemicalType = chemicalType;
 		this.chemicalTypeInfo = chemicalTypeInfo;

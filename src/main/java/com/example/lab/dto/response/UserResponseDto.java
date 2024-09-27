@@ -1,17 +1,17 @@
 package com.example.lab.dto.response;
 
-import com.example.lab.model.UserInfo;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 public class UserResponseDto {
 
 	Long id;
 	String userName;
 
-	public UserResponseDto(UserInfo item) {
-		this.id = item.getId();
-		this.userName = item.getName();
+	public UserResponseDto(Long id, String firstName, String lastName) {
+		this.id = id;
+		this.userName = firstName + " " + lastName;
 	}
 }

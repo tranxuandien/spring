@@ -1,7 +1,7 @@
 package com.example.lab.service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -157,7 +157,7 @@ public class ChemicalInfoService {
 
 		// save chemical lot
 		lot.setImport(true);
-		lot.setUpdateAt(LocalDate.now());
+		lot.setUpdateAt(LocalDateTime.now());
 		chemicalLotInfoRepository.save(lot);
 
 		// save inventory

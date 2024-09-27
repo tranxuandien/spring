@@ -1,6 +1,6 @@
 package com.example.lab.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -9,30 +9,30 @@ import jakarta.persistence.MappedSuperclass;
 public class BaseEntity {
 
 	@Column(name = "create_at")
-	private LocalDate createAt;
+	private LocalDateTime createAt;
 	@Column(name = "update_at")
-	private LocalDate updateAt;
+	private LocalDateTime updateAt;
 
 	public BaseEntity() {
 		super();
-		this.createAt = LocalDate.now();
-		this.updateAt = LocalDate.now();
+		this.createAt = LocalDateTime.now();
+		this.updateAt = LocalDateTime.now();
 	}
 
 
-	public LocalDate getCreateAt() {
+	public LocalDateTime getCreateAt() {
 		return createAt;
 	}
 
-	public void setCreateAt(LocalDate createAt) {
+	public void setCreateAt(LocalDateTime createAt) {
 		this.createAt = createAt;
 	}
 
-	public LocalDate getUpdateAt() {
+	public LocalDateTime getUpdateAt() {
 		return updateAt;
 	}
 
-	public void setUpdateAt(LocalDate updateAt) {
+	public void setUpdateAt(LocalDateTime updateAt) {
 		this.updateAt = updateAt;
 	}
 

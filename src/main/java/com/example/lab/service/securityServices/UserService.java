@@ -18,8 +18,6 @@ public class UserService {
 	
 	@Autowired
     private UserRepository userRepository;
-    @Autowired
-    private UserInfoRepository userInfoRepository;
     
     public User createUser(User user) {
         return userRepository.save(user);
@@ -52,7 +50,7 @@ public class UserService {
 
 
 	public List<UserResponseDto> getAllUser() {
-		return userInfoRepository.findAll().stream().map(item -> new UserResponseDto(item)).toList();
+		return userRepository.findAllUser();
 	}
 }
 

@@ -13,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
+import com.example.lab.config.Config;
 import com.example.lab.dto.request.AuthenticationRequest;
 import com.example.lab.dto.request.UserRegisterRequest;
 import com.example.lab.dto.response.AuthenticationResponse;
@@ -39,7 +40,8 @@ public class AuthenticationController {
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserRegisterRequest registerRequest,
 			HttpServletRequest request) throws Throwable {
-		String uri = ServletUriComponentsBuilder.fromRequestUri(request).build().toUriString();
+//		String uri = ServletUriComponentsBuilder.fromRequestUri(request).build().toUriString();
+		String uri = Config.CORS_DOMAIN;
 		try {
 			 authenticationService.register(registerRequest, uri);
 		} catch (SendFailedException |MailAuthenticationException auth) {

@@ -15,8 +15,8 @@ public class EmailServiceImpl {
 		SimpleMailMessage message = new SimpleMailMessage();
 		message.setFrom("noreply@test.com");
 		message.setTo(to);
-		message.setSubject("Laboratory register user "+subject);
-		message.setText("Click link to confirm create an account with username:"+subject+"Link(valid 24h) : "+uri+"/active?token="+text );
+		message.setSubject("Laboratory register user: "+subject);
+		message.setText("Click link to confirm create an account with username:"+subject+"\n Link(valid 24h) : "+uri+"account/register/active?token="+text );
 		emailSender.send(message);
 	}
 }

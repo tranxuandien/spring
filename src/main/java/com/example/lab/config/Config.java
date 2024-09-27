@@ -1,7 +1,5 @@
 package com.example.lab.config;
 
-import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class Config implements WebMvcConfigurer {
 
 	//config
-	private static final String CORS_DOMAIN="https://lab-repo.vercel.app/";
+	public static final String CORS_DOMAIN="https://lab-repo.vercel.app/";
 	private final UserRepository userRepository;
 //	@Bean(name = "messageSource")
 //	public MessageSource getMessageResource() {

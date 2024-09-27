@@ -16,4 +16,6 @@ public class ErrorMessage {
 	public static final String CHEMICAL_CHEMICAL_DUPLICATED = "Hóa chất đã được đăng ký trước đó";
 	public static final String CHEMICAL_CANNOT_GET_CHEMICAL_INFO = "Không tìm thấy thông tin hóa chất hoặc hóa chất đã hết";
 	public static final String CHEMICAL_CANNOT_USE_CHEMICAL = "Đăng ký sử dụng hóa chất thất bại";
+	public static final String CHEMICAL_CANNOT_DELETED = "Không thể xóa hóa chất hoặc hóa chất đã được xóa trước đó";
+	public static final String CHEMICAL_INFO_CANNOT_DELETED = "Không thể xóa thông tin cơ bản hóa chất hoặc thông tin hóa chất đã được xóa trước đó";
 }

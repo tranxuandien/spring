@@ -53,7 +53,10 @@ public class ChemicalInventory extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "expired_date")
 	private String expiredDate;
-
+	@Basic(optional = false)
+	@Column(name = "is_delete")
+	private String isDelete;
+	
 	public ChemicalInventory(Long id) {
 		this.id = id;
 	}

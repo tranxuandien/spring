@@ -103,12 +103,13 @@ public class ChemicalInfoService {
 		return info == null ? null : new ChemicalInfoRequestDto(info);
 	}
 
-	public void deleteByCode(String code) {
+	public ChemicalInfo deleteByCode(String code) {
 		ChemicalInfo chemical = chemicalInfoRepository.findByCodeWithoutInventory(code);
 		if (chemical != null)
 			chemical.setIsDelete("1");
+		else return null;
 		chemicalInfoRepository.save(chemical);
-		return;
+		return chemical;
 	}
 
 	public boolean checkDuplicate(String code) {
@@ -162,7 +163,7 @@ public class ChemicalInfoService {
 		// save inventory
 		ChemicalInventory inventory = new ChemicalInventory(null, chemicalId, requestDto.getManufactoryQuantity(),
 				lot.getId(), requestDto.getChemicalStatus(), requestDto.getPurchaseSrc(), position.get(),
-				requestDto.getExpiredDate());
+				requestDto.getExpiredDate(),"0");//is delete false
 		chemicalInventoryRepository.save(inventory);
 
 		// add imp info

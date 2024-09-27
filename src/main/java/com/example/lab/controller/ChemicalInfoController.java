@@ -204,7 +204,10 @@ public class ChemicalInfoController {
 
 	@DeleteMapping("/chemical/delete/{code}")
 	public ResponseEntity<?> deleteChemical(@PathVariable(value = "code") String code) {
-		chemicalInfoService.deleteByCode(code);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponseEntity.builder().message("Đã xóa hóa chất").build());
+		if (chemicalInfoService.deleteByCode(code) == null)
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+					CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_INFO_CANNOT_DELETED).build());
+		return ResponseEntity
+				.status(HttpStatus.ACCEPTED).body(CommonResponseEntity.builder().message(CommonMessage.CHEMICAL_INFO_DELETED).build());
 	}
 }

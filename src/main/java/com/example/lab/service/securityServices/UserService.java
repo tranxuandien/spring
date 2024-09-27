@@ -2,9 +2,12 @@ package com.example.lab.service.securityServices;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.dto.response.UserResponseDto;
 import com.example.lab.model.User;
+import com.example.lab.repository.UserInfoRepository;
 import com.example.lab.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -13,8 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
 	
+	@Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private UserInfoRepository userInfoRepository;
     
     public User createUser(User user) {
         return userRepository.save(user);
@@ -44,5 +49,10 @@ public class UserService {
         }
         return null;
     }
+
+
+	public List<UserResponseDto> getAllUser() {
+		return userInfoRepository.findAll().stream().map(item -> new UserResponseDto(item)).toList();
+	}
 }
 

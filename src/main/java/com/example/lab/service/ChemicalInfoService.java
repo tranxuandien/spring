@@ -204,4 +204,8 @@ public class ChemicalInfoService {
 	public ChemicalInfo save(ChemicalInfo chemical) {
 		return chemicalInfoRepository.save(chemical);
 	}
+
+	public Optional<ChemicalInfo> findById(Long id) {
+		return chemicalInfoRepository.findById(id);
+	}
 }

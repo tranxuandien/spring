@@ -18,4 +18,6 @@ public class ErrorMessage {
 	public static final String CHEMICAL_CANNOT_USE_CHEMICAL = "Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại hoặc có lỗi trong quá trình đăng ký sử dụng hóa chất";
 	public static final String CHEMICAL_CANNOT_DELETED = "Không thể xóa hóa chất hoặc hóa chất đã được xóa trước đó";
 	public static final String CHEMICAL_INFO_CANNOT_DELETED = "Không thể xóa thông tin cơ bản hóa chất hoặc thông tin hóa chất đã được xóa trước đó";
+	public static final String CHEMICAL_CANNOT_UPDATE = "Không thể cập nhật thông tin cơ bản hóa chất hoặc thông tin hóa chất đã được xóa trước đó";
+	
 }

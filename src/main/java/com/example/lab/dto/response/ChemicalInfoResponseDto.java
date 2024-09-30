@@ -27,7 +27,7 @@ public class ChemicalInfoResponseDto {
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-		this.registerUser = user.getName();
+		this.registerUser = user==null?null:user.getName();
 	}
 
 	public ChemicalInfoResponseDto(Long id, String name, String brand, String chemicalType, String chemicalTypeInfo,

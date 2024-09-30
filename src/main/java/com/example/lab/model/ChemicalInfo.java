@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.Data;
 
 /**
@@ -78,14 +79,23 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	public ChemicalInfo(ChemicalInfoRequestDto dto) {
 		super();
 		this.name = dto.name;
-		this.otherInfo = dto.otherInfo;
 		this.chemicalType = dto.chemicalType;
+		this.chemicalTypeInfo = dto.chemicalTypeInfo;
 		this.chemicalClass = dto.chemicalClass;
 		this.chemicalClassInfo = dto.chemicalClassInfo;
-		this.chemicalTypeInfo = dto.chemicalTypeInfo;
+		this.otherInfo = dto.otherInfo;
 		this.isDelete = "0";// init
 	}
 
+	public void update(@Valid ChemicalInfoRequestDto dto) {
+		this.name = dto.name;
+		this.chemicalType = dto.chemicalType;
+		this.chemicalTypeInfo = dto.chemicalTypeInfo;
+		this.chemicalClass = dto.chemicalClass;
+		this.chemicalClassInfo = dto.chemicalClassInfo;
+		this.otherInfo = dto.otherInfo;
+	}
+	
 	@Override
 	public int hashCode() {
 		int hash = 0;
@@ -110,5 +120,4 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	public String toString() {
 		return "com.mycompany.mavenproject1.ChemicalInfo[ id=" + id + " ]";
 	}
-
 }

@@ -9,4 +9,5 @@ public class CommonMessage {
 	public static final String IMPORTED_CHEMICAL_MESSAGE = "Hóa chất đã được nhập!";
 	public static final String CHEMICAL_INFO_DELETED = "Đã xóa thông tin cơ bản hóa chất";
 	public static final String CHEMICAL_DELETED = "Đã xóa hóa chất";
+	public static final String CHEMICAL_UPDATED = "Đã cập nhật thông tin cơ bản hóa chất";
 }

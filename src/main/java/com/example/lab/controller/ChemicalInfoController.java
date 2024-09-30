@@ -170,6 +170,23 @@ public class ChemicalInfoController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/admin/chemical/code/reprint")
+	@ResponseStatus(code = HttpStatus.OK)
+	public ResponseEntity<?> rePrintChemicalBarcode(@PathParam("barcode") String barcode,
+			@PathParam("chemicalName") String chemicalName,
+			HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
+		response.setContentType("application/pdf");
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+		String currentDateTime = dateFormatter.format(new Date());
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+		response.setHeader(headerKey, headerValue);
+		BarCodePDFExporter exporter = new BarCodePDFExporter(barcode, chemicalName);
+		exporter.exportOne(response);
+		response.setStatus(HttpStatus.NO_CONTENT.value());
+		return ResponseEntity.noContent().build();
+	}
+	
 	@GetMapping("/chemical/using/get")
 	public ResponseEntity<?> getUsingChemical(@PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())

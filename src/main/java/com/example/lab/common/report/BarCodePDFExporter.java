@@ -37,6 +37,8 @@ public class BarCodePDFExporter {
 	private String[] printLst;
 	
 	private String chemicalName;
+	
+	private String barcode;
 
 	public BarCodePDFExporter(Integer chemicalId, Integer number, String[] printLst, String chemicalName) {
 		super();
@@ -44,6 +46,12 @@ public class BarCodePDFExporter {
 		this.number = number;
 		this.printLst = printLst;
 		this.chemicalName = chemicalName;
+	}
+
+	public BarCodePDFExporter(String barcode, String chemicalName) {
+		this.barcode = barcode;
+		this.chemicalName = chemicalName;
+		this.number = 1;
 	}
 
 	private void writeTableData(PdfPTable table)
@@ -83,5 +91,40 @@ public class BarCodePDFExporter {
 		document.add(table);
 
 		document.close();
+	}
+
+	public void exportOne(HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
+		Document document = new Document(PageSize.A4);
+		PdfWriter.getInstance(document, response.getOutputStream());
+
+		document.open();
+
+		PdfPTable table = new PdfPTable(5);
+		writeTableDataOne(table);
+
+		document.add(table);
+
+		document.close();
+	}
+
+	private void writeTableDataOne(PdfPTable table) throws OutputException, BadElementException, IOException, BarcodeException {
+		for (int i = 0; i < this.number+(5-this.number%5); i++) {
+			PdfPCell cell1 = new PdfPCell();
+			cell1.setBorder(Rectangle.NO_BORDER);
+			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+			if (i >= this.number) {
+				table.addCell(cell1);
+				continue;
+			}
+			Barcode bc = BarcodeFactory.createCode128(barcode);
+			bc.setBarHeight(60);
+			cell1.addElement(new Paragraph(chemicalName));
+			cell1.addElement(new Paragraph("      "));
+			cell1.addElement(com.lowagie.text.Image.getInstance(BarcodeImageHandler.getImage(bc), null));
+			Paragraph code = new Paragraph(barcode);
+			code.setAlignment(Element.ALIGN_CENTER);
+			cell1.addElement(code);
+			table.addCell(cell1);
+		}
 	}
 }

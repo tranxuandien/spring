@@ -5,7 +5,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +29,7 @@ import com.example.lab.dto.request.ChemicalImportRequestDto;
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
 import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
+import com.example.lab.dto.response.ChemicalUsingResponseDto;
 import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.service.ChemicalInfoService;
@@ -90,48 +90,6 @@ public class ChemicalInfoController {
 		return CommonResponseEntity.builder().data(dtos).build();
 	}
 
-	// get info scan barcode
-	@GetMapping("/admin/chemical/register")
-	public ResponseEntity<?> getChemical(Model model, @PathParam("barcode") String barcode) {
-		if (barcode.isEmpty())
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
-		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(barcode);
-		if (opt.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
-		}
-		return ResponseEntity.ok(new ChemicalInfoResponseDto(opt.get()));
-	}
-
-	// do import chemical
-	@PostMapping("/admin/chemical/import")
-	public ResponseEntity<?> importChemical(@RequestBody @Valid ChemicalImportRequestDto requestDto) {
-		if (requestDto.getBarcode().isEmpty())
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
-		Optional<ChemicalInfo> opt = chemicalInfoService.getChemicalFromBarcode(requestDto.getBarcode());
-		if (opt.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_IMPORTED_CHEMICAL_MESSAGE).build());
-		} 
-//		else// update chemical info
-//		{
-//			ChemicalInfo chemical = opt.get();
-//			chemical.setChemicalType(requestDto.getChemicalType());
-//			chemical.setChemicalTypeInfo(requestDto.getChemicalTypeInfo());
-//			chemicalInfoService.save(chemical);
-//		}
-		try {
-			chemicalInfoService.registerChemical(requestDto);
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(
-					CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_IMPORT_CHEMICAL_MESSAGE).build());
-		}
-		return ResponseEntity.status(HttpStatus.ACCEPTED)
-				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
-	}
-
 	@PostMapping("/admin/chemical/add")
 	public ResponseEntity<?> addChemical(@RequestBody @Valid ChemicalInfoRequestDto chemical) {
 		SearchChemicalInfoRequestDto searchDto = new SearchChemicalInfoRequestDto(
@@ -149,6 +107,41 @@ public class ChemicalInfoController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.REGISTED_CHEMICAL_MESSAGE).build());
 	}
 
+	// get info scan barcode
+	@GetMapping("/admin/chemical/register")
+	public ResponseEntity<?> getChemical(Model model, @PathParam("barcode") String barcode) {
+		if (barcode.isEmpty())
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
+		ChemicalInfoResponseDto result = chemicalInfoService.getChemicalFromBarcode(barcode);
+		if (result == null) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
+		}
+		return ResponseEntity.ok(result);
+	}
+
+	// do import chemical
+	@PostMapping("/admin/chemical/import")
+	public ResponseEntity<?> importChemical(@RequestBody @Valid ChemicalImportRequestDto requestDto) {
+		if (requestDto.getBarcode().isEmpty())
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
+					.errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
+		ChemicalInfoResponseDto chemical = chemicalInfoService.getChemicalFromBarcode(requestDto.getBarcode());
+		if (chemical == null) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
+					.errorMessage(ErrorMessage.CHEMICAL_IMPORTED_CHEMICAL_MESSAGE).build());
+		}
+		try {
+			chemicalInfoService.registerChemical(requestDto);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
+					.errorMessage(ErrorMessage.CHEMICAL_CANNOT_IMPORT_CHEMICAL_MESSAGE).build());
+		}
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
+	}
+	
 	@GetMapping("/admin/chemical/codeprint")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId,
@@ -192,12 +185,12 @@ public class ChemicalInfoController {
 		if (barcode.isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
 					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_BARCODE_IS_EMPTY_MESSAGE).build());
-		Optional<ChemicalInfo> opt = chemicalInfoService.getUsingChemicalFromBarcode(barcode);
-		if (opt.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
-					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
+		ChemicalUsingResponseDto result = chemicalInfoService.getUsingChemicalFromBarcode(barcode);
+		if (result == null) {
+			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
+					.errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
 		}
-		return ResponseEntity.ok(new ChemicalInfoRequestDto(opt.get()));
+		return ResponseEntity.ok(result);
 	}
 
 	@PostMapping("/chemical/using")

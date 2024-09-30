@@ -28,14 +28,14 @@ public interface ChemicalInventoryRepository extends JpaRepository<ChemicalInven
 			+ "INNER JOIN ChemicalLotInfo t3 "
 			+ "ON t3.id = t1.lotId "
 			+ "WHERE t1.isDelete = '0' "
-			+ "AND t2.isDelete = '0' "
 			+ "AND (?1 IS NULL OR t2.name LIKE %?1%) "
 			+ "AND (?2 IS NULL OR t2.brand.id = ?2) "
 			+ "AND (?3 IS NULL OR t2.chemicalType =?3) "
 			+ "AND (?4 IS NULL OR t2.chemicalClass=?4) "
 			+ "AND (?5 IS NULL OR t1.position.id=?5) "
 			+ "AND (?6 IS NULL OR t1.quantity > ?6) "
-			+ "AND (?7 IS NULL OR t1.quantity <= ?7) ")
+			+ "AND (?7 IS NULL OR t1.quantity <= ?7) "
+			+ "ORDER BY t1.createAt DESC ")
 	List<ChemicalInventoryResponseDto> getAllInfo(String name, String brand, String type, String chemicalClass, String position,BigDecimal range1,BigDecimal range2);
 
 	@Query("SELECT t1 FROM ChemicalInventory t1 WHERE t1.id = ?1 AND t1.isDelete ='0' ")

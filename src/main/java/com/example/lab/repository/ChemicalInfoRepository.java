@@ -1,6 +1,5 @@
 package com.example.lab.repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.lab.dto.masterdata.ChemicalMasterDataDto;
-import com.example.lab.dto.request.ChemicalInfoRequestDto;
+import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.model.ChemicalInfo;
 
 @Repository
@@ -51,8 +50,8 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 	List<ChemicalMasterDataDto> getLstMaster();
 	
 	
-	@Query("SELECT t1  FROM ChemicalInfo t1 "
-			+ "INNER JOIN UserInfo t2 on t2.id = t1.registerUser.id "
+	@Query("SELECT new com.example.lab.dto.response.ChemicalInfoResponseDto(t1,t2)  FROM ChemicalInfo t1 "
+			+ "INNER JOIN UserInfo t2 on t2.user.id = t1.registerUser.id "
 			+ "LEFT JOIN Brand t3 on t1.brand.id=t3.id "
 			+ " WHERE "
 			+ "(?1 IS NULL OR t1.name LIKE %?1%) "
@@ -60,8 +59,7 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 			+ "AND (?3 IS NULL OR t3.id = ?3) "
 			+ "AND (?4 IS NULL OR t1.chemicalClass LIKE %?4%) "
 			+ "AND t1.isDelete ='0' ")
-	List<ChemicalInfo> findAll( String name, String chemicalType, String brand, String chemicalClass);
-	
+	List<ChemicalInfoResponseDto> findAll( String name, String chemicalType, String brand, String chemicalClass);
 	
 	@Query("SELECT t1  FROM ChemicalInfo t1 "
 			+ "INNER JOIN UserInfo t2 on t2.id = t1.registerUser.id "

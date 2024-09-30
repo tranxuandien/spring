@@ -50,7 +50,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	private String otherInfo;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "register_user")
-	private UserInfo registerUser;
+	private User registerUser;
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "brand_id")
 	private Brand brand;

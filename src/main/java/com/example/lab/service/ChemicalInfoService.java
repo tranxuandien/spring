@@ -18,6 +18,7 @@ import com.example.lab.dto.request.ChemicalImportRequestDto;
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
 import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
+import com.example.lab.dto.response.ChemicalUsingResponseDto;
 import com.example.lab.enums.ImpExp;
 import com.example.lab.model.Brand;
 import com.example.lab.model.ChemicalImpExp;
@@ -77,9 +78,8 @@ public class ChemicalInfoService {
 		if (searchDto.getChemical() == null) {
 			searchDto.setChemical(new ChemicalDto());
 		}
-		List<ChemicalInfo> lst = chemicalInfoRepository.findAll(searchDto.getChemical().getChemicalName(),
+		List<ChemicalInfoResponseDto> result = chemicalInfoRepository.findAll(searchDto.getChemical().getChemicalName(),
 				searchDto.getChemicalType(), searchDto.getBrand(), searchDto.getChemicalClass());
-		List<ChemicalInfoResponseDto> result = lst.stream().map(item -> new ChemicalInfoResponseDto(item)).toList();
 		return result;
 	}
 
@@ -93,7 +93,7 @@ public class ChemicalInfoService {
 			return null;
 		}
 		chemicalInfo.setBrand(brand.get());
-		chemicalInfo.setRegisterUser(user.get());
+		chemicalInfo.setRegisterUser(user.get().getUser());
 		ChemicalInfo chemical = chemicalInfoRepository.save(chemicalInfo);// save info
 		return chemical;
 	}
@@ -133,15 +133,11 @@ public class ChemicalInfoService {
 		return result;
 	}
 
-	public Optional<ChemicalInfo> getChemicalFromBarcode(String barcode) {
+	public ChemicalInfoResponseDto getChemicalFromBarcode(String barcode) {
 		Long chemicalId = Long.valueOf(barcode.substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH));
 		String lotCode = barcode.substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
 				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
-		ChemicalLotInfo lot = chemicalLotInfoRepository.getChemicalLot(chemicalId, lotCode);
-		if (lot == null) {
-			return Optional.empty();
-		}
-		return chemicalInfoRepository.findById(chemicalId);
+		return chemicalLotInfoRepository.getChemicalInfo(chemicalId, lotCode);
 	}
 
 	@Transactional
@@ -173,15 +169,11 @@ public class ChemicalInfoService {
 		chemicalImpExpRepository.save(impexp);
 	}
 
-	public Optional<ChemicalInfo> getUsingChemicalFromBarcode(String barcode) {
+	public ChemicalUsingResponseDto getUsingChemicalFromBarcode(String barcode) {
 		Long chemicalId = Long.valueOf(barcode.substring(0, BarCodePDFExporter.CHEMICAL_CODE_LENGTH));
 		String lotCode = barcode.substring(BarCodePDFExporter.CHEMICAL_CODE_LENGTH,
 				BarCodePDFExporter.CHEMICAL_CODE_LENGTH + BarCodePDFExporter.CHEMICAL_LOT_LENGTH);
-		ChemicalLotInfo lot = chemicalLotInfoRepository.getUsingChemicalLot(chemicalId, lotCode);
-		if (lot == null) {
-			return Optional.empty();
-		}
-		return chemicalInfoRepository.findById(chemicalId);
+		return chemicalLotInfoRepository.getUsingChemicalLot(chemicalId, lotCode);
 	}
 
 	@Transactional

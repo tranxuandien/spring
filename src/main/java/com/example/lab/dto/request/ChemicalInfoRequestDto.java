@@ -45,7 +45,7 @@ public class ChemicalInfoRequestDto {
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-		this.registerUser = chemicalInfo.getRegisterUser().getName();
+//		this.registerUser = chemicalInfo.getRegisterUser().getName();
 	}
 
 	public ChemicalInfoRequestDto(String name, String brand, String chemicalType, String chemicalTypeInfo,

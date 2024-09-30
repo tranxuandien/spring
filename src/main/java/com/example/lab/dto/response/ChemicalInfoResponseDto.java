@@ -1,15 +1,13 @@
 package com.example.lab.dto.response;
 
 import com.example.lab.model.ChemicalInfo;
+import com.example.lab.model.UserInfo;
 
 import lombok.Data;
 
 @Data
 public class ChemicalInfoResponseDto {
 
-//	private static final BigDecimal LIMIT_ALERT = BigDecimal.ZERO;
-//	private static final BigDecimal LIMIT_WARNING = BigDecimal.valueOf(100);
-	
 	public Long id;
 	public String name;
 	public String brand;
@@ -20,7 +18,7 @@ public class ChemicalInfoResponseDto {
 	public String otherInfo;
 	public String registerUser;
 	
-	public ChemicalInfoResponseDto(ChemicalInfo chemicalInfo) {
+	public ChemicalInfoResponseDto(ChemicalInfo chemicalInfo,UserInfo user) {
 		this.id = chemicalInfo.getId();
 		this.name = chemicalInfo.getName();
 		this.brand = chemicalInfo.getBrand().getName();
@@ -29,7 +27,7 @@ public class ChemicalInfoResponseDto {
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-		this.registerUser = chemicalInfo.getRegisterUser().getName();
+		this.registerUser = user.getName();
 	}
 
 	public ChemicalInfoResponseDto(Long id, String name, String brand, String chemicalType, String chemicalTypeInfo,
@@ -45,13 +43,4 @@ public class ChemicalInfoResponseDto {
 		this.otherInfo = otherInfo;
 		this.registerUser = registerUser;
 	}
-
-//	public void updateImpExpInfo() {
-//		if (this.remain.compareTo(LIMIT_WARNING) > 0)
-//			this.impExpInfo = ChemicalInventoryStatus.New.getVal();
-//		else if (this.remain.compareTo(LIMIT_ALERT) > 0)
-//			this.impExpInfo = ChemicalInventoryStatus.Warning.getVal();
-//		else
-//			this.impExpInfo = ChemicalInventoryStatus.Old.getVal();
-//	}
 }

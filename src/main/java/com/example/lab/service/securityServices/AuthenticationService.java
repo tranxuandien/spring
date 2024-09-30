@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.dto.UserDto;
 import com.example.lab.dto.request.AuthenticationRequest;
@@ -123,12 +124,14 @@ public class AuthenticationService {
 	            .build();
 	}
 
-	public boolean verifyConfirm(String token) {
+	public boolean verifyConfirm(String token) throws Exception {
 		if (token.isEmpty())
 			return false;
 		String username = jwtService.extractUsername(token);
 		Optional<User> user = userRepository.findNotActiveUser(username, token);
-
+		if (username != null && user.isEmpty()) {
+			throw new Exception(CommonMessage.AUTH_ACTIVED_USER);
+		}
 		if (!user.isEmpty()) {
 			User activeUser = user.get();
 			activeUser.setIsActive(true);

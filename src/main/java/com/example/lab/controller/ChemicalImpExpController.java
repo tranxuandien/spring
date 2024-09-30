@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.lab.dto.request.SearchImpExpRequestDto;
 import com.example.lab.dto.request.UserDto;
+import com.example.lab.dto.response.ChemicalImpExpChartResponseDto;
 import com.example.lab.dto.response.ChemicalImpExpResponseDto;
 import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.model.User;
@@ -34,6 +35,20 @@ public class ChemicalImpExpController {
 			search.setUser(dto);
 		}
 		List<ChemicalImpExpResponseDto> dtos = chemicalImpExpService.getListImpExpDetail(search);
+		return CommonResponseEntity.builder().data(dtos).build();
+	}
+	
+	@PostMapping("/chemical/impexp/chart/list")
+	public CommonResponseEntity getListImpExpChartList(@RequestBody SearchImpExpRequestDto search) {
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ADMIN]");
+		search.init();
+		if (!isAdmin) {
+			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			UserDto dto = new UserDto();
+			dto.setId(u.getId());
+			search.setUser(dto);
+		}
+		List<ChemicalImpExpChartResponseDto> dtos = chemicalImpExpService.getListImpExpChart(search);
 		return CommonResponseEntity.builder().data(dtos).build();
 	}
 }

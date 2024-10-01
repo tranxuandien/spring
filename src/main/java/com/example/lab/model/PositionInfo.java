@@ -48,9 +48,9 @@ public class PositionInfo extends BaseEntity implements Serializable {
 		this.room = dto.getRoom() == null ? null : dto.getRoom().trim();
 		this.ray = dto.getRay() == null ? null : dto.getRay().trim();
 		this.positionInfo = this.lab;
-		if (this.room != null)
+		if (!this.room.isEmpty())
 			this.positionInfo = this.positionInfo + "-" + this.room;
-		if (this.ray != null)
+		if (!this.ray.isEmpty())
 			this.positionInfo = this.positionInfo + "-" + this.ray;
 	}
     

@@ -2,12 +2,17 @@ package com.example.lab.model;
 
 import java.io.Serializable;
 
+import com.example.lab.dto.request.PositionRegisterRequestDto;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  *
@@ -16,29 +21,39 @@ import lombok.Data;
 @Entity
 @Table(name = "position_info")
 @Data
+@NoArgsConstructor
 public class PositionInfo extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column(name = "position_info")
     private String positionInfo;
-    @Column(name = "lab_id")
-    private Integer labId;
-    @Column(name = "room_id")
-    private Integer roomId;
-    @Column(name = "ray_id")
-    private Integer rayId;
+    @Column(name = "lab")
+    private String lab;
+    @Column(name = "room")
+    private String room;
+    @Column(name = "ray")
+    private String ray;
 
-    public PositionInfo() {
-    }
-
-    public PositionInfo(Integer id) {
+    public PositionInfo(Long id) {
         this.id = id;
     }
-
+    
+    public PositionInfo(PositionRegisterRequestDto dto) {
+		this.lab = dto.getLab().trim();
+		this.room = dto.getRoom() == null ? null : dto.getRoom().trim();
+		this.ray = dto.getRay() == null ? null : dto.getRay().trim();
+		this.positionInfo = this.lab;
+		if (this.room != null)
+			this.positionInfo = this.positionInfo + "-" + this.room;
+		if (this.ray != null)
+			this.positionInfo = this.positionInfo + "-" + this.ray;
+	}
+    
     @Override
     public int hashCode() {
         int hash = 0;

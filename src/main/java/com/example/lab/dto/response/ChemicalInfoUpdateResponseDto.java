@@ -1,41 +1,24 @@
-package com.example.lab.dto.request;
+package com.example.lab.dto.response;
 
 import com.example.lab.model.ChemicalInfo;
+import com.example.lab.model.UserInfo;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ChemicalInfoRequestDto {
+public class ChemicalInfoUpdateResponseDto {
 
 	public Long id;
-	@NotNull(message = "Nhập tên hóa chất")
-	@NotEmpty(message = "Nhập tên hóa chất")
 	public String name;
-	@NotNull(message = "Chọn nơi sản xuất")
 	public Long brand;
-	@NotNull(message = "Chọn loại hóa chất")
-	@NotEmpty(message = "Chọn loại hóa chất")
 	public String chemicalType;
-	@NotNull(message = "Chọn cách đóng gói")
-	@NotEmpty(message = "Chọn cách đóng gói")
 	public String chemicalTypeInfo;
-
-	@NotNull(message = "Chọn cách phân loại hóa chất")
-	@NotEmpty(message = "Chọn cách phân loại hóa chất")
 	public String chemicalClass;
 	public String chemicalClassInfo;
 	public String otherInfo;
-	@NotNull(message = "Nhập thông tin người đăng ký hóa chất")
-	@NotEmpty(message = "Nhập thông tin người đăng ký hóa chất")
 	public String registerUser;
-
-	public ChemicalInfoRequestDto() {
-		super();
-	}
-
-	public ChemicalInfoRequestDto(ChemicalInfo chemicalInfo) {
+	
+	public ChemicalInfoUpdateResponseDto(ChemicalInfo chemicalInfo,UserInfo user) {
 		this.id = chemicalInfo.getId();
 		this.name = chemicalInfo.getName();
 		this.brand = chemicalInfo.getBrandId();
@@ -44,12 +27,13 @@ public class ChemicalInfoRequestDto {
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-//		this.registerUser = chemicalInfo.getRegisterUser().getName();
+		this.registerUser = user==null?null:user.getName();
 	}
 
-	public ChemicalInfoRequestDto(String name, Long brand, String chemicalType, String chemicalTypeInfo,
+	public ChemicalInfoUpdateResponseDto(Long id, String name, Long brand, String chemicalType, String chemicalTypeInfo,
 			String chemicalClass, String chemicalClassInfo, String otherInfo, String registerUser) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.brand = brand;
 		this.chemicalType = chemicalType;

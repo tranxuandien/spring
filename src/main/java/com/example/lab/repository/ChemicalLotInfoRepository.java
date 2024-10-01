@@ -19,16 +19,18 @@ public interface ChemicalLotInfoRepository extends JpaRepository<ChemicalLotInfo
 	@Query("select t1 from ChemicalLotInfo t1 where t1.chemicalId =?1 and t1.lotNo = ?2 and t1.isImport = false ")
 	ChemicalLotInfo getChemicalLot(Long chemicalId, String lotCode);
 
-	@Query("SELECT new com.example.lab.dto.response.ChemicalUsingResponseDto(t3.name,t3.brand.name,t2.quantity,t3.chemicalType,t3.chemicalTypeInfo,t3.chemicalClass,t3.chemicalClassInfo,t4.positionInfo,t2.chemicalStatus,t3.otherInfo,t5) "
+	@Query("SELECT new com.example.lab.dto.response.ChemicalUsingResponseDto(t3.name,t6.name,t2.quantity,t3.chemicalType,t3.chemicalTypeInfo,t3.chemicalClass,t3.chemicalClassInfo,t4.positionInfo,t2.chemicalStatus,t3.otherInfo,t5) "
 			+ "FROM ChemicalLotInfo t1 "
 			+ "INNER JOIN ChemicalInventory t2 "
 			+ "ON t1.id = t2.lotId "
 			+ "INNER JOIN ChemicalInfo t3 "
 			+ "ON t1.chemicalId = t3.id "
 			+ "INNER JOIN PositionInfo t4 "
-			+ "ON t2.position.id = t4.id "
+			+ "ON t2.positionId = t4.id "
 			+ "INNER JOIN UserInfo t5 "
 			+ "ON t3.registerUser.id = t5.user.id "
+			+ "LEFT JOIN Brand t6 "
+			+ "ON t6.id = t3.brandId "
 			+ "WHERE t1.chemicalId =?1 "
 			+ "AND t1.lotNo = ?2 "
 			+ "AND t1.isImport = true "
@@ -37,12 +39,14 @@ public interface ChemicalLotInfoRepository extends JpaRepository<ChemicalLotInfo
 			+ "AND t2.isDelete !='1' ")
 	ChemicalUsingResponseDto getUsingChemicalLot(Long chemicalId, String lotCode);
 
-	@Query(" SELECT new com.example.lab.dto.response.ChemicalInfoResponseDto(t2,t3) "
+	@Query(" SELECT new com.example.lab.dto.response.ChemicalInfoResponseDto(t2,t3,t4) "
 			+ "FROM ChemicalLotInfo t1 "
 			+ "INNER JOIN ChemicalInfo t2 "
 			+ "ON t1.chemicalId = t2.id "
 			+ "INNER JOIN UserInfo t3 "
 			+ "ON t2.registerUser.id = t3.user.id "
+			+ "LEFT JOIN Brand t4 "
+			+ "ON t4.id = t2.brandId "
 			+ "WHERE t1.chemicalId =?1 "
 			+ "AND t1.lotNo = ?2 "
 			+ "AND t1.isImport = false "

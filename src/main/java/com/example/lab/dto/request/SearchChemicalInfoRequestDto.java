@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SearchChemicalInfoRequestDto {
 	private ChemicalDto chemical;
-	private String brand;
+	private Long brand;
 	private String chemicalType;
 	private String chemicalClass;
 //	private String chemicalClassInfo;

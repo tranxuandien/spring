@@ -20,19 +20,23 @@ public interface ChemicalInventoryRepository extends JpaRepository<ChemicalInven
 			+ "AND (?2 IS NULL OR t2.lotNo=?2) ")
 	ChemicalInventory findByChemicalId(Long id,String lotCode);
 
-	@Query("SELECT new com.example.lab.dto.response.ChemicalInventoryResponseDto(t1.id,t2.name, t2.brand.name, t2.chemicalType, t2.chemicalTypeInfo, "
-			+ "t2.chemicalClass, t2.chemicalClassInfo, t1.quantity, t1.position.positionInfo, t1.expiredDate, null, t1.chemicalStatus, t1.purchaseSrc,t2.id,t3.lotNo) "
+	@Query("SELECT new com.example.lab.dto.response.ChemicalInventoryResponseDto(t1.id,t2.name, t4.name, t2.chemicalType, t2.chemicalTypeInfo, "
+			+ "t2.chemicalClass, t2.chemicalClassInfo, t1.quantity, t5.positionInfo, t1.expiredDate, null, t1.chemicalStatus, t1.purchaseSrc,t2.id,t3.lotNo) "
 			+ "FROM ChemicalInventory t1 "
 			+ "INNER JOIN ChemicalInfo t2 "
 			+ "ON t1.chemicalId = t2.id "
 			+ "INNER JOIN ChemicalLotInfo t3 "
 			+ "ON t3.id = t1.lotId "
+			+ "LEFT JOIN Brand t4 "
+			+ "ON t4.id = t2.brandId "
+			+ "LEFT JOIN PositionInfo t5 "
+			+ "ON t5.id = t1.positionId "
 			+ "WHERE t1.isDelete = '0' "
 			+ "AND (?1 IS NULL OR t2.name LIKE %?1%) "
-			+ "AND (?2 IS NULL OR t2.brand.id = ?2) "
+			+ "AND (?2 IS NULL OR t2.brandId = ?2) "
 			+ "AND (?3 IS NULL OR t2.chemicalType =?3) "
 			+ "AND (?4 IS NULL OR t2.chemicalClass=?4) "
-			+ "AND (?5 IS NULL OR t1.position.id=?5) "
+			+ "AND (?5 IS NULL OR t1.positionId=?5) "
 			+ "AND (?6 IS NULL OR t1.quantity > ?6) "
 			+ "AND (?7 IS NULL OR t1.quantity <= ?7) "
 			+ "ORDER BY t1.createAt DESC ")

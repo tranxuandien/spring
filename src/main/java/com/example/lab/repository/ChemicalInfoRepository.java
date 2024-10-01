@@ -50,20 +50,20 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 	List<ChemicalMasterDataDto> getLstMaster();
 	
 	
-	@Query("SELECT new com.example.lab.dto.response.ChemicalInfoResponseDto(t1,t2)  FROM ChemicalInfo t1 "
+	@Query("SELECT new com.example.lab.dto.response.ChemicalInfoResponseDto(t1,t2,t3)  FROM ChemicalInfo t1 "
 			+ "INNER JOIN UserInfo t2 on t2.user.id = t1.registerUser.id "
-			+ "LEFT JOIN Brand t3 on t1.brand.id=t3.id "
+			+ "LEFT JOIN Brand t3 on t1.brandId=t3.id "
 			+ " WHERE "
 			+ "(?1 IS NULL OR t1.name LIKE %?1%) "
 			+ "AND (?2 IS NULL OR t1.chemicalType=?2) "
 			+ "AND (?3 IS NULL OR t3.id = ?3) "
 			+ "AND (?4 IS NULL OR t1.chemicalClass LIKE %?4%) "
 			+ "AND t1.isDelete ='0' ")
-	List<ChemicalInfoResponseDto> findAll( String name, String chemicalType, String brand, String chemicalClass);
+	List<ChemicalInfoResponseDto> findAll( String name, String chemicalType, Long brand, String chemicalClass);
 	
 	@Query("SELECT t1  FROM ChemicalInfo t1 "
 			+ "INNER JOIN UserInfo t2 on t2.id = t1.registerUser.id "
-			+ "LEFT JOIN Brand t3 on t1.brand.id=t3.id "
+			+ "LEFT JOIN Brand t3 on t1.brandId=t3.id "
 			+ " WHERE "
 			+ "(?1 IS NULL OR t1.name = ?1) "
 			+ "AND (?2 IS NULL OR t1.chemicalType=?2) "
@@ -71,5 +71,5 @@ public interface ChemicalInfoRepository extends JpaRepository<ChemicalInfo,Long 
 			+ "AND (?4 IS NULL OR t1.chemicalClass = ?4) "
 //			+ "AND (?5 IS NULL OR t1.chemicalClassInfo = ?5) "
 			+ "AND t1.isDelete ='0' ")
-	List<ChemicalInfo> findExist( String name, String chemicalType, String brand, String chemicalClass);
+	List<ChemicalInfo> findExist( String name, String chemicalType, Long brand, String chemicalClass);
 }

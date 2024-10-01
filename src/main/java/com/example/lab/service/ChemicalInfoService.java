@@ -87,12 +87,10 @@ public class ChemicalInfoService {
 	public ChemicalInfo addChemical(ChemicalInfoRequestDto dto) {
 		ChemicalInfo chemicalInfo = new ChemicalInfo(dto);
 
-		Optional<Brand> brand = brandRepository.findById(Long.valueOf(dto.getBrand()));
 		Optional<UserInfo> user = userInfoRepository.findByUsername(dto.getRegisterUser());
-		if (brand.isEmpty() || user.isEmpty()) {
+		if (user.isEmpty()) {
 			return null;
 		}
-		chemicalInfo.setBrand(brand.get());
 		chemicalInfo.setRegisterUser(user.get().getUser());
 		ChemicalInfo chemical = chemicalInfoRepository.save(chemicalInfo);// save info
 		return chemical;
@@ -158,7 +156,7 @@ public class ChemicalInfoService {
 
 		// save inventory
 		ChemicalInventory inventory = new ChemicalInventory(null, chemicalId, requestDto.getManufactoryQuantity(),
-				lot.getId(), requestDto.getChemicalStatus(), requestDto.getPurchaseSrc(), position.get(),
+				lot.getId(), requestDto.getChemicalStatus(), requestDto.getPurchaseSrc(), position.get().getId(),
 				requestDto.getExpiredDate(),"0");//is delete false
 		chemicalInventoryRepository.save(inventory);
 

@@ -31,11 +31,10 @@ import com.example.lab.dto.request.ChemicalImportRequestDto;
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
 import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
+import com.example.lab.dto.response.ChemicalInfoUpdateResponseDto;
 import com.example.lab.dto.response.ChemicalUsingResponseDto;
 import com.example.lab.dto.response.CommonResponseEntity;
-import com.example.lab.model.Brand;
 import com.example.lab.model.ChemicalInfo;
-import com.example.lab.service.BrandService;
 import com.example.lab.service.ChemicalInfoService;
 import com.lowagie.text.DocumentException;
 
@@ -53,9 +52,6 @@ public class ChemicalInfoController {
 
 	@Autowired
 	private ChemicalInfoService chemicalInfoService;
-
-	@Autowired
-	private BrandService brandService;
 
 	@GetMapping("/chemical/list")
 	@ResponseStatus(code = HttpStatus.OK)
@@ -101,8 +97,7 @@ public class ChemicalInfoController {
 		if (chemicalInfo.isEmpty())
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(CommonResponseEntity.builder()
 					.errorMessage(ErrorMessage.CHEMICAL_CANNOT_GET_CHEMICAL_INFO).build());
-		ChemicalInfoResponseDto dto = new ChemicalInfoResponseDto(chemicalInfo.get(), null);
-		dto.setBrand(chemicalInfo.get().getBrand().getId().toString());
+		ChemicalInfoUpdateResponseDto dto = new ChemicalInfoUpdateResponseDto(chemicalInfo.get(), null);
 		return ResponseEntity.status(HttpStatus.OK).body(CommonResponseEntity.builder().data(dto).build());
 	}
 
@@ -113,9 +108,7 @@ public class ChemicalInfoController {
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
 					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.CHEMICAL_CANNOT_UPDATE).build());
 		ChemicalInfo obj = chemicalInfo.get();
-		Optional<Brand> brand = brandService.findByid(Long.valueOf(chemical.getBrand()));
 		obj.update(chemical);
-		obj.setBrand(brand.get());
 		ChemicalInfo updateChemical = chemicalInfoService.save(obj);
 		if (updateChemical.equals(null))
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)

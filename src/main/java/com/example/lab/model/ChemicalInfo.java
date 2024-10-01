@@ -52,9 +52,9 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "register_user")
 	private User registerUser;
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "brand_id")
-	private Brand brand;
+//	@OneToOne(optional = false, fetch = FetchType.LAZY)
+	@Column(name = "brand_id")
+	private Long brandId;
 	@Basic(optional = false)
 	@Column(name = "is_delete")
 	private String isDelete;
@@ -71,7 +71,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 			String chemicalStatus) {
 		this.id = id;
 		this.name = name;
-		this.brand = brand;
+		this.brandId = brand.getId();
 		this.chemicalType = chemicalType;
 		this.chemicalTypeInfo = chemicalTypeInfo;
 	}
@@ -85,6 +85,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.otherInfo = dto.otherInfo;
 		this.isDelete = "0";// init
+		this.brandId = dto.getBrand();
 	}
 
 	public void update(@Valid ChemicalInfoRequestDto dto) {
@@ -94,6 +95,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalClass = dto.chemicalClass;
 		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.otherInfo = dto.otherInfo;
+		this.brandId =dto.brand;
 	}
 	
 	@Override

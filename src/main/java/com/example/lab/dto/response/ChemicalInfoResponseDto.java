@@ -1,5 +1,6 @@
 package com.example.lab.dto.response;
 
+import com.example.lab.model.Brand;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.UserInfo;
 
@@ -17,17 +18,17 @@ public class ChemicalInfoResponseDto {
 	public String chemicalClassInfo;
 	public String otherInfo;
 	public String registerUser;
-	
-	public ChemicalInfoResponseDto(ChemicalInfo chemicalInfo,UserInfo user) {
+
+	public ChemicalInfoResponseDto(ChemicalInfo chemicalInfo, UserInfo user, Brand brand) {
 		this.id = chemicalInfo.getId();
 		this.name = chemicalInfo.getName();
-		this.brand = chemicalInfo.getBrand().getName();
+		this.brand = brand == null ? null : brand.getName();
 		this.chemicalType = chemicalInfo.getChemicalType();
 		this.chemicalTypeInfo = chemicalInfo.getChemicalTypeInfo();
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
-		this.registerUser = user==null?null:user.getName();
+		this.registerUser = user == null ? null : user.getName();
 	}
 
 	public ChemicalInfoResponseDto(Long id, String name, String brand, String chemicalType, String chemicalTypeInfo,

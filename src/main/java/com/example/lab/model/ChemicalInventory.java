@@ -47,9 +47,8 @@ public class ChemicalInventory extends BaseEntity implements Serializable {
 	private String chemicalStatus;
 	@Column(name = "purchase_src")
 	private String purchaseSrc;
-	@OneToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "position_id")
-	private PositionInfo position;
+	@Column(name = "position_id")
+	private Long positionId;
 	@Basic(optional = false)
 	@Column(name = "expired_date")
 	private String expiredDate;

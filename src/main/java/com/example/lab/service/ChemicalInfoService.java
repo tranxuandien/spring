@@ -20,7 +20,6 @@ import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.dto.response.ChemicalUsingResponseDto;
 import com.example.lab.enums.ImpExp;
-import com.example.lab.model.Brand;
 import com.example.lab.model.ChemicalImpExp;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.ChemicalInventory;
@@ -28,13 +27,14 @@ import com.example.lab.model.ChemicalLotInfo;
 import com.example.lab.model.PositionInfo;
 import com.example.lab.model.User;
 import com.example.lab.model.UserInfo;
-import com.example.lab.repository.BrandRepository;
 import com.example.lab.repository.ChemicalImpExpRepository;
 import com.example.lab.repository.ChemicalInfoRepository;
 import com.example.lab.repository.ChemicalInventoryRepository;
 import com.example.lab.repository.ChemicalLotInfoRepository;
 import com.example.lab.repository.PositionInfoRepository;
 import com.example.lab.repository.UserInfoRepository;
+import com.example.lab.repository.user.UserRepository;
+import com.example.lab.service.mail.EmailServiceImpl;
 
 import jakarta.transaction.Transactional;
 
@@ -45,7 +45,7 @@ public class ChemicalInfoService {
 	private ChemicalInfoRepository chemicalInfoRepository;
 
 	@Autowired
-	private BrandRepository brandRepository;
+	private UserRepository userRepository;
 
 	@Autowired
 	private UserInfoRepository userInfoRepository;
@@ -61,6 +61,9 @@ public class ChemicalInfoService {
 
 	@Autowired
 	private ChemicalLotInfoRepository chemicalLotInfoRepository;
+	
+	@Autowired
+	private EmailServiceImpl emailServiceImpl;
 
 	public List<ChemicalMasterDataDto> getLstMaster() {
 		return chemicalInfoRepository.getLstMaster();
@@ -181,13 +184,21 @@ public class ChemicalInfoService {
 		ChemicalInventory inventory = chemicalInventoryRepository.findByChemicalId(info.getId(), lotCode);
 		if (inventory.getQuantity().subtract(updateDto.getQuantity()).compareTo(BigDecimal.ZERO) < 0)
 			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
-		inventory.setQuantity(inventory.getQuantity().subtract(updateDto.getQuantity()));
+		BigDecimal remain = inventory.getQuantity().subtract(updateDto.getQuantity());
+		inventory.setQuantity(remain);
 		chemicalInventoryRepository.save(inventory);
 		// add imp info
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
 				null, user.getId(), inventory.getLotId());
 		chemicalImpExpRepository.save(impexp);
+		if (remain.compareTo(BigDecimal.valueOf(100)) <= 0) {
+			// do send mail
+			String email = userRepository.getAdminEmail();
+			if (email != null)
+				emailServiceImpl.sendChemicalStatusAlertEmail(email, user.getEmail(), info.getName(),
+						user.getUsername() + "(" + user.getEmail() + ")", remain);
+		}
 	}
 
 	public List<ChemicalInfo> getExistChemicalInfo(SearchChemicalInfoRequestDto searchDto) {

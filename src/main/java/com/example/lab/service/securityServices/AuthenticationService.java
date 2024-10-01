@@ -67,7 +67,7 @@ public class AuthenticationService {
 			Token token = new Token(jwtToken, "Bearer", false, false, createdUser.getId());
 			tokenRepository.save(token);
 
-			emailServiceImpl.sendSimpleMessage(request.getEmail(), request.getUsername(), jwtToken, uri);
+			emailServiceImpl.sendRegisterEmail(request.getEmail(), request.getUsername(), jwtToken, uri);
 		} catch (Exception e) {
 			throw new Exception(ErrorMessage.AUTH_INVALID_EMAIL_REGISTER);
 		}

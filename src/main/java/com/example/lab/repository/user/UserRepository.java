@@ -26,4 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "ON t1.id = t2.user.id "
 			+ "WHERE t1.isActive = true ")
 	List<UserResponseDto> findAllUser();
+
+	@Query("SELECT t1.email from User t1 WHERE t1.role = 'ROLE_ADMIN' ORDER BY t1.id LIMIT 1 ")
+	String getAdminEmail();
 }

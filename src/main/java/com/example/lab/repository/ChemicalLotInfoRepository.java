@@ -25,7 +25,7 @@ public interface ChemicalLotInfoRepository extends JpaRepository<ChemicalLotInfo
 			+ "ON t1.id = t2.lotId "
 			+ "INNER JOIN ChemicalInfo t3 "
 			+ "ON t1.chemicalId = t3.id "
-			+ "INNER JOIN PositionInfo t4 "
+			+ "LEFT JOIN PositionInfo t4 "
 			+ "ON t2.positionId = t4.id "
 			+ "INNER JOIN UserInfo t5 "
 			+ "ON t3.registerUser.id = t5.user.id "

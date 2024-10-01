@@ -219,7 +219,7 @@ public class ChemicalInfoController {
 			}
 		}
 		return ResponseEntity.ok(CommonResponseEntity.builder()
-				.message("Đã đăng ký sử dụng " + updateDto.getQuantity() + "(g/ml) hóa chất" + info.getName()).build());
+				.message("Đã đăng ký sử dụng " + updateDto.getQuantity() + "(g/ml) hóa chất: " + info.getName()).build());
 	}
 
 	@DeleteMapping("/chemical/delete/{code}")

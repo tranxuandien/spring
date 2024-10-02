@@ -2,6 +2,8 @@ package com.example.lab.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import com.example.lab.common.report.BarCodePDFExporter;
@@ -38,7 +40,7 @@ public class ChemicalImpExpResponseDto {
 		this.brand = brand;
 		this.quantity = quantity;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		this.usingDate = usingDate.format(formatter);
+		this.usingDate = ZonedDateTime.of(usingDate, ZoneId.of("Asia/Ho_Chi_Minh")).format(formatter);
 		this.impExpUser = firstName + " " + lastName;
 		this.chemicalType = chemicalType;
 		this.chemicalTypeInfo = chemicalTypeInfo;

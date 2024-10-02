@@ -1,7 +1,6 @@
 package com.example.lab.model;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
@@ -16,7 +15,7 @@ public class BaseEntity {
 
 	public BaseEntity() {
 		super();
-		this.createAt = LocalDateTime.now().atZone(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
+		this.createAt = LocalDateTime.now();
 		this.updateAt = LocalDateTime.now();
 	}
 

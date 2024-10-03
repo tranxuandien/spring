@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 import com.example.lab.common.report.BarCodePDFExporter;
 
@@ -42,7 +43,7 @@ public class ChemicalImpExpResponseDto {
 		this.brand = brand;
 		this.quantity = quantity;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		OffsetDateTime off = OffsetDateTime.of(usingDate, ZoneOffset.UTC);
+		OffsetDateTime off = OffsetDateTime.of(usingDate, ZonedDateTime.now().getOffset());
 		ZonedDateTime zoned = off.atZoneSameInstant(ZoneId.of("Asia/Ho_Chi_Minh"));
 		this.usingDate = zoned.format(formatter);
 		this.impExpUser = firstName + " " + lastName;

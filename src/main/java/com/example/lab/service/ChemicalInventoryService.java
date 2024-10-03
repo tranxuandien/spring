@@ -1,5 +1,6 @@
 package com.example.lab.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ public class ChemicalInventoryService {
 			return null;
 		ChemicalInventory updateObj = chemical.get();
 		updateObj.setIsDelete("1");// set delete
+		updateObj.setUpdateAt(LocalDateTime.now());
 		chemicalInventoryRepository.save(updateObj);
 		return updateObj;
 	}

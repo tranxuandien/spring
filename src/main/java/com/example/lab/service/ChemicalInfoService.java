@@ -107,7 +107,10 @@ public class ChemicalInfoService {
 	public ChemicalInfo deleteByCode(String code) {
 		ChemicalInfo chemical = chemicalInfoRepository.findByCodeWithoutInventory(code);
 		if (chemical != null)
+		{
 			chemical.setIsDelete("1");
+			chemical.setUpdateAt(LocalDateTime.now());
+		}
 		else return null;
 		chemicalInfoRepository.save(chemical);
 		return chemical;
@@ -186,6 +189,7 @@ public class ChemicalInfoService {
 			throw new Exception("Giá trị sử dụng nhiều hơn số lượng hóa chất còn lại");
 		BigDecimal remain = inventory.getQuantity().subtract(updateDto.getQuantity());
 		inventory.setQuantity(remain);
+		inventory.setUpdateAt(LocalDateTime.now());
 		chemicalInventoryRepository.save(inventory);
 		// add imp info
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -1,6 +1,7 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
 
@@ -96,6 +97,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.otherInfo = dto.otherInfo;
 		this.brandId =dto.brand;
+		this.setUpdateAt(LocalDateTime.now());
 	}
 	
 	@Override

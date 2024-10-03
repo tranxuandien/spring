@@ -14,7 +14,6 @@ public class BaseEntity {
 	private LocalDateTime updateAt;
 
 	public BaseEntity() {
-		super();
 		this.createAt = LocalDateTime.now();
 		this.updateAt = LocalDateTime.now();
 	}

@@ -120,7 +120,7 @@ public class ChemicalInfoService {
 		return chemicalInfoRepository.findByCodeWithoutInventory(code) != null;
 	}
 
-	public String[] addPrintedChemicalLots(Integer chemicalId, Integer number) {
+	public String[] addPrintedChemicalLots(Long chemicalId, Integer number) {
 		String[] result = new String[number];
 		List<ChemicalLotInfo> addLst = new ArrayList<ChemicalLotInfo>();
 		Integer maxLot = chemicalLotInfoRepository.getMaxLot().isEmpty() ? 0

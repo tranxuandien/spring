@@ -1,9 +1,6 @@
 package com.example.lab.controller;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +26,8 @@ import com.example.lab.dto.ChemicalUsingDto;
 import com.example.lab.dto.masterdata.ChemicalMasterDataDto;
 import com.example.lab.dto.request.ChemicalImportRequestDto;
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
+import com.example.lab.dto.request.PrintBarcodeChemicalDto;
+import com.example.lab.dto.request.PrintBarcodeChemicalRequestDto;
 import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.dto.response.ChemicalInfoUpdateResponseDto;
@@ -152,16 +151,19 @@ public class ChemicalInfoController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
 	}
 
-	@GetMapping("/admin/chemical/codeprint")
+	@PostMapping("/admin/chemical/codeprint")
 	@ResponseStatus(code = HttpStatus.OK)
-	public ResponseEntity<?> exportToPDF(@PathParam("chemicalId") Integer chemicalId,
-			@PathParam("chemicalName") String chemicalName, @PathParam("number") Integer number,
+	public ResponseEntity<?> exportToPDF(@RequestBody PrintBarcodeChemicalRequestDto dto,
 			HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
-		if (number > PRINT_LIMIT_NUMBER)
-			return ResponseEntity.noContent().build();
+		for (PrintBarcodeChemicalDto item : dto.getList()) {
+			if (item.getPrintNumber() > PRINT_LIMIT_NUMBER)
+				return ResponseEntity.noContent().build();
+		}
 		response.setContentType("application/pdf");
-		String[] printLst = chemicalInfoService.addPrintedChemicalLots(chemicalId, number);
-		BarCodePDFExporter exporter = new BarCodePDFExporter(chemicalId, number, printLst, chemicalName);
+		for (PrintBarcodeChemicalDto  item : dto.getList()) {
+			item.setPrintLst(chemicalInfoService.addPrintedChemicalLots(item.getChemical().getId(), item.getPrintNumber()));
+		}
+		BarCodePDFExporter exporter = new BarCodePDFExporter(dto);
 		exporter.export(response);
 		response.setStatus(HttpStatus.NO_CONTENT.value());
 		return ResponseEntity.noContent().build();

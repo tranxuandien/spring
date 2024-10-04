@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.example.lab.dto.request.PrintBarcodeChemicalDto;
+import com.example.lab.dto.request.PrintBarcodeChemicalRequestDto;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -39,6 +41,8 @@ public class BarCodePDFExporter {
 	private String chemicalName;
 	
 	private String barcode;
+	
+	private PrintBarcodeChemicalRequestDto dto;
 
 	public BarCodePDFExporter(Integer chemicalId, Integer number, String[] printLst, String chemicalName) {
 		super();
@@ -54,27 +58,36 @@ public class BarCodePDFExporter {
 		this.number = 1;
 	}
 
+	public BarCodePDFExporter(PrintBarcodeChemicalRequestDto dto) {
+		this.dto = dto;
+	}
+
 	private void writeTableData(PdfPTable table)
 			throws OutputException, BadElementException, IOException, BarcodeException {
-		for (int i = 0; i < this.number+(5-this.number%5); i++) {
-			PdfPCell cell1 = new PdfPCell();
-			cell1.setBorder(Rectangle.NO_BORDER);
-			cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
-			if (i >= this.number) {
+		for (PrintBarcodeChemicalDto chemical : this.dto.getList()) {
+			for (int i = 0; i < chemical.getPrintNumber() + (5 - chemical.getPrintNumber() % 5); i++) {
+				PdfPCell cell1 = new PdfPCell();
+				cell1.setBorder(Rectangle.NO_BORDER);
+				cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				if (i >= chemical.getPrintNumber()) {
+					table.addCell(cell1);
+					continue;
+				}
+				String chemicalCode = "0"
+						.repeat(CHEMICAL_CODE_LENGTH - chemical.getChemical().getId().toString().length())
+						+ chemical.getChemical().getId().toString();
+				String chemicalLot = "0".repeat(CHEMICAL_LOT_LENGTH - chemical.getPrintLst()[i].length())
+						+ chemical.getPrintLst()[i];
+				Barcode bc = BarcodeFactory.createCode128(chemicalCode + chemicalLot);
+				bc.setBarHeight(60);
+				cell1.addElement(new Paragraph(chemical.getChemical().getChemicalName()));
+				cell1.addElement(new Paragraph("      "));
+				cell1.addElement(com.lowagie.text.Image.getInstance(BarcodeImageHandler.getImage(bc), null));
+				Paragraph code = new Paragraph(chemicalCode + chemicalLot);
+				code.setAlignment(Element.ALIGN_CENTER);
+				cell1.addElement(code);
 				table.addCell(cell1);
-				continue;
 			}
-			String chemicalCode = "0".repeat(CHEMICAL_CODE_LENGTH - chemicalId.toString().length())+chemicalId.toString();
-			String chemicalLot = "0".repeat(CHEMICAL_LOT_LENGTH - printLst[i].length())+printLst[i];
-			Barcode bc = BarcodeFactory.createCode128(chemicalCode+chemicalLot);
-			bc.setBarHeight(60);
-			cell1.addElement(new Paragraph(chemicalName));
-			cell1.addElement(new Paragraph("      "));
-			cell1.addElement(com.lowagie.text.Image.getInstance(BarcodeImageHandler.getImage(bc), null));
-			Paragraph code = new Paragraph(chemicalCode+chemicalLot);
-			code.setAlignment(Element.ALIGN_CENTER);
-			cell1.addElement(code);
-			table.addCell(cell1);
 		}
 	}
 
@@ -92,7 +105,8 @@ public class BarCodePDFExporter {
 
 		document.close();
 	}
-
+	
+	//for re-print
 	public void exportOne(HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
 		Document document = new Document(PageSize.A4);
 		PdfWriter.getInstance(document, response.getOutputStream());

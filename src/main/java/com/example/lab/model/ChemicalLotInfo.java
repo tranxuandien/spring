@@ -25,7 +25,7 @@ public class ChemicalLotInfo extends BaseEntity {
     private Long id;
     @Basic(optional = false)
     @Column(name = "chemical_id")
-    private int chemicalId;
+    private Long chemicalId;
     @Basic(optional = false)
     @Column(name = "lot_no")
     private String lotNo;
@@ -40,7 +40,7 @@ public class ChemicalLotInfo extends BaseEntity {
         this.id = id;
     }
 
-    public ChemicalLotInfo(Long id, int chemicalId, String lotNo, boolean isImport) {
+    public ChemicalLotInfo(Long id, Long chemicalId, String lotNo, boolean isImport) {
         this.id = id;
         this.chemicalId = chemicalId;
         this.lotNo = lotNo;

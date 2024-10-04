@@ -27,4 +27,6 @@ public class ErrorMessage {
 
 	public static final String POSITION_CANNOT_ADD = "Đăng ký nơi đặt hóa chất thất bại hoặc trùng lặp thông tin đăng ký";
 	public static final String POSITION_INFO_CANNOT_DELETED = "Không thể xóa thông tin nơi đặt hóa chất hoặc thông tin hóa chất đã được xóa trước đó";
+	//======================Device=====================
+	public static final String DEVICE_CANNOT_ADD = "Đăng ký thông tin thiết bị thất bại hoặc trùng lặp thông tin đăng ký";
 }

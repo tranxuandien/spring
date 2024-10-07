@@ -29,4 +29,7 @@ public class ErrorMessage {
 	public static final String POSITION_INFO_CANNOT_DELETED = "Không thể xóa thông tin nơi đặt hóa chất hoặc thông tin hóa chất đã được xóa trước đó";
 	//======================Device=====================
 	public static final String DEVICE_CANNOT_ADD = "Đăng ký thông tin thiết bị thất bại hoặc trùng lặp thông tin đăng ký";
+	public static final String DEVICE_CANNOT_USE = "Đăng ký sử dụng thiết bị thất bại";
+	public static final String DEVICE_NOT_AVAILABE = "Thiết bị đang được sử dụng trong khoảng thời gian đăng ký, kiểm tra lại thời gian đăng ký sử dụng";
+	
 }

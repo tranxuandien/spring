@@ -5,9 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class DeviceInfoResponseDto {
+public class DeviceInfoMasterResponseDto {
+	public Long id;
 	public String name;
-	public String position;
-	public String otherInfo;
-	public String user;
 }

@@ -2,6 +2,11 @@ package com.example.lab.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import com.example.lab.dto.request.DeviceUsingRequestDto;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -29,7 +34,7 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 	private Integer id;
 	@Basic(optional = false)
 	@Column(name = "device_id")
-	private int deviceId;
+	private Long deviceId;
 	@Basic(optional = false)
 	@Column(name = "start")
 	private LocalDateTime start;
@@ -44,7 +49,7 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 	private String info;
 	@Basic(optional = false)
 	@Column(name = "user_id")
-	private int userId;
+	private Long userId;
 
 	public DeviceUsingInfo() {
 	}
@@ -53,8 +58,8 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 		this.id = id;
 	}
 
-	public DeviceUsingInfo(Integer id, int deviceId, LocalDateTime start, LocalDateTime end, Boolean deviceStatus, String info,
-			int userId) {
+	public DeviceUsingInfo(Integer id, Long deviceId, LocalDateTime start, LocalDateTime end, Boolean deviceStatus, String info,
+			Long userId) {
 		this.id = id;
 		this.deviceId = deviceId;
 		this.start = start;
@@ -62,6 +67,16 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 		this.deviceStatus = deviceStatus;
 		this.info = info;
 		this.userId = userId;
+	}
+
+	public DeviceUsingInfo(DeviceUsingRequestDto dto) {
+		this.deviceId = dto.getDeviceId();
+		this.start = LocalDateTime.parse(dto.getStart(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		this.end = LocalDateTime.parse(dto.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		this.deviceStatus = dto.getDeviceStatus();
+		this.info = dto.getInfo();
+		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		this.userId = u.getId();
 	}
 
 	@Override

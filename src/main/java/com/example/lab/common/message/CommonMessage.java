@@ -18,5 +18,7 @@ public class CommonMessage {
 	public static final String POSITION_INFO_DELETED = "Đã xóa thông tin nơi đặt hóa chất";
 	// ========================Device=========================================
 	public static final String DEVICE_CREATED = "Đã đăng ký thông tin thiết bị";
+	public static final String DEVICE_USED = "Thiết bị đã được đăng ký sử dụng";
+	
 	
 }

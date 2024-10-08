@@ -21,6 +21,8 @@ public class CommonMessage {
 	public static final String DEVICE_USED = "Thiết bị đã được đăng ký sử dụng";
 	public static final String DEVICE_USING_CANCEL = "Đã hủy đăng ký sử dụng thiết bị";
 	public static final String DEVICE_USING_DONE = "Đã đăng ký hoàn thành sử dụng thiết bị";
-	
+	public static final String DEVICE_REPORT_STATUS = "Đã báo cáo tình trạng thiết bị";
+	public static final String DEVICE_ACTIVED = "Đã đăng ký thiết bị hoạt động";
+	public static final String DEVICE_DELETED = "Đã xóa thông tin thiết bị";
 	
 }

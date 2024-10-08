@@ -1,6 +1,8 @@
 package com.example.lab.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,5 +38,19 @@ public class DeviceInfoService {
 
 	public List<DeviceInfoMasterResponseDto> getListMasterDeviceInfo() {
 		return deviceInfoRepository.getListMaster();
+	}
+
+	public void active(Long id) throws Exception {
+		Optional<DeviceInfo> opt = deviceInfoRepository.findById(id);
+		if(opt.isEmpty()) throw new Exception();
+		DeviceInfo device = opt.get();
+		device.setDeviceStatus(true);
+		device.setOtherInfo("Hoạt động bình thường");
+		device.setUpdateAt(LocalDateTime.now());
+		deviceInfoRepository.save(device);
+	}
+
+	public void deleteById(Long id) {
+		deviceInfoRepository.deleteDevice(id);
 	}
 }

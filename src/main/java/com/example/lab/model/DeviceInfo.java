@@ -40,6 +40,9 @@ public class DeviceInfo extends BaseEntity implements Serializable {
     @Column(name = "other_info")
     private String otherInfo;
     @Basic(optional = false)
+    @Column(name = "device_status")
+    private Boolean deviceStatus;
+    @Basic(optional = false)
     @Column(name = "user_id")
     private Long userId;
     @Basic(optional = false)

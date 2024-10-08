@@ -9,10 +9,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.lab.dto.request.DeviceUsingRequestDto;
+import com.example.lab.dto.request.ReportUsingDeviceStatusDto;
 import com.example.lab.dto.response.DeviceUsingInfoResponseDto;
 import com.example.lab.enums.DeviceUsingRegister;
+import com.example.lab.model.DeviceInfo;
 import com.example.lab.model.DeviceUsingInfo;
 import com.example.lab.model.User;
+import com.example.lab.repository.DeviceInfoRepository;
 import com.example.lab.repository.DeviceUsingInfoRepository;
 
 @Service
@@ -20,6 +23,9 @@ public class DeviceUsingService {
 
 	@Autowired
 	DeviceUsingInfoRepository deviceUsingInfoRepository;
+
+	@Autowired
+	DeviceInfoRepository deviceInfoRepository;
 
 	public List<DeviceUsingInfoResponseDto> getListUsingDeviceUser() {
 		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
@@ -33,14 +39,14 @@ public class DeviceUsingService {
 	}
 
 	public List<DeviceUsingInfoResponseDto> getListRegisterByDevice(Long deviceId) {
-		return deviceUsingInfoRepository.getUsingDevicesByDevice(deviceId,DeviceUsingRegister.Inprogress.getVal());
+		return deviceUsingInfoRepository.getUsingDevicesByDevice(deviceId, DeviceUsingRegister.Inprogress.getVal());
 	}
-	
+
 	public DeviceUsingInfo use(DeviceUsingRequestDto dto) {
 		DeviceUsingInfo info = new DeviceUsingInfo(dto);
 		Boolean isAvailable = checkBusyDevice(info);
-		if(isAvailable)
-		return deviceUsingInfoRepository.save(info);
+		if (isAvailable)
+			return deviceUsingInfoRepository.save(info);
 		else
 			return null;
 	}
@@ -54,10 +60,11 @@ public class DeviceUsingService {
 	public DeviceUsingInfo cancelUsingDevice(Long id) {
 		Optional<DeviceUsingInfo> opt = deviceUsingInfoRepository.findById(id);
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ADMIN]");
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
+				.equals("[ROLE_ADMIN]");
 		if (!opt.isEmpty()) {
 			DeviceUsingInfo device = opt.get();
-			if(!u.getId().equals(device.getUserId())&&!isAdmin)
+			if (!u.getId().equals(device.getUserId()) && !isAdmin)
 				return null;
 			device.setRegisterStatus(DeviceUsingRegister.Cancel.getVal());
 			device.setUpdateAt(LocalDateTime.now());
@@ -70,15 +77,35 @@ public class DeviceUsingService {
 	public DeviceUsingInfo doneUsingDevice(Long id) {
 		Optional<DeviceUsingInfo> opt = deviceUsingInfoRepository.findById(id);
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals("[ROLE_ADMIN]");
+		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
+				.equals("[ROLE_ADMIN]");
 		if (!opt.isEmpty()) {
 			DeviceUsingInfo device = opt.get();
-			if(!u.getId().equals(device.getUserId())&&!isAdmin)
+			if (!u.getId().equals(device.getUserId()) && !isAdmin)
 				return null;
 			device.setRegisterStatus(DeviceUsingRegister.Done.getVal());
 			device.setUpdateAt(LocalDateTime.now());
 			deviceUsingInfoRepository.save(device);
 			return device;
+		}
+		return null;
+	}
+
+	public DeviceUsingInfo reportUsingDevice(ReportUsingDeviceStatusDto dto) {
+		Optional<DeviceUsingInfo> opt = deviceUsingInfoRepository.findById(dto.getId());
+		if (!opt.isEmpty()) {
+			DeviceUsingInfo deviceUsing = opt.get();
+			deviceUsing.setDeviceStatus(false);
+			deviceUsing.setRegisterStatus(DeviceUsingRegister.Cancel.getVal());
+			deviceUsing.setUpdateAt(LocalDateTime.now());
+			deviceUsingInfoRepository.save(deviceUsing);
+
+			DeviceInfo device = deviceInfoRepository.findById(deviceUsing.getDeviceId()).get();
+			device.setDeviceStatus(false);
+			device.setOtherInfo(dto.getDeviceStatusDetail());
+			device.setUpdateAt(LocalDateTime.now());
+			deviceInfoRepository.save(device);
+			return deviceUsing;
 		}
 		return null;
 	}

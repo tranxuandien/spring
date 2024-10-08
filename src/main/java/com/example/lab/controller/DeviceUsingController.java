@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.lab.common.message.CommonMessage;
 import com.example.lab.common.message.ErrorMessage;
 import com.example.lab.dto.request.DeviceUsingRequestDto;
+import com.example.lab.dto.request.ReportUsingDeviceStatusDto;
 import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.dto.response.DeviceUsingInfoResponseDto;
 import com.example.lab.model.DeviceUsingInfo;
@@ -74,5 +75,15 @@ public class DeviceUsingController {
 					.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_USING_DONE).build());
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
 				.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.DEVICE_DONE_USING_FAIL).build());
+	}
+	
+	@PostMapping("/device/using/report")
+	public ResponseEntity<?> reportUsingDevice(@RequestBody ReportUsingDeviceStatusDto dto) {
+		DeviceUsingInfo device = deviceUsingService.reportUsingDevice(dto);
+		if (device != null)
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_REPORT_STATUS).build());
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED)
+				.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.DEVICE_REPORT_STATUS_FAIL).build());
 	}
 }

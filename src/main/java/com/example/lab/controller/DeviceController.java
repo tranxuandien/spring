@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +21,8 @@ import com.example.lab.dto.response.CommonResponseEntity;
 import com.example.lab.dto.response.DeviceInfoMasterResponseDto;
 import com.example.lab.dto.response.DeviceInfoResponseDto;
 import com.example.lab.service.DeviceInfoService;
+
+import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("api/v1")
@@ -49,5 +53,29 @@ public class DeviceController {
 		}
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_CREATED).build());
+	}
+	
+	@GetMapping("/admin/device/active")
+	public ResponseEntity<?> activeDevice(@PathParam("id") Long id) {
+		try {
+			deviceInfoService.active(id);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+					.body(CommonResponseEntity.builder().errorMessage(ErrorMessage.DEVICE_CANNOT_ACTIVE).build());
+		}
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_ACTIVED).build());
+	}
+	
+	@DeleteMapping("/admin/device/delete/{id}")
+	public ResponseEntity<?> deleteDevice(@PathVariable(value = "id") Long id) {
+		try {
+			deviceInfoService.deleteById(id);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+					CommonResponseEntity.builder().errorMessage(ErrorMessage.DEVICE_CANNOT_DELETED).build());
+		}
+		return ResponseEntity.status(HttpStatus.ACCEPTED)
+				.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_DELETED).build());
 	}
 }

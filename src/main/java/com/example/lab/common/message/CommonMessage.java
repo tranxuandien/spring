@@ -19,6 +19,8 @@ public class CommonMessage {
 	// ========================Device=========================================
 	public static final String DEVICE_CREATED = "Đã đăng ký thông tin thiết bị";
 	public static final String DEVICE_USED = "Thiết bị đã được đăng ký sử dụng";
+	public static final String DEVICE_USING_CANCEL = "Đã hủy đăng ký sử dụng thiết bị";
+	public static final String DEVICE_USING_DONE = "Đã đăng ký hoàn thành sử dụng thiết bị";
 	
 	
 }

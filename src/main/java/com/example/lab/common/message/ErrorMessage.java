@@ -31,5 +31,6 @@ public class ErrorMessage {
 	public static final String DEVICE_CANNOT_ADD = "Đăng ký thông tin thiết bị thất bại hoặc trùng lặp thông tin đăng ký";
 	public static final String DEVICE_CANNOT_USE = "Đăng ký sử dụng thiết bị thất bại";
 	public static final String DEVICE_NOT_AVAILABE = "Thiết bị đang được sử dụng trong khoảng thời gian đăng ký, kiểm tra lại thời gian đăng ký sử dụng";
-	
+	public static final String DEVICE_CANCEL_USING_FAIL = "Không hủy được đăng ký sử dụng thiết bị";
+	public static final String DEVICE_DONE_USING_FAIL = "Chưa đăng ký hoàn thành sử dụng thiết bị";
 }

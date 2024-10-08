@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.lab.dto.request.DeviceUsingRequestDto;
+import com.example.lab.enums.DeviceUsingRegister;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -31,7 +32,7 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Basic(optional = false)
 	@Column(name = "id")
-	private Integer id;
+	private Long id;
 	@Basic(optional = false)
 	@Column(name = "device_id")
 	private Long deviceId;
@@ -48,17 +49,21 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 	@Column(name = "info")
 	private String info;
 	@Basic(optional = false)
+	@Column(name = "register_status")
+	private String registerStatus;
+	@Basic(optional = false)
 	@Column(name = "user_id")
 	private Long userId;
+	
 
 	public DeviceUsingInfo() {
 	}
 
-	public DeviceUsingInfo(Integer id) {
+	public DeviceUsingInfo(Long id) {
 		this.id = id;
 	}
 
-	public DeviceUsingInfo(Integer id, Long deviceId, LocalDateTime start, LocalDateTime end, Boolean deviceStatus, String info,
+	public DeviceUsingInfo(Long id, Long deviceId, LocalDateTime start, LocalDateTime end, Boolean deviceStatus, String info,
 			Long userId) {
 		this.id = id;
 		this.deviceId = deviceId;
@@ -75,6 +80,7 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 		this.end = LocalDateTime.parse(dto.getEnd(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 		this.deviceStatus = dto.getDeviceStatus();
 		this.info = dto.getInfo();
+		this.registerStatus = DeviceUsingRegister.Inprogress.getVal();
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.userId = u.getId();
 	}

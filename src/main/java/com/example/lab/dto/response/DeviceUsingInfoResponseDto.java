@@ -8,11 +8,11 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DeviceUsingInfoResponseDto {
-
+	public Long id;
 	public String device;
 	public LocalDateTime start;
 	public LocalDateTime end;
-	public Boolean deviceStatus;
+	public String registerStatus;
 	public String info;
 	public String user;
 }

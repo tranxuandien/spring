@@ -17,7 +17,7 @@ import com.example.lab.model.User;
 import com.example.lab.service.securityServices.UserService;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1")
 public class UserController {
 	
 	@Autowired
@@ -35,13 +35,13 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/admin/{userId}")
     public ResponseEntity<User> getUser(@PathVariable Long userId) {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{userId}")
+    @PutMapping("/admin/{userId}")
     public ResponseEntity<User> updateUser(@PathVariable Long userId, @RequestBody User user) {
         User updatedUser = userService.updateUser(userId, user);
         return ResponseEntity.ok(updatedUser);

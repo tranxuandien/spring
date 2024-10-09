@@ -1,5 +1,6 @@
 package com.example.lab.dto.response;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -15,4 +16,7 @@ public class DeviceUsingInfoResponseDto {
 	public String registerStatus;
 	public String info;
 	public String user;
+	public BigDecimal centrifugeSpeed;
+	public Object users;
+	public String expect;
 }

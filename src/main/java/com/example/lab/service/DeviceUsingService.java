@@ -14,9 +14,11 @@ import com.example.lab.dto.response.DeviceUsingInfoResponseDto;
 import com.example.lab.enums.DeviceUsingRegister;
 import com.example.lab.model.DeviceInfo;
 import com.example.lab.model.DeviceUsingInfo;
+import com.example.lab.model.DeviceUsingUsers;
 import com.example.lab.model.User;
 import com.example.lab.repository.DeviceInfoRepository;
 import com.example.lab.repository.DeviceUsingInfoRepository;
+import com.example.lab.repository.DeviceUsingUsersRepository;
 
 @Service
 public class DeviceUsingService {
@@ -27,6 +29,9 @@ public class DeviceUsingService {
 	@Autowired
 	DeviceInfoRepository deviceInfoRepository;
 
+	@Autowired
+	DeviceUsingUsersRepository deviceUsingUsersRepository;
+	
 	public List<DeviceUsingInfoResponseDto> getListUsingDeviceUser() {
 		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
 				.equals("[ROLE_ADMIN]");
@@ -43,11 +48,15 @@ public class DeviceUsingService {
 	}
 
 	public DeviceUsingInfo use(DeviceUsingRequestDto dto) {
-		DeviceUsingInfo info = new DeviceUsingInfo(dto);
-		Boolean isAvailable = checkBusyDevice(info);
-		if (isAvailable)
-			return deviceUsingInfoRepository.save(info);
-		else
+		DeviceUsingInfo saveObj = new DeviceUsingInfo(dto);
+		Boolean isAvailable = checkBusyDevice(saveObj);
+		if (isAvailable) {
+			DeviceUsingInfo info = deviceUsingInfoRepository.save(saveObj);
+			List<DeviceUsingUsers> users = dto.getUser().stream().map(item -> new DeviceUsingUsers(item, info.getId()))
+					.toList();
+			deviceUsingUsersRepository.saveAll(users);
+			return info;
+		} else
 			return null;
 	}
 

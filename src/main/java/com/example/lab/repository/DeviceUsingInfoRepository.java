@@ -20,17 +20,22 @@ public interface DeviceUsingInfoRepository extends JpaRepository<DeviceUsingInfo
 			+ "AND t1.registerStatus = ?4 ")
 	List<DeviceUsingInfo> getBusyDevices(Long deviceId, LocalDateTime start, LocalDateTime end, String status);
 
-	@Query("SELECT new com.example.lab.dto.response.DeviceUsingInfoResponseDto(t1.id,t2.name,t1.start,t1.end,t1.registerStatus,t1.info,CONCAT(t3.firstName,' ',t3.lastName)) "
+	@Query("SELECT new com.example.lab.dto.response.DeviceUsingInfoResponseDto(t1.id,t2.name,t1.start,t1.end,t1.registerStatus,t1.info,CONCAT(t3.firstName,' ',t3.lastName),t1.centrifugeSpeed,GROUP_CONCAT(CONCAT(t5.firstName,' ',t5.lastName)),t1.expect) "
 			+ "FROM DeviceUsingInfo t1 "
 			+ "INNER JOIN DeviceInfo t2 "
 			+ "ON t2.id = t1.deviceId "
 			+ "INNER JOIN UserInfo t3 "
 			+ "ON t3.user.id= t1.userId "
+			+ "LEFT JOIN DeviceUsingUsers t4 "
+			+ "ON t4.deviceUsingId = t1.id "
+			+ "LEFT JOIN UserInfo t5 "
+			+ "ON t5.user.id = t4.userId "
 			+ "WHERE ?1 IS NULL OR (t1.userId = ?1) "
+			+ "GROUP BY t1.id "
 			+ "ORDER BY t1.start DESC")
 	List<DeviceUsingInfoResponseDto> getUsingDevicesByUser(Long userId);
 
-	@Query("SELECT new com.example.lab.dto.response.DeviceUsingInfoResponseDto(t1.id,t2.name,t1.start,t1.end,t1.registerStatus,t1.info,CONCAT(t3.firstName,' ',t3.lastName)) "
+	@Query("SELECT new com.example.lab.dto.response.DeviceUsingInfoResponseDto(t1.id,t2.name,t1.start,t1.end,t1.registerStatus,t1.info,CONCAT(t3.firstName,' ',t3.lastName),null,null,null) "
 			+ "			FROM DeviceUsingInfo t1 "
 			+ "			INNER JOIN DeviceInfo t2 "
 			+ "			ON t2.id = t1.deviceId "

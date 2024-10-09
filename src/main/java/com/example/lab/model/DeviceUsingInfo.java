@@ -1,6 +1,7 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -45,12 +46,16 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "device_status")
 	private Boolean deviceStatus;
-	@Basic(optional = false)
 	@Column(name = "info")
 	private String info;
 	@Basic(optional = false)
 	@Column(name = "register_status")
 	private String registerStatus;
+	@Column(name = "centrifuge_speed")
+	private BigDecimal centrifugeSpeed;
+	@Basic(optional = false)
+	@Column(name = "expect")
+	private String expect;
 	@Basic(optional = false)
 	@Column(name = "user_id")
 	private Long userId;
@@ -83,6 +88,8 @@ public class DeviceUsingInfo extends BaseEntity implements Serializable {
 		this.registerStatus = DeviceUsingRegister.Inprogress.getVal();
 		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		this.userId = u.getId();
+		this.centrifugeSpeed = dto.getCentrifugeSpeed();
+		this.expect = dto.getExpect();
 	}
 
 	@Override

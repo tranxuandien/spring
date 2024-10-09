@@ -73,7 +73,7 @@ public class ChemicalInfoController {
 		return CommonResponseEntity.builder().data(dtos).build();
 	}
 
-	@PostMapping("/admin/chemical/add")
+	@PostMapping("/buddy/chemical/add")
 	public ResponseEntity<?> addChemical(@RequestBody @Valid ChemicalInfoRequestDto chemical) {
 		SearchChemicalInfoRequestDto searchDto = new SearchChemicalInfoRequestDto(
 				new ChemicalDto(null, chemical.getName()), chemical.getBrand(), chemical.getChemicalType(),
@@ -90,7 +90,7 @@ public class ChemicalInfoController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.REGISTED_CHEMICAL_MESSAGE).build());
 	}
 
-	@GetMapping("/admin/chemical/find")
+	@GetMapping("/buddy/chemical/find")
 	public ResponseEntity<?> updateChemical(@PathParam("id") Long id) {
 		Optional<ChemicalInfo> chemicalInfo = chemicalInfoService.findById(id);
 		if (chemicalInfo.isEmpty())
@@ -100,7 +100,7 @@ public class ChemicalInfoController {
 		return ResponseEntity.status(HttpStatus.OK).body(CommonResponseEntity.builder().data(dto).build());
 	}
 
-	@PutMapping("/admin/chemical/update")
+	@PutMapping("/buddy/chemical/update")
 	public ResponseEntity<?> updateChemical(@RequestBody @Valid ChemicalInfoRequestDto chemical) {
 		Optional<ChemicalInfo> chemicalInfo = chemicalInfoService.findById(chemical.getId());
 		if (chemicalInfo.isEmpty())
@@ -117,7 +117,7 @@ public class ChemicalInfoController {
 	}
 
 	// get info scan barcode
-	@GetMapping("/admin/chemical/register")
+	@GetMapping("/buddy/chemical/register")
 	public ResponseEntity<?> getChemical(Model model, @PathParam("barcode") String barcode) {
 		if (barcode.isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
@@ -131,7 +131,7 @@ public class ChemicalInfoController {
 	}
 
 	// do import chemical
-	@PostMapping("/admin/chemical/import")
+	@PostMapping("/buddy/chemical/import")
 	public ResponseEntity<?> importChemical(@RequestBody @Valid ChemicalImportRequestDto requestDto) {
 		if (requestDto.getBarcode().isEmpty())
 			return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(CommonResponseEntity.builder()
@@ -151,7 +151,7 @@ public class ChemicalInfoController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.IMPORTED_CHEMICAL_MESSAGE).build());
 	}
 
-	@PostMapping("/admin/chemical/codeprint")
+	@PostMapping("/buddy/chemical/codeprint")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> exportToPDF(@RequestBody PrintBarcodeChemicalRequestDto dto,
 			HttpServletResponse response) throws DocumentException, IOException, OutputException, BarcodeException {
@@ -169,7 +169,7 @@ public class ChemicalInfoController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/admin/chemical/code/reprint")
+	@GetMapping("/buddy/chemical/code/reprint")
 	@ResponseStatus(code = HttpStatus.OK)
 	public ResponseEntity<?> rePrintChemicalBarcode(@PathParam("barcode") String barcode,
 			@PathParam("chemicalName") String chemicalName, HttpServletResponse response)

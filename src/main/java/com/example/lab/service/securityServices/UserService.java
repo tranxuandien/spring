@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.dto.request.BuddyRegisterRequestDto;
+import com.example.lab.dto.response.CommonSelectResponseDto;
+import com.example.lab.dto.response.UserInfoResponseDto;
 import com.example.lab.dto.response.UserResponseDto;
+import com.example.lab.enums.Roles;
 import com.example.lab.model.User;
-import com.example.lab.repository.UserInfoRepository;
 import com.example.lab.repository.user.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,8 +27,8 @@ public class UserService {
     }
 
     
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserInfoResponseDto> getUsers(String name) {
+        return userRepository.findAllUserInfo(name);
     }
 
     
@@ -51,6 +54,21 @@ public class UserService {
 
 	public List<UserResponseDto> getAllUser() {
 		return userRepository.findAllUser();
+	}
+
+
+	public List<CommonSelectResponseDto> getUsersRoleBuddy() {
+		return userRepository.getUsersRoleBuddy(Roles.BUDDY.getVal());
+	}
+
+
+	public List<CommonSelectResponseDto> getUsersRoleUser() {
+		return userRepository.getUsersRoleBuddy(Roles.USER.getVal());
+	}
+
+
+	public void buddyRegister(BuddyRegisterRequestDto dto) {
+		userRepository.buddyRegister(dto.getBuddy(),dto.getUsers());
 	}
 }
 

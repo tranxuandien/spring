@@ -28,14 +28,14 @@ public class ChemicalInventoryController {
 	@Autowired
 	private ChemicalInventoryService chemicalInventoryService;
 	
-	@PostMapping("/admin/chemical/inventory/list")
+	@PostMapping("/buddy/chemical/inventory/list")
 	public CommonResponseEntity getListChemicalInventory(@RequestBody SearchChemicalInventoryRequestDto search) {
 		if(search.getChemical() == null) search.setChemical(new ChemicalDto());
 		List<ChemicalInventoryResponseDto> dtos = chemicalInventoryService.getListChemicalInventory(search);
 		return CommonResponseEntity.builder().data(dtos).build();
 	}
 
-	@DeleteMapping("/admin/chemical/inventory/delete/{id}")
+	@DeleteMapping("/buddy/chemical/inventory/delete/{id}")
 	public ResponseEntity<?> deleteChemicalInventory(@PathVariable(value = "id") Long id) {
 		ChemicalInventory chemical = chemicalInventoryService.deleteById(id);
 		if (chemical == null) {

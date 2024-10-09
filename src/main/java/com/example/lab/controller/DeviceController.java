@@ -43,7 +43,7 @@ public class DeviceController {
 		return CommonResponseEntity.builder().data(dtos).build();
 	}
 
-	@PostMapping("/admin/device/add")
+	@PostMapping("/buddy/device/add")
 	public ResponseEntity<?> addDevice(@RequestBody DeviceRegisterRequestDto dto) {
 		try {
 			deviceInfoService.add(dto);
@@ -55,7 +55,7 @@ public class DeviceController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_CREATED).build());
 	}
 	
-	@GetMapping("/admin/device/active")
+	@GetMapping("/buddy/device/active")
 	public ResponseEntity<?> activeDevice(@PathParam("id") Long id) {
 		try {
 			deviceInfoService.active(id);
@@ -67,7 +67,7 @@ public class DeviceController {
 				.body(CommonResponseEntity.builder().message(CommonMessage.DEVICE_ACTIVED).build());
 	}
 	
-	@DeleteMapping("/admin/device/delete/{id}")
+	@DeleteMapping("/buddy/device/delete/{id}")
 	public ResponseEntity<?> deleteDevice(@PathVariable(value = "id") Long id) {
 		try {
 			deviceInfoService.deleteById(id);

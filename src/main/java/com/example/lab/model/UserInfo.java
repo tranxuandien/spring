@@ -38,6 +38,9 @@ public class UserInfo extends BaseEntity implements Serializable {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name ="user_id")
     private User user;
+	@Column(name = "buddy")
+    private Long buddy;
+	
 
     public UserInfo() {
     }

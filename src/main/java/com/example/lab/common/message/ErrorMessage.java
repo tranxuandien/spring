@@ -36,4 +36,5 @@ public class ErrorMessage {
 	public static final String DEVICE_REPORT_STATUS_FAIL = "Chưa báo cáo tình trạng sử dụng thiết bị";
 	public static final String DEVICE_CANNOT_ACTIVE = "Chưa đăng ký thiết bị hoạt động trở lại";
 	public static final String DEVICE_CANNOT_DELETED = "Không thế xóa thông tin thiết bị";
+	public static final String USER_BUDDY_NOT_REGISTER = "Chưa đăng ký thông tin người hướng dẫn";
 }

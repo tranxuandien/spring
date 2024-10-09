@@ -24,5 +24,6 @@ public class CommonMessage {
 	public static final String DEVICE_REPORT_STATUS = "Đã báo cáo tình trạng thiết bị";
 	public static final String DEVICE_ACTIVED = "Đã đăng ký thiết bị hoạt động";
 	public static final String DEVICE_DELETED = "Đã xóa thông tin thiết bị";
-	
+	//=========================User=========================================
+	public static final String USER_BUDDY_REGISTER = "Đã đăng ký thông tin người hướng dẫn";
 }

@@ -15,7 +15,7 @@ public class DeviceUsingInfoResponseDto {
 	public LocalDateTime end;
 	public String registerStatus;
 	public String info;
-	public String user;
+	public String buddy;
 	public BigDecimal centrifugeSpeed;
 	public Object users;
 	public String expect;

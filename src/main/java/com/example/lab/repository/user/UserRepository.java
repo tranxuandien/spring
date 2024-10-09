@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.lab.dto.response.CommonSelectResponseDto;
+import com.example.lab.dto.response.UserInfoResponseDto;
 import com.example.lab.dto.response.UserResponseDto;
 import com.example.lab.model.User;
+
+import jakarta.transaction.Transactional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -27,6 +32,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "WHERE t1.isActive = true ")
 	List<UserResponseDto> findAllUser();
 
-	@Query("SELECT t1.email from User t1 WHERE t1.role = 'ROLE_ADMIN' ORDER BY t1.id LIMIT 1 ")
-	String getAdminEmail();
+	@Query("SELECT t1.email from User t1 WHERE t1.role = ?1 ORDER BY t1.id LIMIT 1 ")
+	String getAdminEmail(String role);
+
+	@Query("SELECT new com.example.lab.dto.response.UserInfoResponseDto(t2.id,CONCAT(t1.firstName,' ',t1.lastName),t1.address,CONCAT(t3.firstName,' ',t3.lastName),t2.email) "
+			+ "FROM UserInfo t1 "
+			+ "INNER JOIN User t2 "
+			+ "ON t2.id = t1.user.id "
+			+ "LEFT JOIN UserInfo t3 "
+			+ "ON t3.user.id = t1.buddy "
+			+ "WHERE ?1 IS NULL OR (CONCAT(t1.firstName,' ',t1.lastName) LIKE %?1%) ")
+	List<UserInfoResponseDto> findAllUserInfo(String name);
+
+	@Query("SELECT new com.example.lab.dto.response.CommonSelectResponseDto(t1.user.id,CONCAT(t1.firstName,' ',t1.lastName)) "
+			+ "FROM UserInfo t1 "
+			+ "WHERE t1.user.role = ?1 "
+			+ "AND t1.user.isActive = true")
+	List<CommonSelectResponseDto> getUsersRoleBuddy(String role);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE UserInfo t1 SET t1.buddy = ?1 WHERE t1.user.id IN ?2")
+	void buddyRegister(Long buddy, List<Long> users);
 }

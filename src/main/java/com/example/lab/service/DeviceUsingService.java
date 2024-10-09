@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.common.utils.RoleUtils;
 import com.example.lab.dto.request.DeviceUsingRequestDto;
 import com.example.lab.dto.request.ReportUsingDeviceStatusDto;
 import com.example.lab.dto.response.DeviceUsingInfoResponseDto;
@@ -33,10 +34,8 @@ public class DeviceUsingService {
 	DeviceUsingUsersRepository deviceUsingUsersRepository;
 	
 	public List<DeviceUsingInfoResponseDto> getListUsingDeviceUser() {
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
-				.equals("[ROLE_ADMIN]");
-		if (!isAdmin) {
-			User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (!RoleUtils.hasRoleBuddy()) {
+			User u = RoleUtils.getCurrentUser();
 			return deviceUsingInfoRepository.getUsingDevicesByUser(u.getId());
 		} else {
 			return deviceUsingInfoRepository.getUsingDevicesByUser(null);
@@ -68,12 +67,10 @@ public class DeviceUsingService {
 
 	public DeviceUsingInfo cancelUsingDevice(Long id) {
 		Optional<DeviceUsingInfo> opt = deviceUsingInfoRepository.findById(id);
-		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
-				.equals("[ROLE_ADMIN]");
+		User u = RoleUtils.getCurrentUser();
 		if (!opt.isEmpty()) {
 			DeviceUsingInfo device = opt.get();
-			if (!u.getId().equals(device.getUserId()) && !isAdmin)
+			if (!u.getId().equals(device.getUserId()) && !RoleUtils.hasRoleBuddy())
 				return null;
 			device.setRegisterStatus(DeviceUsingRegister.Cancel.getVal());
 			device.setUpdateAt(LocalDateTime.now());
@@ -85,12 +82,10 @@ public class DeviceUsingService {
 
 	public DeviceUsingInfo doneUsingDevice(Long id) {
 		Optional<DeviceUsingInfo> opt = deviceUsingInfoRepository.findById(id);
-		User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString()
-				.equals("[ROLE_ADMIN]");
+		User u = RoleUtils.getCurrentUser();
 		if (!opt.isEmpty()) {
 			DeviceUsingInfo device = opt.get();
-			if (!u.getId().equals(device.getUserId()) && !isAdmin)
+			if (!u.getId().equals(device.getUserId()) && !RoleUtils.hasRoleBuddy())
 				return null;
 			device.setRegisterStatus(DeviceUsingRegister.Done.getVal());
 			device.setUpdateAt(LocalDateTime.now());

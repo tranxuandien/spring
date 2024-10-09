@@ -33,7 +33,7 @@ public class BrandController {
 		return ResponseEntity.ok(dto);
 	}
 	
-	@PostMapping("/admin/brand/add")
+	@PostMapping("/buddy/brand/add")
 	public ResponseEntity<?> addBrand(@RequestBody BrandRegisterRequestDto dto) {
 		try {
 			brandService.add(dto);
@@ -44,7 +44,7 @@ public class BrandController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponseEntity.builder().message(CommonMessage.BRAND_CREATED).build());
 	}
 	
-	@DeleteMapping("/admin/brand/delete/{id}")
+	@DeleteMapping("/buddy/brand/delete/{id}")
 	public ResponseEntity<?> deleteBrand(@PathVariable(value = "id") Long id) {
 		try {
 			brandService.deleteById(id);

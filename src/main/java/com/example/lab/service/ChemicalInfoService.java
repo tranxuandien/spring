@@ -20,6 +20,7 @@ import com.example.lab.dto.request.SearchChemicalInfoRequestDto;
 import com.example.lab.dto.response.ChemicalInfoResponseDto;
 import com.example.lab.dto.response.ChemicalUsingResponseDto;
 import com.example.lab.enums.ImpExp;
+import com.example.lab.enums.Roles;
 import com.example.lab.model.ChemicalImpExp;
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.ChemicalInventory;
@@ -198,7 +199,7 @@ public class ChemicalInfoService {
 		chemicalImpExpRepository.save(impexp);
 		if (remain.compareTo(BigDecimal.valueOf(100)) <= 0) {
 			// do send mail
-			String email = userRepository.getAdminEmail();
+			String email = userRepository.getAdminEmail(Roles.ADMIN.getVal());
 			if (email != null)
 				emailServiceImpl.sendChemicalStatusAlertEmail(email, user.getEmail(), info.getName(),
 						user.getUsername() + "(" + user.getEmail() + ")", remain);

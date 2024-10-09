@@ -33,7 +33,7 @@ public class PositionController {
 		return ResponseEntity.ok(dto);
 	}
 	
-	@PostMapping("/admin/position/add")
+	@PostMapping("/buddy/position/add")
 	public ResponseEntity<?> addPosition(@RequestBody PositionRegisterRequestDto dto) {
 		try {
 			positionInfoService.add(dto);
@@ -44,7 +44,7 @@ public class PositionController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponseEntity.builder().message(CommonMessage.POSITION_CREATED).build());
 	}
 	
-	@DeleteMapping("/admin/position/delete/{id}")
+	@DeleteMapping("/buddy/position/delete/{id}")
 	public ResponseEntity<?> deletePosition(@PathVariable(value = "id") Long id) {
 		try {
 			positionInfoService.deleteById(id);

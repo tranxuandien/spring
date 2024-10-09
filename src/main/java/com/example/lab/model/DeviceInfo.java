@@ -56,6 +56,7 @@ public class DeviceInfo extends BaseEntity implements Serializable {
     	this.name = dto.getName();
     	this.positionId = Long.parseLong(dto.getPosition());
     	this.otherInfo = dto.getOtherInfo();
+    	this.deviceStatus = true;
     	User u = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	this.userId =u.getId();
     	this.isDelete = false;

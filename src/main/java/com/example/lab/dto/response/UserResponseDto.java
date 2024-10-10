@@ -10,8 +10,8 @@ public class UserResponseDto {
 	Long id;
 	String userName;
 
-	public UserResponseDto(Long id, String firstName, String lastName) {
+	public UserResponseDto(Long id, String name, String studentId) {
 		this.id = id;
-		this.userName = firstName + " " + lastName;
+		this.userName = (studentId != null && !studentId.isEmpty()) ? name + "-" + studentId : name;
 	}
 }

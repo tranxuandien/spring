@@ -11,4 +11,6 @@ public class UserInfoResponseDto {
 	public String address;
 	public String buddy;
 	public String email;
+	public String role;
+	public Boolean isActive;
 }

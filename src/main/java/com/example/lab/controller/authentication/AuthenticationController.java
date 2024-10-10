@@ -17,6 +17,7 @@ import com.example.lab.dto.request.AuthenticationRequest;
 import com.example.lab.dto.request.UserRegisterRequest;
 import com.example.lab.dto.response.AuthenticationResponse;
 import com.example.lab.dto.response.CommonResponseEntity;
+import com.example.lab.enums.Roles;
 import com.example.lab.service.TokenService;
 import com.example.lab.service.securityServices.AuthenticationService;
 
@@ -51,7 +52,10 @@ public class AuthenticationController {
 					.body(CommonResponseEntity.builder().errorMessage(e.getMessage()).build());
 		}
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(CommonResponseEntity.builder().message(CommonMessage.AUTH_REGISTED_USER).build());
+				.body(CommonResponseEntity.builder()
+						.message(registerRequest.getRole().equals(Roles.BUDDY.getVal()) ? CommonMessage.AUTH_REGISTED_USER
+								: CommonMessage.AUTH_REGISTED_USER)
+						.build());
 	}
 
 	@GetMapping("/register/active")

@@ -27,9 +27,10 @@ public class UserService {
     }
 
     
-    public List<UserInfoResponseDto> getUsers(String name) {
-        return userRepository.findAllUserInfo(name);
-    }
+	public List<UserInfoResponseDto> getUsers(String name) {
+		return userRepository.findAllUserInfo(name).stream()
+				.filter(i -> !i.getRole().equals(Roles.ADMIN.getVal().substring(5))).toList();
+	}
 
     
     public User getUserById(Long userId) {
@@ -58,17 +59,26 @@ public class UserService {
 
 
 	public List<CommonSelectResponseDto> getUsersRoleBuddy() {
-		return userRepository.getUsersRoleBuddy(Roles.BUDDY.getVal());
+		return userRepository.getUsersBuddy(Roles.BUDDY.getVal());
 	}
 
 
 	public List<CommonSelectResponseDto> getUsersRoleUser() {
-		return userRepository.getUsersRoleBuddy(Roles.USER.getVal());
+		return userRepository.getUsersStudent(Roles.USER.getVal());
 	}
 
 
 	public void buddyRegister(BuddyRegisterRequestDto dto) {
 		userRepository.buddyRegister(dto.getBuddy(),dto.getUsers());
+	}
+
+
+	public void active(Long id) {
+		userRepository.active(id);
+	}
+	
+	public void delete(Long id) {
+		userRepository.delete(id);
 	}
 }
 

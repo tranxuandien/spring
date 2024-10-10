@@ -3,6 +3,7 @@ package com.example.lab.common.message;
 public class CommonMessage {
 	// =======================Auth===============================
 	public static final String AUTH_REGISTED_USER = "Tài khoản đã được đăng ký!Kiểm tra email để xác nhận";
+	public static final String AUTH_REGISTED_BUDDY_USER = "Tài khoản đã được đăng ký!Chờ thông tin xác nhận kích hoạt tài khoản";
 	public static final String AUTH_ACTIVED_USER = "Tài khoản đã được đăng ký hoạt dộng";
 	// ========================Chemical==================================
 	public static final String REGISTED_CHEMICAL_MESSAGE = "Hóa chất đã được đăng ký!";
@@ -26,4 +27,5 @@ public class CommonMessage {
 	public static final String DEVICE_DELETED = "Đã xóa thông tin thiết bị";
 	//=========================User=========================================
 	public static final String USER_BUDDY_REGISTER = "Đã đăng ký thông tin người hướng dẫn";
+	public static final String USER_DELETED = "Đã xóa người dùng";
 }

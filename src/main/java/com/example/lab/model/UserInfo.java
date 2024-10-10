@@ -2,6 +2,8 @@ package com.example.lab.model;
 
 import java.io.Serializable;
 
+import com.example.lab.dto.request.UserRegisterRequest;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +42,8 @@ public class UserInfo extends BaseEntity implements Serializable {
     private User user;
 	@Column(name = "buddy")
     private Long buddy;
+	@Column(name = "student_id")
+    private String studentId;
 	
 
     public UserInfo() {
@@ -49,7 +53,14 @@ public class UserInfo extends BaseEntity implements Serializable {
         this.id = id;
     }
 
-    @Override
+    public UserInfo(UserRegisterRequest request) {
+		this.setAddress(request.getAddress());
+		this.setFirstName(request.getFirstName());
+		this.setLastName(request.getLastName());
+		this.setStudentId(request.getStudentId());
+	}
+
+	@Override
     public int hashCode() {
         int hash = 0;
         hash += (id != null ? id.hashCode() : 0);

@@ -7,6 +7,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.lab.dto.request.UserRegisterRequest;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -73,6 +75,13 @@ public class User extends BaseEntity implements UserDetails  {
 		this.id = id;
 		this.userName = userName;
 		this.password = password;
+	}
+
+	public User(UserRegisterRequest request) {
+		this.setUserName(request.getUsername());
+		this.setRole(request.getRole());// default
+		this.setEmail(request.getEmail());
+		this.setIsActive(false);
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "where t1.isActive= false and t1.userName = ?1 and t2.token = ?2 ")
 	Optional<User> findNotActiveUser(String username, String token);
 
-	@Query("SELECT new com.example.lab.dto.response.UserResponseDto(t1.id,t2.firstName,t2.lastName) FROM User t1 "
+	@Query("SELECT new com.example.lab.dto.response.UserResponseDto(t1.id,CONCAT(t2.firstName,' ',t2.lastName),t2.studentId) FROM User t1 "
 			+ "INNER JOIN UserInfo t2 "
 			+ "ON t1.id = t2.user.id "
 			+ "WHERE t1.isActive = true ")
@@ -35,7 +35,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Query("SELECT t1.email from User t1 WHERE t1.role = ?1 ORDER BY t1.id LIMIT 1 ")
 	String getAdminEmail(String role);
 
-	@Query("SELECT new com.example.lab.dto.response.UserInfoResponseDto(t2.id,CONCAT(t1.firstName,' ',t1.lastName),t1.address,CONCAT(t3.firstName,' ',t3.lastName),t2.email) "
+	@Query("SELECT new com.example.lab.dto.response.UserInfoResponseDto(t2.id,CONCAT(t1.firstName,' ',t1.lastName),t1.address,CONCAT(t3.firstName,' ',t3.lastName),t2.email,SUBSTR(t2.role,6),t2.isActive) "
 			+ "FROM UserInfo t1 "
 			+ "INNER JOIN User t2 "
 			+ "ON t2.id = t1.user.id "
@@ -48,10 +48,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
 			+ "FROM UserInfo t1 "
 			+ "WHERE t1.user.role = ?1 "
 			+ "AND t1.user.isActive = true")
-	List<CommonSelectResponseDto> getUsersRoleBuddy(String role);
+	List<CommonSelectResponseDto> getUsersBuddy(String role);
+	
+	@Query("SELECT new com.example.lab.dto.response.CommonSelectResponseDto(t1.user.id,CONCAT(t1.firstName,' ',t1.lastName,'-',t1.studentId)) "
+			+ "FROM UserInfo t1 "
+			+ "WHERE t1.user.role = ?1 "
+			+ "AND t1.user.isActive = true")
+	List<CommonSelectResponseDto> getUsersStudent(String role);
 
 	@Modifying
 	@Transactional
 	@Query("UPDATE UserInfo t1 SET t1.buddy = ?1 WHERE t1.user.id IN ?2")
 	void buddyRegister(Long buddy, List<Long> users);
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE User t1 SET t1.isActive = true WHERE t1.id =?1")
+	void active(Long id);
+	
+
+	@Modifying
+	@Transactional
+	@Query("UPDATE User t1 SET t1.isActive = false WHERE t1.id =?1")
+	void delete(Long id);
 }

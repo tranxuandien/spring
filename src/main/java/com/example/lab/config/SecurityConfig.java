@@ -31,7 +31,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
 	      .csrf(AbstractHttpConfigurer::disable)
 	      .authorizeHttpRequests((requests) -> requests
 	    		  	.requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-	    		  	.requestMatchers("/api/v1/buddy/**").hasAnyRole("ADMIN","BUDDY")
+	    		  	.requestMatchers("/api/v1/buddy/**").hasAnyRole("BUDDY")
 					.requestMatchers("/index","/api/auth/**").permitAll()
 					.anyRequest().authenticated()
 				)

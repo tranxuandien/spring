@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.example.lab.dto.BuddyInfoDto;
 import com.example.lab.dto.response.CommonSelectResponseDto;
 import com.example.lab.dto.response.UserInfoResponseDto;
 import com.example.lab.dto.response.UserResponseDto;
@@ -71,4 +72,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	@Transactional
 	@Query("UPDATE User t1 SET t1.isActive = false WHERE t1.id =?1")
 	void delete(Long id);
+
+	@Query("SELECT new com.example.lab.dto.BuddyInfoDto(t2.email,t1.user.email,CONCAT(t1.firstName,' ',t1.lastName,'-',t1.studentId)) "
+			+ "FROM UserInfo t1 "
+			+ "LEFT JOIN User t2 "
+			+ "ON t2.id = t1.buddy "
+			+ "WHERE t1.user.id =?1")
+	BuddyInfoDto getBuddyInfo(Long userId);
 }

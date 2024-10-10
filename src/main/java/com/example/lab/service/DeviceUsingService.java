@@ -20,6 +20,7 @@ import com.example.lab.model.User;
 import com.example.lab.repository.DeviceInfoRepository;
 import com.example.lab.repository.DeviceUsingInfoRepository;
 import com.example.lab.repository.DeviceUsingUsersRepository;
+import com.example.lab.service.mail.EmailServiceImpl;
 
 @Service
 public class DeviceUsingService {
@@ -32,6 +33,9 @@ public class DeviceUsingService {
 
 	@Autowired
 	DeviceUsingUsersRepository deviceUsingUsersRepository;
+	
+	@Autowired
+	EmailServiceImpl sendMail;
 	
 	public List<DeviceUsingInfoResponseDto> getListUsingDeviceUser() {
 		if (!RoleUtils.hasRoleBuddy()) {
@@ -109,6 +113,10 @@ public class DeviceUsingService {
 			device.setOtherInfo(dto.getDeviceStatusDetail());
 			device.setUpdateAt(LocalDateTime.now());
 			deviceInfoRepository.save(device);
+
+			// mail
+			sendMail.sendMailBuddyReportDeviceStatus(deviceUsing.getUserId(), dto.getDeviceStatusDetail(),
+					device.getName());
 			return deviceUsing;
 		}
 		return null;

@@ -8,12 +8,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.example.lab.config.Config;
+import com.example.lab.dto.BuddyInfoDto;
+import com.example.lab.service.securityServices.UserService;
 
 @Component
 public class EmailServiceImpl {
 
 	@Autowired
 	private JavaMailSender emailSender;
+	@Autowired
+	private UserService userService;
 
 	public void sendRegisterEmail(String to, String username, String token, String uri,String email,String accType) {
 		SimpleMailMessage message = new SimpleMailMessage();
@@ -53,6 +57,22 @@ public class EmailServiceImpl {
 		emailSender.send(message);
 	}
 	
+	public void sendMailBuddyReportDeviceStatus(Long userId,String report,String deviceName)
+	{
+		if(userId==null)return;
+		BuddyInfoDto dto = userService.findBuddyInfo(userId);
+		if(dto.getBuddyMail()==null)return;
+		SimpleMailMessage message = new SimpleMailMessage();
+		message.setFrom("noreply@test.com");
+		message.setTo(dto.getBuddyMail());
+		message.setCc(dto.getStudentMail());
+		message.setSubject("[LAB][Trạng thái thiết bị]");
+		message.setText(
+				"Thiết bị :" + deviceName + "\n"
+				+"Trạng thái: "+report+"\n" 
+				+"Sinh viên báo cáo: " + dto.getStudentName()+ " \n");
+		emailSender.send(message);
+	}
 //	@Scheduled(cron = "2 * * * * *")
 //	public void test() {
 //		sendChemicalStatusAlertEmail("hust.dientran@gmail.com", "hust.dientran@gmail.com", "a", "b", BigDecimal.ONE);

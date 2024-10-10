@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.lab.dto.BuddyInfoDto;
 import com.example.lab.dto.request.BuddyRegisterRequestDto;
 import com.example.lab.dto.response.CommonSelectResponseDto;
 import com.example.lab.dto.response.UserInfoResponseDto;
@@ -79,6 +80,11 @@ public class UserService {
 	
 	public void delete(Long id) {
 		userRepository.delete(id);
+	}
+
+
+	public BuddyInfoDto findBuddyInfo(Long userId) {
+		return userRepository.getBuddyInfo(userId);
 	}
 }
 

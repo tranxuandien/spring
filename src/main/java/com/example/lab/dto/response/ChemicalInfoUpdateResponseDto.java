@@ -1,5 +1,7 @@
 package com.example.lab.dto.response;
 
+import java.math.BigDecimal;
+
 import com.example.lab.model.ChemicalInfo;
 import com.example.lab.model.UserInfo;
 
@@ -17,6 +19,7 @@ public class ChemicalInfoUpdateResponseDto {
 	public String chemicalClassInfo;
 	public String otherInfo;
 	public String registerUser;
+	public String alertQuantity;
 	
 	public ChemicalInfoUpdateResponseDto(ChemicalInfo chemicalInfo,UserInfo user) {
 		this.id = chemicalInfo.getId();
@@ -28,6 +31,7 @@ public class ChemicalInfoUpdateResponseDto {
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
 		this.registerUser = user==null?null:user.getName();
+		this.alertQuantity = chemicalInfo.getAlertQuantity().toString();
 	}
 
 	public ChemicalInfoUpdateResponseDto(Long id, String name, Long brand, String chemicalType, String chemicalTypeInfo,

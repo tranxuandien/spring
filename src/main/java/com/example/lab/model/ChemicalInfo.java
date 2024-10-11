@@ -1,6 +1,7 @@
 package com.example.lab.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.example.lab.dto.request.ChemicalInfoRequestDto;
@@ -42,8 +43,6 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "chemical_type_info")
 	private String chemicalTypeInfo;
-//	@Column(name = "manufactory_quantity")
-//	private BigDecimal manufactoryQuantity;
 	@Column(name = "chemical_class")
 	private String chemicalClass;
 	@Column(name = "chemical_class_info")
@@ -53,9 +52,10 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "register_user")
 	private User registerUser;
-//	@OneToOne(optional = false, fetch = FetchType.LAZY)
 	@Column(name = "brand_id")
 	private Long brandId;
+	@Column(name = "alert_quantity")
+	private BigDecimal alertQuantity;
 	@Basic(optional = false)
 	@Column(name = "is_delete")
 	private String isDelete;
@@ -87,6 +87,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.otherInfo = dto.otherInfo;
 		this.isDelete = "0";// init
 		this.brandId = dto.getBrand();
+		this.alertQuantity = dto.getAlertQuantity();
 	}
 
 	public void update(@Valid ChemicalInfoRequestDto dto) {
@@ -97,6 +98,7 @@ public class ChemicalInfo extends BaseEntity implements Serializable {
 		this.chemicalClassInfo = dto.chemicalClassInfo;
 		this.otherInfo = dto.otherInfo;
 		this.brandId =dto.brand;
+		this.alertQuantity = dto.getAlertQuantity();
 		this.setUpdateAt(LocalDateTime.now());
 	}
 	

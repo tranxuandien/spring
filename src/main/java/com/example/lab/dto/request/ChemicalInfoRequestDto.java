@@ -1,5 +1,7 @@
 package com.example.lab.dto.request;
 
+import java.math.BigDecimal;
+
 import com.example.lab.model.ChemicalInfo;
 
 import jakarta.validation.constraints.NotEmpty;
@@ -30,6 +32,9 @@ public class ChemicalInfoRequestDto {
 	@NotNull(message = "Nhập thông tin người đăng ký hóa chất")
 	@NotEmpty(message = "Nhập thông tin người đăng ký hóa chất")
 	public String registerUser;
+	@NotNull
+	public BigDecimal alertQuantity;
+	
 
 	public ChemicalInfoRequestDto() {
 		super();
@@ -44,6 +49,7 @@ public class ChemicalInfoRequestDto {
 		this.chemicalClass = chemicalInfo.getChemicalClass();
 		this.chemicalClassInfo = chemicalInfo.getChemicalClassInfo();
 		this.otherInfo = chemicalInfo.getOtherInfo();
+		this.alertQuantity = chemicalInfo.getAlertQuantity();
 //		this.registerUser = chemicalInfo.getRegisterUser().getName();
 	}
 

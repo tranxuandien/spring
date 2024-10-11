@@ -197,7 +197,8 @@ public class ChemicalInfoService {
 		ChemicalImpExp impexp = new ChemicalImpExp(null, ImpExp.Export.getVal(), updateDto.getQuantity(), info.getId(),
 				null, user.getId(), inventory.getLotId());
 		chemicalImpExpRepository.save(impexp);
-		if (remain.compareTo(BigDecimal.valueOf(100)) <= 0) {
+		ChemicalInfo chemical = chemicalInfoRepository.findById(info.getId()).get();
+		if (chemical !=null && remain.compareTo(chemical.getAlertQuantity()) <= 0) {
 			// do send mail
 			String email = userRepository.getAdminEmail(Roles.ADMIN.getVal());
 			if (email != null)

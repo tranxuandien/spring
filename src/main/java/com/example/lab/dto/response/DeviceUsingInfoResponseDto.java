@@ -19,4 +19,5 @@ public class DeviceUsingInfoResponseDto {
 	public BigDecimal centrifugeSpeed;
 	public Object users;
 	public String expect;
+	public String registerUser;
 }

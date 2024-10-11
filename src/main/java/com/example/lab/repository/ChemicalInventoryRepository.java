@@ -21,7 +21,10 @@ public interface ChemicalInventoryRepository extends JpaRepository<ChemicalInven
 	ChemicalInventory findByChemicalId(Long id,String lotCode);
 
 	@Query("SELECT new com.example.lab.dto.response.ChemicalInventoryResponseDto(t1.id,t2.name, t4.name, t2.chemicalType, t2.chemicalTypeInfo, "
-			+ "t2.chemicalClass, t2.chemicalClassInfo, t1.quantity, t5.positionInfo, t1.expiredDate, null, t1.chemicalStatus, t1.purchaseSrc,t2.id,t3.lotNo) "
+			+ "t2.chemicalClass, t2.chemicalClassInfo, t1.quantity, t5.positionInfo, t1.expiredDate, CASE "
+			+ "WHEN t1.quantity=0 THEN 'Hết' "
+			+ "WHEN CONVERT(t1.quantity,DECIMAL(10,2))<= CONVERT(t2.alertQuantity,DECIMAL(10,2)) THEN 'Sắp Hết' "
+			+ "ELSE 'Mới' END, t1.chemicalStatus, t1.purchaseSrc,t2.id,t3.lotNo) "
 			+ "FROM ChemicalInventory t1 "
 			+ "INNER JOIN ChemicalInfo t2 "
 			+ "ON t1.chemicalId = t2.id "

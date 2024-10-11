@@ -1,7 +1,7 @@
 package com.example.lab.enums;
 
 public enum ChemicalInventoryStatus {
-	Warning("Sắp hết"),Old("Hết"), New("Mới");
+	Warning("Sắp Hết"),Old("Hết"), New("Mới");
 
 	private final String value;
 

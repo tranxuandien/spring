@@ -40,8 +40,8 @@ public interface ChemicalInventoryRepository extends JpaRepository<ChemicalInven
 			+ "AND (?3 IS NULL OR t2.chemicalType =?3) "
 			+ "AND (?4 IS NULL OR t2.chemicalClass=?4) "
 			+ "AND (?5 IS NULL OR t1.positionId=?5) "
-			+ "AND (?6 IS NULL OR t1.quantity > ?6) "
-			+ "AND (?7 IS NULL OR t1.quantity <= ?7) "
+			+ "AND (?6 IS NULL OR ((?7 IS NULL AND (CONVERT(t1.quantity,DECIMAL(10,2)) > CONVERT(t2.alertQuantity,DECIMAL(10,2)))) OR ((?7 IS NOT NULL AND (CONVERT(t1.quantity,DECIMAL(10,2)) > CONVERT(0,DECIMAL(10,2)) ))))) "
+			+ "AND (?7 IS NULL OR ((?6 IS NULL AND (CONVERT(t1.quantity,DECIMAL(10,2)) <= CONVERT(0,DECIMAL(10,2)) )) OR ((?6 IS NOT NULL AND (CONVERT(t1.quantity,DECIMAL(10,2)) <= CONVERT(t2.alertQuantity,DECIMAL(10,2))))))) "
 			+ "ORDER BY t1.createAt DESC ")
 	List<ChemicalInventoryResponseDto> getAllInfo(String name, String brand, String type, String chemicalClass, String position,BigDecimal range1,BigDecimal range2);
 
